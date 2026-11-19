@@ -237,7 +237,7 @@ def test_quest_text_fields_store_filtered_text_in_the_link(page, site):
     assert page.input_value("#notes") == "# Secret\n- one"
     assert page.locator("#wm-select").evaluate("e => e.selectedOptions[0].textContent") == "Orc"
     assert page.input_value("#wm-text") == "and a goblin"
-    assert page.locator("#notes-preview h3").inner_text() == "Secret"
+    assert page.locator("#sheet-notes h3").inner_text() == "Secret"
     assert "Quest 1234567890: The Vault of Doom" in page.title()
 
 
@@ -455,3 +455,47 @@ def test_tiles_do_not_change_the_statistics(page):
     drag_cells(page, 1, 1, 12, 8)  # covers several printed rooms
     text = page.locator("#stats").inner_text()
     assert "Monsters\n0" in text and "(22)" in text  # still all 22 printed rooms
+
+
+def test_the_quest_sheet_sits_below_the_legend_and_starts_with_a_hint(page):
+    order = page.evaluate(
+        "[...document.querySelector('#stage').children].map((e) => e.id || e.className)"
+    )
+    assert order.index("legend") + 1 == order.index("quest-sheet")
+    assert page.locator("#sheet-empty").is_visible()
+    assert page.locator("#sheet-intro-section").is_hidden()
+    assert page.locator("#sheet-notes-section").is_hidden()
+
+
+def test_the_quest_sheet_updates_on_every_keystroke(page):
+    page.locator("#qtitle").press_sequentially("Crypt", delay=20)
+    assert page.locator("#sheet-title").inner_text() == "Crypt"
+    page.fill("#qnum", "7")
+    assert page.locator("#sheet-title").inner_text() == "Quest 7: Crypt"
+    page.locator("#qintro").press_sequentially("Hello **bold", delay=10)
+    assert page.locator("#sheet-intro").inner_text() == "Hello **bold"  # not closed yet: literal
+    page.locator("#qintro").press_sequentially("** world", delay=10)
+    assert page.locator("#sheet-intro strong").inner_text() == "bold"
+    assert page.locator("#sheet-empty").is_hidden()
+
+
+def test_the_quest_sheet_renders_notes_and_the_wandering_monster(page):
+    page.fill("#notes", "# Secrets\n- one\n- two\n\n| A | B |\n|---|---|\n| 1 | 2 |")
+    assert page.locator("#sheet-notes h3").inner_text() == "Secrets"
+    assert page.locator("#sheet-notes li").count() == 2
+    assert page.locator("#sheet-notes td").count() == 2
+    assert "secret" in page.locator("#sheet-notes-section > h3").inner_text().lower()
+    page.select_option("#wm-select", label="Orc")
+    assert page.locator("#sheet-wm").inner_text() == "Wandering monster: Orc"
+    page.fill("#wm-text", "and a rat")
+    assert page.locator("#sheet-wm").inner_text() == "Wandering monster: Orc \u2013 and a rat"
+    page.select_option("#wm-select", label="(none)")
+    page.fill("#wm-text", "")
+    assert page.locator("#sheet-wm").is_hidden()
+
+
+def test_the_quest_sheet_is_not_printed_but_the_print_sheet_is(page):
+    page.fill("#qtitle", "Crypt")
+    page.emulate_media(media="print")
+    assert page.locator("#quest-sheet").is_hidden()
+    assert page.locator("#print-title").inner_text() == "Crypt"

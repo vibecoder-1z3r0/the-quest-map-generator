@@ -126,6 +126,7 @@ def main() -> None:
         page.mouse.move(*center(box, 4, 12))
         page.screenshot(path=str(OUT / "02-quest-in-progress.png"))
         page.locator("#side").screenshot(path=str(OUT / "03-quest-text.png"))
+        page.locator("#stage").screenshot(path=str(OUT / "07-live-quest-sheet.png"))
         page.select_option("#theme", label="Dark")
         page.wait_for_timeout(150)
         page.screenshot(path=str(OUT / "04-dark-mode.png"))
