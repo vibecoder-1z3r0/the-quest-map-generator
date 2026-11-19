@@ -4,8 +4,10 @@ A browser-only, static HTML5 quest map editor for HeroQuest-style quests. The **
 quest text live in the URL hash**; nothing is saved, no server, no storage. Any link regenerates the
 map. It can be hosted anywhere static.
 
-> Status: only a throwaway prototype (`index.html`, a free-form floor painter) exists. It is based on
-> a superseded model and will be replaced by the `src/` restructure described below.
+> Status: first working version on a **placeholder board**. The rebuilt editor, `make` build, lint,
+> tests (golden links, hostile-input, visual baselines) and CI are in place. Still to come: the real
+> board layout, the open-wall mechanism (the current "Open wall" piece is provisional), verified
+> furniture footprints, and the release and Pages setup in the GitHub repository settings.
 
 ## Git conventions
 
