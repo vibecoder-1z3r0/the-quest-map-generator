@@ -846,16 +846,6 @@ function buildPalette() {
   const basics = el("div", { class: "tgrid" });
   basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0));
   root.append(basics);
-  root.append(
-    el(
-      "p",
-      { class: "hint" },
-      el("kbd", { text: "R" }), " rotate \u00B7 ", el("kbd", { text: "Del" }), " remove \u00B7 arrows nudge \u00B7 ",
-      el("kbd", { text: "Esc" }), " deselect and back to Select \u00B7 ", el("kbd", { text: "Ctrl+Z" }), "/",
-      el("kbd", { text: "Ctrl+Y" }), " undo/redo.", el("br"),
-      "Anyone with the link can read the secret notes: they are stored in the link.",
-    ),
-  );
   root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
   const solid = el("div", { class: "tgrid" });
