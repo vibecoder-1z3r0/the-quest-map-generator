@@ -46,6 +46,7 @@ jobs:
       group: gh-pages-deploy
       cancel-in-progress: false
     steps:
+      - uses: actions/checkout@v4  # the deploy action needs a git checkout
       - uses: actions/download-artifact@v4
         with:
           name: dist
@@ -71,6 +72,7 @@ jobs:
       group: gh-pages-deploy
       cancel-in-progress: false
     steps:
+      - uses: actions/checkout@v4  # the preview action needs a git checkout
       - uses: actions/download-artifact@v4
         with:
           name: dist

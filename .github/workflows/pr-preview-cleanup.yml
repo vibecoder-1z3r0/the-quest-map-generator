@@ -18,6 +18,15 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
-      - uses: rossjrw/pr-preview-action@v1
+      # Nothing to remove until the first deploy has created the gh-pages branch.
+      - id: branch
+        run: |
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.branch.outputs.exists == 'true'
+        uses: rossjrw/pr-preview-action@v1
         with:
           action: remove
