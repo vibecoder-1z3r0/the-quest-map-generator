@@ -35,59 +35,28 @@ jobs:
           name: dist
           path: dist/index.html
 
-  # Merges to main publish the site at the root of the gh-pages branch, keeping the PR previews.
-  # Publishing is plain git in scripts/pages_publish.sh (tested); only GitHub's own actions are used.
+  # Merges to main publish the site with GitHub's own Pages actions. In the repository settings,
+  # Pages > Build and deployment > Source must be "GitHub Actions".
   deploy:
     needs: check
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     concurrency:
-      group: gh-pages-deploy
+      group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: site
-      - run: bash scripts/pages_publish.sh main
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-  # Each PR from this repository gets a preview at <site>/pr-preview/pr-<number>/ and a comment
-  # with the link. The preview is removed when the PR is closed or merged (pr-preview-cleanup.yml).
-  preview:
-    needs: check
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    concurrency:
-      group: gh-pages-deploy
-      cancel-in-progress: false
-    env:
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: dist
           path: site
-      - run: bash scripts/pages_publish.sh preview "$PR_NUMBER"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Comment the preview link on the PR
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          owner=${GITHUB_REPOSITORY_OWNER,,}
-          repo=${GITHUB_REPOSITORY#*/}
-          url="https://${owner}.github.io/${repo}/pr-preview/pr-${PR_NUMBER}/"
-          body=$(printf 'Preview for this PR: %s\n\nBuilt from %s. GitHub Pages can take a minute or two to publish it. The preview is removed when this PR is closed or merged.' "$url" "${HEAD_SHA:0:7}")
-          gh pr comment "$PR_NUMBER" --edit-last --body "$body" || gh pr comment "$PR_NUMBER" --body "$body"
+      - id: deployment
+        uses: actions/deploy-pages@v4
