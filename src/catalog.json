@@ -181,7 +181,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 41,
@@ -191,7 +192,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 42,
@@ -201,7 +203,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 43,
@@ -211,7 +214,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 44,
@@ -221,7 +225,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 45,
@@ -231,7 +236,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 46,
@@ -241,7 +247,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 47,
@@ -251,7 +258,8 @@
   "group": "Monsters",
   "w": 1,
   "h": 1,
-  "monster": true
+  "monster": true,
+  "bp": null
  },
  {
   "id": 60,

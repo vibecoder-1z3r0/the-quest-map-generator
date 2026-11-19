@@ -1,4 +1,5 @@
 import { BY_ID, CATALOG } from "./catalog.js";
+import { computeStats } from "./stats.js";
 import { decodeHash, encodeState } from "./format.js";
 import { renderIntro, renderNotes } from "./markdown.js";
 import { cleanText } from "./text.js";
@@ -17,4 +18,5 @@ window.QMG = {
   renderNotes,
   renderIntro,
   syncUrl,
+  computeStats,
 };

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- PLACEHOLDER BOARD: 26 x 19 squares, viewBox 0 0 832 608. Replace with the real board layout. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 832 608">
-<title>Placeholder board</title>
-<desc>Placeholder 26 by 19 grid until the real board layout is supplied.</desc>
-<rect width="832" height="608" fill="#efe3c2"/>
-<g stroke="#d3c49b" stroke-width="1" fill="none"><path d="M32 0V608"/><path d="M64 0V608"/><path d="M96 0V608"/><path d="M128 0V608"/><path d="M160 0V608"/><path d="M192 0V608"/><path d="M224 0V608"/><path d="M256 0V608"/><path d="M288 0V608"/><path d="M320 0V608"/><path d="M352 0V608"/><path d="M384 0V608"/><path d="M416 0V608"/><path d="M448 0V608"/><path d="M480 0V608"/><path d="M512 0V608"/><path d="M544 0V608"/><path d="M576 0V608"/><path d="M608 0V608"/><path d="M640 0V608"/><path d="M672 0V608"/><path d="M704 0V608"/><path d="M736 0V608"/><path d="M768 0V608"/><path d="M800 0V608"/><path d="M0 32H832"/><path d="M0 64H832"/><path d="M0 96H832"/><path d="M0 128H832"/><path d="M0 160H832"/><path d="M0 192H832"/><path d="M0 224H832"/><path d="M0 256H832"/><path d="M0 288H832"/><path d="M0 320H832"/><path d="M0 352H832"/><path d="M0 384H832"/><path d="M0 416H832"/><path d="M0 448H832"/><path d="M0 480H832"/><path d="M0 512H832"/><path d="M0 544H832"/><path d="M0 576H832"/></g>
-<rect x="3" y="3" width="826" height="602" fill="none" stroke="#3b2a1a" stroke-width="6"/>
-</svg>

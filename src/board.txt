@@ -1,0 +1,26 @@
+// Board layout: 19 rows x 26 columns, top to bottom, left to right. Single source of truth for the
+// board picture, the walls and the room map that the quest statistics use.
+//   .       corridor square (not part of any room)
+//   A-Z     a room; every square with the same letter is the same room
+//   #       solid, unusable square (none on the standard board)
+// A wall is drawn between any two squares that belong to different rooms or to a room and a
+// corridor. Lines starting with // are comments. Room letters are labels only (reading order).
+..........................
+.AAAABBBBCCC..DDDEEEEFFFF.
+.AAAABBBBCCC..DDDEEEEFFFF.
+.AAAABBBBCCC..DDDEEEEFFFF.
+.GGGGHHHHCCC..DDDEEEEFFFF.
+.GGGGHHHHCCC..DDDIIIIJJJJ.
+.GGGGHHHH........IIIIJJJJ.
+.GGGGHHHH.KKKKKK.IIIIJJJJ.
+.GGGGHHHH.KKKKKK.IIIIJJJJ.
+..........KKKKKK..........
+.LLLLMMNN.KKKKKK.OOOOPPPP.
+.LLLLMMNN.KKKKKK.OOOOPPPP.
+.LLLLMMNN........OOOOPPPP.
+.LLLLQQQQRRR..SSSSOOOPPPP.
+.TTTTQQQQRRR..SSSSUUUVVVV.
+.TTTTQQQQRRR..SSSSUUUVVVV.
+.TTTTQQQQRRR..SSSSUUUVVVV.
+.TTTTQQQQRRR..SSSSUUUVVVV.
+..........................

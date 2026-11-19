@@ -8,8 +8,8 @@ someone, and they see exactly the same quest.
 Because it's one static HTML file, it can be hosted anywhere (GitHub Pages, any web server, or just
 opened from disk).
 
-> **Status: first working version.** The editor runs on a **placeholder board** (a plain 26 x 19 grid)
-> until the real board layout is supplied. See [AGENTS.md](./AGENTS.md) for the decisions and plan
+> **Status: first working version** on the standard 26 x 19 board with its 22 rooms. Monster body
+> point (BP) values are not filled in yet, so the BP statistics show "n/a" for now. See [AGENTS.md](./AGENTS.md) for the decisions and plan
 > and [docs/FORMAT.md](./docs/FORMAT.md) for the link format.
 
 ![A quest in progress, with the What's here panel](docs/screenshots/02-quest-in-progress.png)
@@ -24,8 +24,8 @@ opened from disk).
 
 ### Board and pieces
 
-- The board is the standard fixed board. Quests are made by placing pieces on it, not by drawing
-  walls.
+- The board is the standard fixed board, with its rooms lettered A to V. Quests are made by placing
+  pieces on it, not by drawing walls. Grey out the rooms a quest doesn't use.
 - Pieces: doors and secret doors, stairs, furniture, treasure chests, traps, monsters, heroes and
   numbered markers for pointing at things from your notes.
 - Pieces can be **rotated** (`R`), **moved** (drag, arrow keys, or the buttons in the panel) and
@@ -34,6 +34,14 @@ opened from disk).
 - Doors are placed in a square and rotated onto the edge they sit on.
 - Hover a square to see everything in it in the **What's here** panel (squares are labeled like
   `E8`). Click to pin the panel.
+
+### Quest stats
+
+A **Quest stats** card (and the print page) summarises the quest, recalculated as you edit:
+monsters on the map, total quest BP, the average BP per *active* room (a room with no grey square)
+and per room that has monsters, the highest room, monsters in corridors (counted in the totals only),
+and a breakdown by type. The wandering monster is shown separately and never counted. Rooms are
+lettered A to V on the board. BP comes from each monster's body points in `src/catalog.json`.
 
 ### Highlights
 
