@@ -88,12 +88,12 @@ The source lives in `src/`; `make build` combines it into one `dist/index.html`,
 tested and published. Open `dist/index.html` directly, or use the hosted copy or the file attached
 to a release.
 
-First-time setup: `make setup` (installs the Node and Python dev tooling; you also need
-`python -m playwright install chromium`).
+First-time setup: `make setup` (Python only: installs the dev tooling and the Playwright
+browser; there is no npm or Node).
 
 ```
 make build   # build dist/index.html
-make lint    # ESLint, html-validate, ruff
+make lint    # deno lint (JS), HTML check, ruff (Python)
 make test    # build, then run the Playwright tests against dist/index.html
 make check   # lint + test (what CI runs)
 make screenshots  # regenerate docs/screenshots/
