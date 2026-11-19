@@ -12,16 +12,21 @@
 </svg>
 
 <header id="topbar">
-  <h1>Quest Map Generator</h1>
-  <span id="linkinfo" class="linkinfo">The whole quest is in the link.</span>
-  <div class="actions">
+  <div class="toprow">
+    <h1>Quest Map Generator <span class="ver">@VERSION@</span></h1>
     <button id="undo" type="button" title="Undo (Ctrl+Z)">&#8630; Undo</button>
     <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo &#8631;</button>
-    <label class="themepick">Theme
-      <select id="theme"></select>
-    </label>
-    <button id="copy" type="button" class="primary">Copy link</button>
-    <button id="print-btn" type="button">Print</button>
+    <span id="head-title" class="head-title"></span>
+    <div class="actions">
+      <button id="print-btn" type="button">Print</button>
+      <label class="themepick">Theme
+        <select id="theme"></select>
+      </label>
+    </div>
+  </div>
+  <div class="toprow">
+    <button id="copy" type="button" class="primary">Copy map link</button>
+    <span id="linkinfo" class="linkinfo">The whole quest is in the link.</span>
     <button id="clear" type="button">New map</button>
   </div>
 </header>

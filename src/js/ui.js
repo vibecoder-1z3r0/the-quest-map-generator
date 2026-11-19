@@ -541,6 +541,11 @@ function renderPreviews() {
   $("#print-intro").hidden = !app.state.intro.trim();
   const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
   $("#print-title").textContent = title;
+  const head = [app.state.series ? `${app.state.series}:` : "", app.state.num ? `${app.state.num} -` : "", app.state.title]
+    .filter(Boolean)
+    .join(" ");
+  $("#head-title").textContent = head;
+  $("#head-title").title = head;
   $("#print-series").textContent = app.state.series;
   $("#print-series").hidden = !app.state.series;
   const monster = BY_ID.get(app.state.wmId);
