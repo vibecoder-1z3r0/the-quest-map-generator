@@ -35,23 +35,46 @@ jobs:
           name: dist
           path: dist/index.html
 
-  pages:
+  # Merges to main publish the site at the root of the gh-pages branch, keeping the PR previews.
+  deploy:
     needs: check
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      contents: write
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
+          folder: site
+          branch: gh-pages
+          clean-exclude: pr-preview/
+
+  # Each PR from this repository gets a preview at <site>/pr-preview/pr-<number>/ and a comment
+  # with the link. The preview is removed when the PR is closed or merged (pr-preview-cleanup.yml).
+  preview:
+    needs: check
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
           path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: site
