@@ -5,7 +5,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-WORKFLOWS = sorted((Path(__file__).resolve().parent.parent / ".github/workflows").glob("*.yml"))
+ROOT = Path(__file__).resolve().parent.parent
+WORKFLOWS = sorted((ROOT / ".github/workflows").glob("*.yml"))
 
 
 def test_there_are_workflows():
@@ -42,3 +43,10 @@ def test_the_pages_artifact_is_uploaded_in_a_job_before_the_one_that_deploys_it(
     assert ci.index("actions/upload-pages-artifact@") < deploy_job
     assert upload_job < ci.index("actions/deploy-pages@")
     assert "needs: pages-artifact" in ci[deploy_job:]
+
+
+def test_readme_links_to_the_showcase_quest_on_pages():
+    """The README's live-editor link must carry the same quest the screenshots are made from."""
+    showcase = (ROOT / "docs/showcase/quest-1.txt").read_text().strip()
+    readme = (ROOT / "README.md").read_text()
+    assert f"https://vibecoder-1z3r0.github.io/the-quest-map-generator/#{showcase}" in readme
