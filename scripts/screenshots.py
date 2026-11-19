@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Regenerate the README screenshots in docs/screenshots/ from the real built editor.
 
+The showcase is the owner's quest #1, stored as a link in docs/showcase/quest-1.txt. Pass
+--sample to use the built-in invented sample quest instead (handy for experiments).
+
 Run via `make screenshots`. Screenshots are produced by driving dist/index.html, so they always
 match what the tool actually does. Never commit screenshots of a superseded UI.
 """
@@ -85,6 +88,14 @@ def showcase() -> dict:
     return st
 
 
+def first_cell(link: str, piece_id: int) -> tuple[int, int]:
+    """Where the first piece with this id sits, so the screenshot can pin and show that square."""
+    for item_id, x, y, _rotation in ref.decode(link)["items"]:
+        if item_id == piece_id:
+            return x, y
+    return 12, 9
+
+
 def center(box, x, y):
     scale = box["width"] / (26 * CELL + 2 * MARGIN)
     return (
@@ -104,7 +115,13 @@ def main() -> None:
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     url = f"http://127.0.0.1:{server.server_address[1]}/index.html"
-    link = ref.encode(showcase())
+    use_sample = "--sample" in sys.argv
+    link = (
+        ref.encode(showcase())
+        if use_sample
+        else (ROOT / "docs/showcase/quest-1.txt").read_text().strip()
+    )
+    pin = (4, 12) if use_sample else first_cell(link, CATALOG["goblin"])
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
 
@@ -125,8 +142,8 @@ def main() -> None:
         ctx, page = open_page("#" + link)
         page.click('#tools button[data-kind="select"]')
         box = page.locator("#board").bounding_box()
-        page.mouse.click(*center(box, 4, 12))
-        page.mouse.move(*center(box, 4, 12))
+        page.mouse.click(*center(box, *pin))
+        page.mouse.move(*center(box, *pin))
         page.screenshot(path=str(OUT / "02-quest-in-progress.png"))
         page.locator("#side").screenshot(path=str(OUT / "03-quest-text.png"))
         page.locator("#stage").screenshot(path=str(OUT / "07-live-quest-sheet.png"))
