@@ -65,13 +65,22 @@ The body is these sections, in this order, with no padding between them.
 
 One byte of view settings.
 
-| Bit | Meaning |
+| Bits | Meaning |
 |---|---|
-| 0 | editor theme: `0` light, `1` dark |
-| 1-7 | reserved (`0`) |
+| 0-3 | editor **theme** id, 0..15 |
+| 4-7 | reserved (`0`) |
 
-The theme only affects the editor on screen. **Printing is always light**, whatever this bit says.
-Opening a link applies its theme; toggling the theme updates the link but is not an undo step.
+| Theme id | Theme |
+|---|---|
+| 0 | light (default) |
+| 1 | dark |
+| 2-15 | reserved for future themes |
+
+Theme ids are permanent once assigned. A decoder that meets an unknown theme id shows the light
+theme but keeps the id in the map, so it survives re-encoding.
+
+The theme only affects the editor on screen. **Printing is always light**, whatever the theme id
+says. Opening a link applies its theme; changing the theme updates the link but is not an undo step.
 
 ### 4.1 Highlights
 

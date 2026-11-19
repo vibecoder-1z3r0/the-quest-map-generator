@@ -109,9 +109,9 @@ map. It can be hosted anywhere static.
 
 ## Editor UI
 
-- **Light theme by default, with a dark mode toggle for editing.** Printing is **always light**,
-  whichever mode is active (enforce in `@media print`). The theme is stored in the URL (the flags
-  byte in `docs/FORMAT.md`); toggling it updates the hash but is not an undo step.
+- **Light theme by default, with a dark mode and room for more themes (ids 0-15) for editing.** Printing is **always light**,
+  whichever mode is active (enforce in `@media print`). The theme is stored in the URL (theme id in the flags
+  byte, `docs/FORMAT.md`); toggling it updates the hash but is not an undo step.
 - "What's here" panel: hover shows, click/tap pins. Lists everything in the square top to bottom
   (pieces with footprint, anchor, rotation; the highlight) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
