@@ -47,9 +47,11 @@ map. It can be hosted anywhere static.
 - CI (GitHub Actions): `make check` on every PR/push. Merge to `main` publishes `dist/index.html` to
   the root of the **`gh-pages` branch** (GitHub Pages source: "Deploy from a branch", `gh-pages`,
   root), only if green. Every PR from this repo gets a **preview at `/pr-preview/pr-<number>/`** with
-  a comment link (rossjrw/pr-preview-action); `pr-preview-cleanup.yml` deletes it when the PR is
-  closed or merged, and the main deploy keeps `pr-preview/`. All gh-pages writers share one
-  concurrency group. A `v*` tag attaches `dist/index.html` to a GitHub Release. The build stamps a
+  a comment link; `pr-preview-cleanup.yml` deletes it when the PR is closed or merged, and the main
+  deploy keeps `pr-preview/`. **Only GitHub's own actions (`actions/*`) are allowed, plus plain
+  `git` and the preinstalled `gh` CLI; never third-party actions** (a test enforces it). The
+  publishing logic is `scripts/pages_publish.sh`, which has its own tests against a local bare repo.
+  All gh-pages writers share one concurrency group. A `v*` tag attaches `dist/index.html` to a GitHub Release. The build stamps a
   version/commit string in the footer.
 - Browser support: recent evergreen only. Feature-detect `CompressionStream`/`DecompressionStream`
   (`deflate-raw`) and show a banner with minimum versions (about Chrome 103, Safari 16.4, Firefox 113 —
