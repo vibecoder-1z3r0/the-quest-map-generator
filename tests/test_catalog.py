@@ -74,3 +74,13 @@ def test_monsters_are_one_by_one_and_listed():
         "gargoyle",
         "dread-warrior",
     }
+
+
+def test_tiles_are_one_by_one_icons_and_not_in_the_item_groups():
+    tiles = [p for p in CATALOG if p.get("tile")]
+    assert [p["slug"] for p in tiles] == ["room-tile"]
+    assert all(p["w"] == p["h"] == 1 and p["group"] == "Room tiles" for p in tiles)
+
+
+def test_the_provisional_open_wall_piece_is_gone():
+    assert "open-wall" not in {p["slug"] for p in CATALOG}

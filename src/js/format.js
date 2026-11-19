@@ -6,6 +6,7 @@ import {
   LIMITS,
   MAX_BODY,
   MAX_ITEMS,
+  MAX_TILES,
   MAX_PAYLOAD_CHARS,
   ROWS,
   SQUARES,
@@ -82,6 +83,7 @@ export function blankState() {
     theme: 0,
     hl: new Uint8Array(SQUARES),
     items: [],
+    tiles: [],
     legend: {},
     num: "",
     title: "",
@@ -100,6 +102,8 @@ export async function encodeState(st) {
   for (const b of hl) out.push(b);
   pushVarint(out, st.items.length);
   for (const it of st.items) out.push(it.id, it.x | (it.r << 5), it.y);
+  pushVarint(out, st.tiles.length);
+  for (const t of st.tiles) out.push(t.id, t.x, t.y, t.w, t.h);
   const legend = Object.entries(st.legend)
     .filter(([color, label]) => label && Number(color) >= 2)
     .sort((a, b) => a[0] - b[0]);
@@ -185,7 +189,7 @@ export async function decodeHash(payload) {
     const b1 = r.byte();
     const y = r.byte() & 31;
     const item = { id, x: b1 & 31, y, r: (b1 >> 5) & 3 };
-    if (!BY_ID.has(id)) {
+    if (!BY_ID.has(id) || BY_ID.get(id).tile) {
       skipped += 1;
       continue;
     }
@@ -197,6 +201,22 @@ export async function decodeHash(payload) {
     st.items.push(item);
   }
   if (skipped) warnings.push(`${skipped} piece(s) in this link could not be shown and were skipped.`);
+
+  const tileCount = r.varint();
+  if (tileCount > MAX_TILES) throw new Error("too many tiles");
+  let skippedTiles = 0;
+  for (let n = 0; n < tileCount; n++) {
+    const tile = { id: r.byte(), x: r.byte(), y: r.byte(), w: r.byte(), h: r.byte() };
+    const ok =
+      BY_ID.get(tile.id)?.tile &&
+      tile.w >= 1 &&
+      tile.h >= 1 &&
+      tile.x + tile.w <= COLS &&
+      tile.y + tile.h <= ROWS;
+    if (ok) st.tiles.push(tile);
+    else skippedTiles += 1;
+  }
+  if (skippedTiles) warnings.push(`${skippedTiles} room tile(s) in this link could not be shown and were skipped.`);
 
   const legendCount = r.varint();
   if (legendCount > 16) throw new Error("link is corrupt");

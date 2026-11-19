@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Room tile (id 100): 1x1 square, viewBox 0 0 32 32. Resizable: the editor repeats this icon across
+     every square of a tile rectangle, so keep it opaque and seamless at the edges.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Room tile</title>
+<desc>Room tile: a flat floor square, repeated to cover rooms. 1x1 squares, chibi style.</desc>
+<rect width="32" height="32" fill="#f1e4c4"/>
+<path d="M0 0H32V32H0Z" fill="none" stroke="#c9b88c" stroke-width="1.5"/>
+<path d="M6 8L9 5M23 24L27 21M18 11L20 9" stroke="#e3d3a8" stroke-width="2" stroke-linecap="round" fill="none"/>
+</svg>

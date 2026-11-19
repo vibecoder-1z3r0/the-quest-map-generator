@@ -235,6 +235,8 @@ def check_catalog(catalog: list[dict]) -> None:
     for p in catalog:
         if not 1 <= p["id"] <= 255:
             raise BuildError(f"catalog.json: id {p['id']} out of range 1..255")
+        if p.get("tile") and (p["w"], p["h"]) != (1, 1):
+            raise BuildError(f"catalog.json: tile '{p['slug']}' must be a 1x1 icon")
 
 
 def bundle_js() -> str:

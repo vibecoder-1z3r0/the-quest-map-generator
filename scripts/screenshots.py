@@ -48,7 +48,7 @@ def showcase() -> dict:
     put("goblin", 1, 10)
     put("goblin", 4, 12)
     put("treasure-chest", 1, 13)
-    put("door", 5, 11, 3)
+    st["tiles"] = [(CATALOG["room-tile"], 4, 10, 3, 3)]  # a room tile merging rooms L and M
     put("mummy", 6, 11)
     put("door", 8, 14, 0)
     put("pit-trap", 6, 15)

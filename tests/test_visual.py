@@ -17,6 +17,7 @@ PIXEL_THRESHOLD = 48
 def demo_state(catalog: dict[str, int]) -> dict:
     st = ref.blank()
     put = lambda slug, x, y, r=0: st["items"].append((catalog[slug], x, y, r))  # noqa: E731
+    st["tiles"] = [(catalog["room-tile"], 12, 12, 3, 2)]
     put("table", 4, 4)
     put("stairs", 10, 3)
     put("tomb", 14, 6, 1)

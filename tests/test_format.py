@@ -20,6 +20,7 @@ async (payload) => {
   return {
     theme: state.theme, hl: Array.from(state.hl),
     items: state.items.map((i) => [i.id, i.x, i.y, i.r]),
+    tiles: state.tiles.map((t) => [t.id, t.x, t.y, t.w, t.h]),
     legend: state.legend, num: state.num, title: state.title, intro: state.intro, notes: state.notes,
     wm_id: state.wmId, wm_text: state.wmText, warnings,
   };
@@ -31,6 +32,7 @@ def as_ref_state(js: dict) -> dict:
     out = {k: v for k, v in js.items() if k != "warnings"}
     out["legend"] = {int(k): v for k, v in out["legend"].items()}
     out["items"] = [tuple(i) for i in out["items"]]
+    out["tiles"] = [tuple(t) for t in out["tiles"]]
     return out
 
 
@@ -38,6 +40,7 @@ def normalized(st: dict) -> dict:
     st = dict(st)
     st["legend"] = {int(k): v for k, v in st["legend"].items()}
     st["items"] = [tuple(i) for i in st["items"]]
+    st["tiles"] = [tuple(t) for t in st["tiles"]]
     return st
 
 
@@ -207,3 +210,44 @@ def test_a_stored_grey_legend_label_is_ignored(page):
         ref.encode(st),
     )
     assert ref.decode(payload)["legend"] == {2: "any trap"}
+
+
+TILE = 100  # the room tile's permanent id
+
+
+def test_tiles_decode_with_their_own_sizes(page):
+    st = ref.blank()
+    st["tiles"] = [(TILE, 4, 10, 2, 3), (TILE, 0, 0, 26, 19)]
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert js["tiles"] == [[TILE, 4, 10, 2, 3], [TILE, 0, 0, 26, 19]]
+    assert js["warnings"] == []
+
+
+def test_tiles_that_do_not_fit_or_are_not_tiles_are_skipped_with_a_warning(page):
+    st = ref.blank()
+    st["tiles"] = [
+        (TILE, 4, 10, 2, 3),
+        (TILE, 25, 5, 2, 1),  # runs off the right edge
+        (TILE, 5, 18, 1, 2),  # runs off the bottom edge
+        (TILE, 5, 5, 0, 1),  # zero width
+        (40, 5, 5, 1, 1),  # a goblin is not a tile
+        (200, 5, 5, 1, 1),  # unknown id
+    ]
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert js["tiles"] == [[TILE, 4, 10, 2, 3]]
+    assert any("room tile" in w and "skipped" in w for w in js["warnings"])
+
+
+def test_a_tile_id_used_as_a_piece_is_skipped(page):
+    st = ref.blank()
+    st["items"] = [(TILE, 5, 5, 0), (40, 6, 5, 0)]
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert js["items"] == [[40, 6, 5, 0]]
+
+
+def test_too_many_tiles_is_refused(page):
+    body = bytearray(ref.encode_body(ref.blank()))
+    head = 1 + (ref.SQUARES + 1) // 2 + 1  # flags, highlights, empty item count
+    body[head : head + 1] = ref.varint(300)
+    with pytest.raises(Exception, match="too many"):
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(bytes(body)))

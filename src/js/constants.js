@@ -7,6 +7,7 @@ export const FORMAT_VERSION = 1;
 export const MAX_BODY = 65536;
 export const MAX_PAYLOAD_CHARS = 200000;
 export const MAX_ITEMS = 1024;
+export const MAX_TILES = 256;
 export const SOFT_LINK_LIMIT = 2000;
 
 export const LIMITS = { num: 10, title: 160, intro: 2500, notes: 10000, wmText: 160, legend: 40 };

@@ -126,6 +126,10 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 .stack li.sel { border-color: var(--focus); box-shadow: 0 0 0 1px var(--focus); }
 .stack .name { font-weight: 600; cursor: pointer; }
 .stack .meta { color: var(--muted); font-size: 12px; }
+.subhead { margin: 10px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+.sizes { display: flex; gap: 10px; margin-top: 4px; }
+.sizes .size { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.sizes input { width: 56px; padding: 2px 4px; }
 .stack .btns { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
 .stack .btns button { padding: 1px 6px; font-size: 12px; }
 #legend-edit .lg { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }

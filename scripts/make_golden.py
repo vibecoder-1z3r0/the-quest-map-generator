@@ -54,13 +54,22 @@ CASES = [
             (catalog["door"], 0, 0, 0),
             (catalog["door"], 25, 18, 1),
             (catalog["secret-door"], 12, 9, 2),
-            (catalog["open-wall"], 0, 5, 3),
+            (catalog["door"], 0, 5, 3),
         ],
     ),
     case(
         "highlights",
         hl=hl_cells({0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 493: 1, 25: 6}),
         legend={2: "any trap", 3: "secret room"},
+    ),
+    case(
+        "room-tiles",
+        items=[(catalog["goblin"], 5, 5, 0)],
+        tiles=[
+            (catalog["room-tile"], 4, 10, 2, 3),
+            (catalog["room-tile"], 0, 0, 26, 19),
+            (catalog["room-tile"], 25, 18, 1, 1),
+        ],
     ),
     case(
         "full-quest",
