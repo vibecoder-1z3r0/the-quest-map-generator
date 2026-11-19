@@ -15,8 +15,8 @@ export const LIMITS = { series: 160, num: 10, title: 160, intro: 2500, notes: 10
 // Highlight values are permanent once assigned (docs/FORMAT.md section 4.1).
 export const HIGHLIGHTS = [
   { value: 0, name: "None", color: null },
-  // Grey is always "Solid rock" and has no editable legend. Orange means a trap of any kind.
-  { value: 1, name: "Grey (solid rock)", color: "#6f6f78", fixedLabel: "Solid rock" },
+  // Grey is always "Solid stone" and has no editable legend. Orange means a trap of any kind.
+  { value: 1, name: "Grey (solid stone)", color: "#6f6f78", fixedLabel: "Solid stone" },
   { value: 2, name: "Orange (trap)", color: "#f08a1c", defaultLabel: "Trap" },
   { value: 3, name: "Cyan", color: "#18b8d0" },
   { value: 4, name: "Yellow", color: "#f2d21b" },

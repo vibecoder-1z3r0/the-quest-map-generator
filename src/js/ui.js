@@ -407,7 +407,7 @@ function renderInspector() {
   }
 }
 
-// A legend entry shows for each color used on the map: grey is always "Solid rock", orange
+// A legend entry shows for each color used on the map: grey is always "Solid stone", orange
 // defaults to "Trap", the others show the label typed in the legend editor (if any).
 function legendLabel(h) {
   if (h.fixedLabel) return h.fixedLabel;
@@ -844,7 +844,7 @@ function buildPalette() {
   const solid = el("div", { class: "tgrid" });
   for (const h of HIGHLIGHTS) {
     const swatch = el("span", { class: "swatch", style: h.color ? `background:${h.color}` : "background:transparent" });
-    const button = toolButton(h.value ? h.name.replace(" (solid rock)", "") : "Clear", "highlight", h.value, swatch);
+    const button = toolButton(h.value ? h.name.replace(" (solid stone)", "") : "Clear", "highlight", h.value, swatch);
     // Grey (value 1) marks solid stone, so it has its own section; the other colors stay together.
     (h.value === 1 ? solid : hls).append(button);
   }

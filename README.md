@@ -59,8 +59,8 @@ by quest, so it counts as a monster but its BP is left out, and the card says so
 
 ### Highlights
 
-Paint squares with a highlight color: grey for solid rock, orange for traps (of any kind), cyan,
-yellow or bright green. Highlights tint whatever is underneath. Grey is always labeled "Solid rock"
+Paint squares with a highlight color: grey for solid stone, orange for traps (of any kind), cyan,
+yellow or bright green. Highlights tint whatever is underneath. Grey is always labeled "Solid stone"
 and orange "Trap". Name the other colors in the legend editor ("cyan = secret room"); each used
 color is listed beside the map.
 
