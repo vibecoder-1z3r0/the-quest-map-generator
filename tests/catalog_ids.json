@@ -1,6 +1,7 @@
 {
  "1": "door",
  "10": "stairs",
+ "100": "room-tile",
  "11": "table",
  "12": "tomb",
  "13": "bookcase",
@@ -13,7 +14,6 @@
  "2": "secret-door",
  "20": "torture-rack",
  "21": "rubble",
- "3": "open-wall",
  "30": "treasure-chest",
  "31": "pit-trap",
  "32": "spear-trap",

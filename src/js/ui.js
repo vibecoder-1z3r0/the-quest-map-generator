@@ -21,21 +21,30 @@ import {
   itemMarkup,
   itemsMarkup,
   outlineMarkup,
+  rectOutlineMarkup,
+  tileMarkup,
+  tilesMarkup,
 } from "./render.js";
 import {
   EDGE_NAMES,
+  addTile,
   highlightAt,
   itemsAt,
   moveItem,
+  moveTile,
   placeItem,
   removeItem,
+  removeTile,
   reorderItem,
+  reorderTile,
+  resizeTile,
   restore,
   rotateItem,
   sameSnapshot,
   setHighlight,
   snapshot,
   squareLabel,
+  tilesAt,
 } from "./state.js";
 import { cleanText } from "./text.js";
 
@@ -57,6 +66,8 @@ export const app = {
   state: blankState(),
   tool: { kind: "select", value: 0 },
   selected: -1,
+  selectedTile: -1,
+  tileDraw: null,
   pinned: null,
   hover: null,
   ghostRot: 0,
@@ -155,6 +166,7 @@ export async function loadFromHash() {
     }
   }
   app.selected = -1;
+  app.selectedTile = -1;
   app.pinned = null;
   app.past = [];
   app.future = [];
@@ -200,6 +212,7 @@ function redo() {
 
 function afterHistoryJump() {
   app.selected = -1;
+  app.selectedTile = -1;
   syncFields();
   scheduleUrl(false);
   renderAll();
@@ -246,6 +259,7 @@ function ghostItem() {
 
 // ---------------------------------------------------------------- rendering
 function renderMap() {
+  $("#layer-tiles").innerHTML = tilesMarkup(app.state.tiles);
   $("#layer-hl").innerHTML = highlightMarkup(app.state.hl);
   $("#layer-items").innerHTML = itemsMarkup(app.state.items);
 }
@@ -265,9 +279,15 @@ function renderOverlay() {
       out += `<g class="ghost">${itemMarkup(clamped)}</g>`;
     }
   }
+  if (app.tileDraw) {
+    const { x, y, w, h, id } = app.tileDraw;
+    out += `<g class="ghost">${tileMarkup({ id, x, y, w, h })}</g>${rectOutlineMarkup(x, y, w, h, "selected")}`;
+  }
   if (app.selected >= 0 && app.state.items[app.selected]) {
     out += outlineMarkup(app.state.items[app.selected], "selected");
   }
+  const tile = app.state.tiles[app.selectedTile];
+  if (tile) out += rectOutlineMarkup(tile.x, tile.y, tile.w, tile.h, "selected");
   $("#layer-overlay").innerHTML = out;
   return view;
 }
@@ -288,24 +308,7 @@ function stackButton(label, title, handler) {
   return button;
 }
 
-function renderInspector() {
-  const box = $("#inspector");
-  box.replaceChildren();
-  const cell = app.pinned || app.hover;
-  $("#inspector-hint").textContent = app.pinned ? "(pinned, Esc to unpin)" : "";
-  if (!cell) {
-    box.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
-    return;
-  }
-  const hl = highlightAt(app.state, cell.x, cell.y);
-  const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
-  box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
-  box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
-  const hits = itemsAt(app.state, cell.x, cell.y);
-  if (!hits.length) {
-    box.append(el("p", { class: "none", text: "No pieces here." }));
-    return;
-  }
+function pieceStack(hits) {
   const list = el("ol", { class: "stack", "aria-label": "Pieces here, top first" });
   hits.forEach((index, position) => {
     const item = app.state.items[index];
@@ -325,16 +328,83 @@ function renderInspector() {
       forward,
       back,
       stackButton("Rotate", "Rotate a quarter turn clockwise", () => rotateAt(index)),
-      stackButton("←", "Move left", () => nudgeAt(index, -1, 0)),
-      stackButton("↑", "Move up", () => nudgeAt(index, 0, -1)),
-      stackButton("↓", "Move down", () => nudgeAt(index, 0, 1)),
-      stackButton("→", "Move right", () => nudgeAt(index, 1, 0)),
+      stackButton("\u2190", "Move left", () => nudgeAt(index, -1, 0)),
+      stackButton("\u2191", "Move up", () => nudgeAt(index, 0, -1)),
+      stackButton("\u2193", "Move down", () => nudgeAt(index, 0, 1)),
+      stackButton("\u2192", "Move right", () => nudgeAt(index, 1, 0)),
       stackButton("Remove", "Remove this piece", () => removeAt(index)),
     );
     li.append(buttons);
     list.append(li);
   });
-  box.append(list);
+  return list;
+}
+
+function sizeInput(label, value, max, onChange) {
+  const input = el("input", { type: "number", min: "1", max: String(max), value: String(value), "aria-label": label });
+  input.addEventListener("change", () => onChange(Math.max(1, Math.min(max, Math.round(Number(input.value) || 1)))));
+  return el("label", { class: "size" }, label, input);
+}
+
+function tileStack(hits) {
+  const list = el("ol", { class: "stack", "aria-label": "Room tiles here, top first" });
+  hits.forEach((index, position) => {
+    const tile = app.state.tiles[index];
+    const li = el("li", { class: index === app.selectedTile ? "sel" : "" });
+    const name = el("div", { class: "name", text: BY_ID.get(tile.id).name });
+    name.addEventListener("click", () => selectTile(index));
+    li.append(
+      name,
+      el("div", { class: "meta", text: `${tile.w}\u00D7${tile.h} \u00B7 anchor ${squareLabel(tile.x, tile.y)}` }),
+    );
+    const sizes = el(
+      "div",
+      { class: "sizes" },
+      sizeInput("Width", tile.w, COLS - tile.x, (w) => resizeTileTo(index, w, tile.h)),
+      sizeInput("Height", tile.h, ROWS - tile.y, (h) => resizeTileTo(index, tile.w, h)),
+    );
+    const buttons = el("div", { class: "btns" });
+    const above = hits[position - 1];
+    const below = hits[position + 1];
+    const forward = stackButton("Forward", "Bring forward", () => reorderTileTo(index, above));
+    forward.disabled = above === undefined;
+    const back = stackButton("Back", "Send back", () => reorderTileTo(index, below));
+    back.disabled = below === undefined;
+    buttons.append(
+      forward,
+      back,
+      stackButton("\u2190", "Move left", () => nudgeTile(index, -1, 0)),
+      stackButton("\u2191", "Move up", () => nudgeTile(index, 0, -1)),
+      stackButton("\u2193", "Move down", () => nudgeTile(index, 0, 1)),
+      stackButton("\u2192", "Move right", () => nudgeTile(index, 1, 0)),
+      stackButton("Remove", "Remove this tile", () => removeTileAt(index)),
+    );
+    li.append(sizes, buttons);
+    list.append(li);
+  });
+  return list;
+}
+
+function renderInspector() {
+  const box = $("#inspector");
+  box.replaceChildren();
+  const cell = app.pinned || app.hover;
+  $("#inspector-hint").textContent = app.pinned ? "(pinned, Esc to unpin)" : "";
+  if (!cell) {
+    box.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
+    return;
+  }
+  const hl = highlightAt(app.state, cell.x, cell.y);
+  const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
+  box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
+  box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
+  const hits = itemsAt(app.state, cell.x, cell.y);
+  if (hits.length) box.append(pieceStack(hits));
+  else box.append(el("p", { class: "none", text: "No pieces here." }));
+  const tileHits = tilesAt(app.state, cell.x, cell.y);
+  if (tileHits.length) {
+    box.append(el("h3", { class: "subhead", text: "Room tiles (under the pieces)" }), tileStack(tileHits));
+  }
 }
 
 // A legend entry shows for each color used on the map: grey is always "Solid rock", orange
@@ -445,8 +515,38 @@ function renderAll() {
 // ---------------------------------------------------------------- actions on pieces
 function selectItem(index) {
   app.selected = index;
+  app.selectedTile = -1;
   renderOverlay();
   renderInspector();
+}
+
+function selectTile(index) {
+  app.selectedTile = index;
+  app.selected = -1;
+  renderOverlay();
+  renderInspector();
+}
+
+function nudgeTile(index, dx, dy) {
+  const tile = app.state.tiles[index];
+  if (moveTile(app.state, index, tile.x + dx, tile.y + dy)) commit();
+}
+
+function removeTileAt(index) {
+  removeTile(app.state, index);
+  app.selectedTile = -1;
+  commit();
+}
+
+function reorderTileTo(index, targetIndex) {
+  if (targetIndex === undefined) return;
+  const newIndex = reorderTile(app.state, index, targetIndex - index);
+  app.selectedTile = app.selectedTile === index ? newIndex : app.selectedTile;
+  commit();
+}
+
+function resizeTileTo(index, w, h) {
+  if (resizeTile(app.state, index, w, h)) commit();
 }
 
 function rotateAt(index) {
@@ -484,9 +584,16 @@ function onPointerDown(event) {
     const ghost = ghostItem();
     app.selected = placeItem(app.state, ghost.id, ghost.x, ghost.y, ghost.r);
     commit();
+  } else if (kind === "tile") {
+    event.preventDefault();
+    $("#board").setPointerCapture(event.pointerId);
+    app.tileDraw = { id: value, sx: cell.x, sy: cell.y, x: cell.x, y: cell.y, w: 1, h: 1 };
+    renderOverlay();
   } else if (kind === "erase") {
     const hits = itemsAt(app.state, cell.x, cell.y);
+    const tileHits = tilesAt(app.state, cell.x, cell.y);
     if (hits.length) removeAt(hits[0]);
+    else if (tileHits.length) removeTileAt(tileHits[0]);
   } else if (kind === "highlight") {
     event.preventDefault();
     $("#board").setPointerCapture(event.pointerId);
@@ -496,14 +603,24 @@ function onPointerDown(event) {
     app.pinned = { x: cell.x, y: cell.y };
     const hits = itemsAt(app.state, cell.x, cell.y);
     const already = hits.includes(app.selected);
+    const tileHits = tilesAt(app.state, cell.x, cell.y);
     if (hits.length) {
       if (!already) app.selected = hits[0];
+      app.selectedTile = -1;
       const item = app.state.items[app.selected];
       event.preventDefault();
       $("#board").setPointerCapture(event.pointerId);
-      app.drag = { index: app.selected, dx: cell.x - item.x, dy: cell.y - item.y, moved: false, already, hits };
+      app.drag = { kind: "item", index: app.selected, dx: cell.x - item.x, dy: cell.y - item.y, moved: false, already, hits };
+    } else if (tileHits.length) {
+      app.selected = -1;
+      app.selectedTile = tileHits[0];
+      const tile = app.state.tiles[app.selectedTile];
+      event.preventDefault();
+      $("#board").setPointerCapture(event.pointerId);
+      app.drag = { kind: "tile", index: app.selectedTile, dx: cell.x - tile.x, dy: cell.y - tile.y, moved: false, already: false, hits: [] };
     } else {
       app.selected = -1;
+      app.selectedTile = -1;
     }
     renderOverlay();
     renderInspector();
@@ -522,9 +639,20 @@ function onPointerMove(event) {
   app.inside = cell !== null;
   if (cell) app.hover = { ...cell, edge: nearestEdge(cell) };
   if (app.paint && cell) paintCell(cell);
+  if (app.tileDraw && cell) {
+    const d = app.tileDraw;
+    d.x = Math.min(d.sx, cell.x);
+    d.y = Math.min(d.sy, cell.y);
+    d.w = Math.abs(cell.x - d.sx) + 1;
+    d.h = Math.abs(cell.y - d.sy) + 1;
+  }
   if (app.drag && cell) {
-    const { index, dx, dy } = app.drag;
-    if (moveItem(app.state, index, cell.x - dx, cell.y - dy)) {
+    const { kind, index, dx, dy } = app.drag;
+    const moved =
+      kind === "tile"
+        ? moveTile(app.state, index, cell.x - dx, cell.y - dy)
+        : moveItem(app.state, index, cell.x - dx, cell.y - dy);
+    if (moved) {
       app.drag.moved = true;
       renderMap();
     }
@@ -534,6 +662,13 @@ function onPointerMove(event) {
 }
 
 function onPointerUp() {
+  if (app.tileDraw) {
+    const { id, x, y, w, h } = app.tileDraw;
+    app.tileDraw = null;
+    app.selectedTile = addTile(app.state, id, x, y, w, h);
+    app.selected = -1;
+    commit();
+  }
   if (app.paint) {
     const changed = app.paint.changed;
     app.paint = null;
@@ -554,7 +689,7 @@ function onPointerUp() {
 
 // The last hovered square stays in the inspector so its buttons can be reached with the mouse.
 function onPointerLeave() {
-  if (app.paint || app.drag) return;
+  if (app.paint || app.drag || app.tileDraw) return;
   app.inside = false;
   renderOverlay();
 }
@@ -584,18 +719,23 @@ function onKeyDown(event) {
     } else if (app.selected >= 0) {
       rotateAt(app.selected);
     }
+  } else if ((key === "Delete" || key === "Backspace") && app.selectedTile >= 0) {
+    event.preventDefault();
+    removeTileAt(app.selectedTile);
   } else if ((key === "Delete" || key === "Backspace") && app.selected >= 0) {
     event.preventDefault();
     removeAt(app.selected);
   } else if (key === "Escape") {
     app.selected = -1;
+    app.selectedTile = -1;
     app.pinned = null;
     renderOverlay();
     renderInspector();
-  } else if (app.selected >= 0 && key.startsWith("Arrow")) {
+  } else if ((app.selected >= 0 || app.selectedTile >= 0) && key.startsWith("Arrow")) {
     event.preventDefault();
     const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[key];
-    nudgeAt(app.selected, d[0], d[1]);
+    if (app.selectedTile >= 0) nudgeTile(app.selectedTile, d[0], d[1]);
+    else nudgeAt(app.selected, d[0], d[1]);
   }
 }
 
@@ -620,7 +760,10 @@ function toolButton(label, kind, value, lead) {
   button.append(document.createTextNode(label));
   button.addEventListener("click", () => {
     app.tool = { kind, value };
-    if (kind !== "select") app.selected = -1;
+    if (kind !== "select") {
+      app.selected = -1;
+      app.selectedTile = -1;
+    }
     renderAll();
   });
   return button;
@@ -644,7 +787,7 @@ function buildPalette() {
     root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
     for (const piece of CATALOG.filter((p) => p.group === group)) {
-      const button = toolButton(piece.name, "piece", piece.id, iconThumb(piece));
+      const button = toolButton(piece.name, piece.tile ? "tile" : "piece", piece.id, iconThumb(piece));
       button.title = `${piece.name} (${piece.w}×${piece.h})`;
       grid.append(button);
     }
@@ -802,6 +945,7 @@ export function initUi() {
     app.state = blankState();
     app.state.theme = theme;
     app.selected = -1;
+    app.selectedTile = -1;
     app.pinned = null;
     syncFields();
     commit();

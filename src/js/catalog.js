@@ -5,6 +5,7 @@ export const CATALOG = /*@CATALOG@*/ [];
 export const BY_ID = new Map(CATALOG.map((piece) => [piece.id, piece]));
 export const GROUPS = [...new Set(CATALOG.map((piece) => piece.group))];
 export const MONSTERS = CATALOG.filter((piece) => piece.monster);
+export const TILE_STYLES = CATALOG.filter((piece) => piece.tile);
 
 // Footprint (width, height) in squares after rotation (0-3 clockwise quarter turns).
 export function footprint(item) {

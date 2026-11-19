@@ -20,14 +20,14 @@
   "edge": true
  },
  {
-  "id": 3,
-  "slug": "open-wall",
-  "name": "Open wall (provisional)",
-  "folder": "doors",
-  "group": "Doors & walls",
+  "id": 100,
+  "slug": "room-tile",
+  "name": "Room tile",
+  "folder": "tiles",
+  "group": "Room tiles",
   "w": 1,
   "h": 1,
-  "edge": true
+  "tile": true
  },
  {
   "id": 10,

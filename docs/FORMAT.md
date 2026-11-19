@@ -7,7 +7,7 @@ golden-link tests enforce this). This document is the contract; the code follows
 A map is stored entirely in the URL **hash** (`#...`). The hash is never sent to a server.
 
 ```
-https://example.com/quest-map/#AWNQZBiRgImRhZ0phZ2RiaWkKLGA0Zg1LLE0pwQkAwA
+https://example.com/quest-map/#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkDwA
                                └──────────────── payload ────────────────┘
 ```
 
@@ -56,13 +56,14 @@ The body is these sections, in this order, with no padding between them.
 | 0 | Flags | 1 byte |
 | 1 | Highlights | fixed 247 bytes |
 | 2 | Items | `varint count` + 3 bytes per item |
-| 3 | Legend | `varint count` + entries |
-| 4 | Quest number | string |
-| 5 | Quest title | string |
-| 6 | Intro | string |
-| 7 | Zargon's notes | string |
-| 8 | Wandering monster id | 1 byte |
-| 9 | Wandering monster text | string |
+| 3 | Tiles | `varint count` + 5 bytes per tile |
+| 4 | Legend | `varint count` + entries |
+| 5 | Quest number | string |
+| 6 | Quest title | string |
+| 7 | Intro | string |
+| 8 | Zargon's notes | string |
+| 9 | Wandering monster id | 1 byte |
+| 10 | Wandering monster text | string |
 
 ### 4.0 Flags
 
@@ -131,12 +132,34 @@ byte 2   bits 0-4       y       0..18
   rotation 0; rotation 1, 2 and 3 move it to the east, south and west edges. A door on the outer
   edge of the board is valid.
 - **Order is the z-order.** Items are drawn in list order, so later items are on top. The editor
-  always appends new items. Any number of items may share a square, including exact duplicates read
+  always appends new items. Items are drawn **above all tiles** (section 4.3). Any number of items may share a square, including exact duplicates read
   from a link.
 - The count is limited to 1024. A larger count makes the link invalid.
 - An id the decoder does not know is skipped, with a warning, so newer links degrade gracefully.
 
-### 4.3 Legend
+### 4.3 Tiles
+
+Resizable rectangles laid over the board, such as a room tile that merges rooms. They live in their
+own list because, unlike a piece, each tile carries its own size. `varint count` (at most 256), then
+`count` records of exactly 5 bytes:
+
+```
+byte 0   tile id        1..255, a catalog entry marked "tile"
+byte 1   x              0..25   left column
+byte 2   y              0..18   top row
+byte 3   width          1..26
+byte 4   height         1..19
+```
+
+- A tile is always a rectangle and is never rotated. Its whole rectangle must lie on the board
+  (`x + width <= 26`, `y + height <= 19`); records that do not fit are dropped with a warning.
+- The tile id selects the style, a single 1x1 icon repeated across every square of the rectangle.
+- **Layering:** tiles are drawn above the board and the highlights' base but **below every piece**.
+  The list order is the z-order among tiles only; the editor appends new tiles at the end.
+- An id that is not a tile (or unknown) is skipped, with a warning.
+- Tiles do not affect the statistics, which keep the board's printed rooms.
+
+### 4.4 Legend
 
 Optional labels for highlight colors (for example "cyan = secret room").
 
@@ -151,7 +174,7 @@ filtered like single-line text (§6).
 - Display: the viewer lists an entry for each color that is used on the map (grey as "Solid rock",
   orange as its label or "Trap", the others only if they have a label).
 
-### 4.4 Quest text
+### 4.5 Quest text
 
 | Field | Kind | Limit (characters) |
 |---|---|---|
@@ -168,7 +191,7 @@ truncated and a warning is shown. The editor stops accepting input at the limit.
 monster piece from the catalog. If the id is `0` and the text is empty, the quest has no wandering
 monster. A non-monster id is treated as `0` with a warning.
 
-### 4.5 Markdown subset (Zargon's notes)
+### 4.6 Markdown subset (Zargon's notes)
 
 Headings `#`, `##`, `###`; bullet lists (`-`); numbered lists (`1.`); `**bold**`; `*italic*`; a
 horizontal rule (`---`); pipe tables with a header separator row; backslash escapes (`\*`). No
@@ -211,10 +234,11 @@ distinct in the link. Nothing is merged, sorted or de-duplicated on decode.
 ## 8. Worked example
 
 Highlights: `A1` grey, `B1` orange. Two items at `E8` (illustrative ids `1` and `2`; real ids come
-from `catalog.json`): id 1 at rotation 0, and id 2 at rotation 3. A legend entry `2 = "trap"`.
-Quest number `3`, title `Vault`, everything else empty, light theme.
+from `catalog.json`): id 1 at rotation 0, and id 2 at rotation 3. One tile (illustrative id `100`)
+at `E6`, 2 wide and 3 high. A legend entry `2 = "trap"`. Quest number `3`, title `Vault`,
+everything else empty, light theme.
 
-Body (274 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
+Body (280 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
 
 ```
 00                                 flags: light theme
@@ -222,6 +246,7 @@ Body (274 bytes) as hex, with the 246 zero bytes after the first highlight byte 
 02                                 item count
 01 04 07                           id 1, x=4, rot 0, y=7
 02 64 07                           id 2, x=4 | (3<<5)=0x64, y=7
+01 64 04 05 02 03                  tiles: 1 tile, id 100, x=4, y=5, w=2, h=3
 01 02 04 74 72 61 70               legend: 1 entry, color 2, "trap"
 01 33                              number "3"
 05 56 61 75 6c 74                  title "Vault"
@@ -234,7 +259,7 @@ Body (274 bytes) as hex, with the 246 zero bytes after the first highlight byte 
 One valid encoding (raw deflate from zlib level 9; other deflaters give other bytes):
 
 ```
-#AWNQZBiRgImRhZ0phZ2RiaWkKLGA0Zg1LLE0pwQkAwA
+#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkDwA
 ```
 
 ## 9. Changing the format

@@ -30,6 +30,7 @@ export function boardSkeleton() {
     </defs>
     <use href="#board-art" x="0" y="0" width="${BOARD_W}" height="${BOARD_H}"/>
     <g id="layer-rooms" class="room-labels">${roomLabels.join("")}</g>
+    <g id="layer-tiles"></g>
     <g id="layer-hl"></g>
     <g id="layer-items"></g>
     <g id="layer-overlay" pointer-events="none"></g>
@@ -87,3 +88,25 @@ export function cellMarkup(x, y, cls) {
   return `<rect class="${cls}" x="${x * CELL}" y="${y * CELL}" width="${CELL}" height="${CELL}"/>`;
 }
 
+
+// A tile is its 1x1 style icon repeated across every square of the rectangle.
+export function tileMarkup(tile) {
+  const piece = BY_ID.get(tile.id);
+  const out = [];
+  for (let dy = 0; dy < tile.h; dy++) {
+    for (let dx = 0; dx < tile.w; dx++) {
+      out.push(
+        `<use href="#icon-${piece.slug}" x="${(tile.x + dx) * CELL}" y="${(tile.y + dy) * CELL}" width="${CELL}" height="${CELL}"/>`,
+      );
+    }
+  }
+  return out.join("");
+}
+
+export function tilesMarkup(tiles) {
+  return tiles.map(tileMarkup).join("");
+}
+
+export function rectOutlineMarkup(x, y, w, h, cls) {
+  return `<rect class="${cls}" x="${x * CELL + 1}" y="${y * CELL + 1}" width="${w * CELL - 2}" height="${h * CELL - 2}" rx="3"/>`;
+}

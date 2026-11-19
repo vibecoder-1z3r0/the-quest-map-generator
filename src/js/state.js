@@ -18,6 +18,7 @@ export function snapshot(st) {
   return {
     hl: Uint8Array.from(st.hl),
     items: cloneItems(st.items),
+    tiles: cloneItems(st.tiles),
     legend: { ...st.legend },
     num: st.num,
     title: st.title,
@@ -31,6 +32,7 @@ export function snapshot(st) {
 export function restore(st, snap) {
   st.hl = Uint8Array.from(snap.hl);
   st.items = cloneItems(snap.items);
+  st.tiles = cloneItems(snap.tiles);
   st.legend = { ...snap.legend };
   st.num = snap.num;
   st.title = snap.title;
@@ -40,9 +42,11 @@ export function restore(st, snap) {
   st.wmText = snap.wmText;
 }
 
+const snapshotKey = (a) =>
+  JSON.stringify([Array.from(a.hl), a.items, a.tiles, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText]);
+
 export function sameSnapshot(a, b) {
-  return JSON.stringify([Array.from(a.hl), a.items, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText]) ===
-    JSON.stringify([Array.from(b.hl), b.items, b.legend, b.num, b.title, b.intro, b.notes, b.wmId, b.wmText]);
+  return snapshotKey(a) === snapshotKey(b);
 }
 
 export function clampPosition(item, x, y) {
@@ -124,3 +128,56 @@ export function setHighlight(st, x, y, value) {
 }
 
 export const EDGE_NAMES = ["north", "east", "south", "west"];
+
+// ---------------------------------------------------------------- room tiles
+// Tiles are resizable rectangles { id, x, y, w, h } in their own list, always drawn below pieces.
+
+export function clampTile(tile, x, y, w, h) {
+  const cw = Math.max(1, Math.min(COLS, w));
+  const ch = Math.max(1, Math.min(ROWS, h));
+  return { ...tile, x: Math.max(0, Math.min(COLS - cw, x)), y: Math.max(0, Math.min(ROWS - ch, y)), w: cw, h: ch };
+}
+
+export function addTile(st, id, x, y, w, h) {
+  st.tiles.push(clampTile({ id }, x, y, w, h));
+  return st.tiles.length - 1;
+}
+
+export function moveTile(st, index, x, y) {
+  const tile = st.tiles[index];
+  const next = clampTile(tile, x, y, tile.w, tile.h);
+  if (next.x === tile.x && next.y === tile.y) return false;
+  st.tiles[index] = next;
+  return true;
+}
+
+// Keeps the top-left corner and limits the size to what fits on the board.
+export function resizeTile(st, index, w, h) {
+  const tile = st.tiles[index];
+  const next = clampTile(tile, tile.x, tile.y, Math.min(w, COLS - tile.x), Math.min(h, ROWS - tile.y));
+  if (next.w === tile.w && next.h === tile.h) return false;
+  st.tiles[index] = next;
+  return true;
+}
+
+export function removeTile(st, index) {
+  st.tiles.splice(index, 1);
+}
+
+export function reorderTile(st, index, delta) {
+  const target = index + delta;
+  if (target < 0 || target >= st.tiles.length) return index;
+  const [tile] = st.tiles.splice(index, 1);
+  st.tiles.splice(target, 0, tile);
+  return target;
+}
+
+// Indexes of the tiles covering a square, topmost first.
+export function tilesAt(st, x, y) {
+  const hits = [];
+  for (let i = st.tiles.length - 1; i >= 0; i--) {
+    const t = st.tiles[i];
+    if (x >= t.x && x < t.x + t.w && y >= t.y && y < t.y + t.h) hits.push(i);
+  }
+  return hits;
+}

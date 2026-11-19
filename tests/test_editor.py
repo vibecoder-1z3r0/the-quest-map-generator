@@ -321,7 +321,9 @@ def test_footer_carries_the_notice_and_license(page):
 
 def test_every_catalog_piece_has_a_palette_button_and_a_rendered_sprite(page):
     count = page.evaluate("QMG.CATALOG.length")
-    assert page.locator('#tools button[data-kind="piece"]').count() == count
+    tiles = page.evaluate("QMG.CATALOG.filter((c) => c.tile).length")
+    assert page.locator('#tools button[data-kind="piece"]').count() == count - tiles
+    assert page.locator('#tools button[data-kind="tile"]').count() == tiles
     assert page.locator('#sprites symbol[id^="icon-"]').count() == count
 
 
@@ -334,3 +336,122 @@ def test_all_pieces_render_on_the_board(page):
     page.click('#tools button[data-kind="erase"]')
     page.click('#tools button[data-kind="select"]')
     assert open_state > 30
+
+
+def tiles(page):
+    return page.evaluate("QMG.app.state.tiles.map((t) => ({...t}))")
+
+
+def pick_tile(page):
+    page.click('#tools button[data-kind="tile"]')
+    page.evaluate("window.scrollTo(0, 0)")
+
+
+def drag_cells(page, x1, y1, x2, y2):
+    a = cell_center(page, x1, y1)
+    b = cell_center(page, x2, y2)
+    page.mouse.move(*a)
+    page.mouse.down()
+    page.mouse.move(*b, steps=6)
+    page.mouse.up()
+
+
+def test_dragging_with_the_tile_tool_draws_a_rectangle_of_that_size(page):
+    pick_tile(page)
+    drag_cells(page, 6, 4, 3, 7)  # drag up and to the left: still a 4x4 rectangle
+    got = tiles(page)
+    assert len(got) == 1
+    assert (got[0]["x"], got[0]["y"], got[0]["w"], got[0]["h"]) == (3, 4, 4, 4)
+    assert page.locator("#layer-tiles use").count() == 16
+
+
+def test_a_plain_click_with_the_tile_tool_makes_a_1x1_tile(page):
+    pick_tile(page)
+    click_cell(page, 9, 9)
+    assert [(t["w"], t["h"]) for t in tiles(page)] == [(1, 1)]
+
+
+def test_tiles_are_drawn_below_pieces_even_when_placed_later(page):
+    place(page, "goblin", 5, 5)
+    pick_tile(page)
+    drag_cells(page, 4, 4, 7, 7)
+    html = page.evaluate("document.querySelector('#board').innerHTML")
+    assert html.index('id="layer-tiles"') < html.index('id="layer-items"')
+    assert [i["id"] for i in items(page)] == [piece_id(page, "goblin")]  # piece list untouched
+
+
+def test_the_inspector_lists_pieces_then_tiles_and_resizes_a_tile(page):
+    pick_tile(page)
+    drag_cells(page, 4, 4, 5, 5)
+    page.click('#tools button[data-kind="select"]')
+    click_cell(page, 4, 4)
+    panel = page.locator("#inspector")
+    assert "room tiles (under the pieces)" in panel.inner_text().lower()
+    panel.get_by_label("Width").fill("5")
+    panel.get_by_label("Width").dispatch_event("change")
+    panel.get_by_label("Height").fill("3")
+    panel.get_by_label("Height").dispatch_event("change")
+    assert [(t["w"], t["h"]) for t in tiles(page)] == [(5, 3)]
+
+
+def test_resizing_is_limited_to_the_board(page):
+    pick_tile(page)
+    click_cell(page, 24, 17)
+    page.click('#tools button[data-kind="select"]')
+    click_cell(page, 24, 17)
+    box = page.locator("#inspector")
+    box.get_by_label("Width").fill("9")
+    box.get_by_label("Width").dispatch_event("change")
+    assert tiles(page)[0]["w"] == 2  # only two columns remain from x=24
+
+
+def test_selecting_moving_and_deleting_a_tile(page):
+    pick_tile(page)
+    drag_cells(page, 4, 4, 5, 5)
+    page.click('#tools button[data-kind="select"]')
+    a = cell_center(page, 4, 4)
+    b = cell_center(page, 8, 7)
+    page.mouse.move(*a)
+    page.mouse.down()
+    page.mouse.move(*b, steps=5)
+    page.mouse.up()
+    assert (tiles(page)[0]["x"], tiles(page)[0]["y"]) == (8, 7)
+    page.keyboard.press("ArrowLeft")
+    assert tiles(page)[0]["x"] == 7
+    page.keyboard.press("Delete")
+    assert tiles(page) == []
+
+
+def test_the_eraser_removes_a_tile_only_when_no_piece_is_there(page):
+    place(page, "goblin", 5, 5)
+    pick_tile(page)
+    drag_cells(page, 4, 4, 6, 6)
+    page.click('#tools button[data-kind="erase"]')
+    click_cell(page, 5, 5)
+    assert items(page) == [] and len(tiles(page)) == 1
+    click_cell(page, 5, 5)
+    assert tiles(page) == []
+
+
+def test_tiles_are_in_the_link_and_in_undo_history(page, site):
+    pick_tile(page)
+    drag_cells(page, 4, 4, 6, 5)
+    settle(page)
+    payload = page.evaluate("location.hash").lstrip("#")
+    import reference as ref
+
+    assert ref.decode(payload)["tiles"] == [(100, 4, 4, 3, 2)]
+    open_link(page, site, payload)
+    assert [(t["w"], t["h"]) for t in tiles(page)] == [(3, 2)]
+    page.click('#tools button[data-kind="tile"]')
+    click_cell(page, 12, 12)
+    assert len(tiles(page)) == 2
+    page.click("#undo")
+    assert len(tiles(page)) == 1
+
+
+def test_tiles_do_not_change_the_statistics(page):
+    pick_tile(page)
+    drag_cells(page, 1, 1, 12, 8)  # covers several printed rooms
+    text = page.locator("#stats").inner_text()
+    assert "Monsters\n0" in text and "(22)" in text  # still all 22 printed rooms

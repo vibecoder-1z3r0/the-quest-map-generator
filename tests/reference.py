@@ -33,6 +33,7 @@ def blank() -> dict:
         "theme": 0,
         "hl": [0] * SQUARES,
         "items": [],
+        "tiles": [],
         "legend": {},
         "num": "",
         "title": "",
@@ -51,7 +52,10 @@ def encode_body(st: dict) -> bytes:
     out += varint(len(st["items"]))
     for item_id, x, y, r in st["items"]:
         out += bytes([item_id, x | (r << 5), y])
-    legend = sorted((int(k), v) for k, v in st["legend"].items() if v)
+    out += varint(len(st["tiles"]))
+    for tile_id, x, y, w, h in st["tiles"]:
+        out += bytes([tile_id, x, y, w, h])
+    legend = sorted((int(k), v) for k, v in st["legend"].items() if v and int(k) >= 2)
     out += varint(len(legend))
     for color, label in legend:
         out += bytes([color]) + string(label)
@@ -108,6 +112,8 @@ def decode(payload: str) -> dict:
     for _ in range(read_varint()):
         item_id, b1, y = byte(), byte(), byte()
         st["items"].append((item_id, b1 & 31, y & 31, (b1 >> 5) & 3))
+    for _ in range(read_varint()):
+        st["tiles"].append((byte(), byte(), byte(), byte(), byte()))
     for _ in range(read_varint()):
         color = byte()
         st["legend"][color] = read_string()

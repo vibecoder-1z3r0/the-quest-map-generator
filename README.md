@@ -35,6 +35,13 @@ opened from disk).
 - Hover a square to see everything in it in the **What's here** panel (squares are labeled like
   `E8`). Click to pin the panel.
 
+### Room tiles
+
+To merge rooms (as with a physical room tile laid over them), choose **Room tile** under *Room tiles*
+and drag out a rectangle on the board. Tiles can be any size, are always rectangles, and sit
+**under every piece**. Select a tile to move it (drag or arrow keys), or use the *What's here*
+panel to change its width and height, reorder it among other tiles, or remove it.
+
 ### Quest stats
 
 A **Quest stats** card (and the print page) summarises the quest, recalculated as you edit:
