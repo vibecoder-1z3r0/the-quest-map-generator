@@ -6,7 +6,7 @@ map. It can be hosted anywhere static.
 
 > Status: working editor on the **real board layout** (22 rooms) with quest statistics. The `make`
 > build, lint, tests (golden links, hostile-input, visual baselines) and CI are in place. Still to
-> come: monster body point (BP) values, verified furniture footprints, and the release and Pages setup in the GitHub
+> come: the remaining monster body point (BP) values, verified furniture footprints, and the release and Pages setup in the GitHub
 > repository settings.
 
 ## Git conventions
@@ -192,7 +192,9 @@ Repo is MIT. Footer and README carry a notice along these lines:
 
 ## Open items
 
-- Body point (BP) values for the eight monsters (set `bp` in `src/catalog.json`; currently null).
+- Body point (BP) values still missing for Abomination (the Fimir), Mummy, Gargoyle and Dread Warrior
+  (the Chaos Warrior); set `bp` in `src/catalog.json` (currently null). Goblin, Orc, Zombie and
+  Skeleton are 1 BP each (from the owner).
 - Additional room tile styles, if wanted (only the plain "Room tile" exists).
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;

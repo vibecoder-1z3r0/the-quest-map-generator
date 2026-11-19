@@ -201,7 +201,7 @@
   "w": 1,
   "h": 1,
   "monster": true,
-  "bp": null,
+  "bp": 1,
   "set": "base"
  },
  {
@@ -213,7 +213,7 @@
   "w": 1,
   "h": 1,
   "monster": true,
-  "bp": null,
+  "bp": 1,
   "set": "base"
  },
  {
@@ -237,7 +237,7 @@
   "w": 1,
   "h": 1,
   "monster": true,
-  "bp": null,
+  "bp": 1,
   "set": "base"
  },
  {
@@ -249,7 +249,7 @@
   "w": 1,
   "h": 1,
   "monster": true,
-  "bp": null,
+  "bp": 1,
   "set": "base"
  },
  {
