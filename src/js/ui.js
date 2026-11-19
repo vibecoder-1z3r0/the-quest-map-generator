@@ -742,11 +742,14 @@ function onKeyDown(event) {
     event.preventDefault();
     removeAt(app.selected);
   } else if (key === "Escape") {
+    // Cancel whatever is in progress and go back to the Select tool with nothing selected.
+    app.tileDraw = null;
+    app.tool = { kind: "select", value: 0 };
+    app.ghostRot = 0;
     app.selected = -1;
     app.selectedTile = -1;
     app.pinned = null;
-    renderOverlay();
-    renderInspector();
+    renderAll();
   } else if ((app.selected >= 0 || app.selectedTile >= 0) && key.startsWith("Arrow")) {
     event.preventDefault();
     const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[key];

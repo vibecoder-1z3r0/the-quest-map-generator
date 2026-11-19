@@ -553,3 +553,48 @@ def test_clearing_the_series_hides_it_again(page):
     page.fill("#series", "A series")
     page.fill("#series", "")
     assert page.locator("#sheet-series").is_hidden() and page.locator("#print-series").is_hidden()
+
+
+def active_tool(page):
+    return page.evaluate("QMG.app.tool.kind")
+
+
+def test_escape_returns_from_a_placement_tool_to_the_select_tool(page):
+    pick_piece(page, "goblin")
+    assert active_tool(page) == "piece"
+    page.keyboard.press("Escape")
+    assert active_tool(page) == "select"
+    assert page.locator('#tools button[data-kind="select"]').get_attribute("aria-pressed") == "true"
+    click_cell(page, 5, 5)  # no longer places anything
+    assert items(page) == []
+
+
+def test_escape_leaves_the_highlight_and_tile_tools_too(page):
+    page.click('#tools button[data-kind="highlight"][data-value="2"]')
+    page.keyboard.press("Escape")
+    assert active_tool(page) == "select"
+    pick_tile(page)
+    page.keyboard.press("Escape")
+    assert active_tool(page) == "select"
+
+
+def test_escape_cancels_a_tile_that_is_being_dragged_out(page):
+    pick_tile(page)
+    a = cell_center(page, 4, 4)
+    b = cell_center(page, 8, 7)
+    page.mouse.move(*a)
+    page.mouse.down()
+    page.mouse.move(*b, steps=4)
+    page.keyboard.press("Escape")
+    page.mouse.up()
+    assert tiles(page) == [] and active_tool(page) == "select"
+
+
+def test_escape_deselects_and_unpins_in_the_select_tool(page):
+    place(page, "goblin", 5, 5)
+    page.keyboard.press("Escape")  # back to Select
+    click_cell(page, 5, 5)
+    assert page.evaluate("QMG.app.selected") >= 0 and page.evaluate("QMG.app.pinned") is not None
+    page.keyboard.press("Escape")
+    assert page.evaluate("QMG.app.selected") == -1 and page.evaluate("QMG.app.pinned") is None
+    assert active_tool(page) == "select"

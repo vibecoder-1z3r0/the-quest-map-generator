@@ -173,7 +173,8 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
   (pieces with footprint, anchor, rotation; the highlight) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
 - Place, select, **drag-to-move** (keeps rotation and stack position), panel move buttons and arrow
-  keys, `R` rotate, `Del` remove, Highlight tool, Eraser. Clicking a stacked square selects the top
+  keys, `R` rotate, `Del` remove, Highlight tool, Eraser. **`Esc` cancels any tool in progress (even a
+  tile being dragged out) and returns to the Select tool with nothing selected or pinned.** Clicking a stacked square selects the top
   piece, clicking again cycles down.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
