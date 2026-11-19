@@ -41,10 +41,24 @@ jobs:
           path: dist/index.html
 
   # Merges to main publish the site with GitHub's own Pages actions. In the repository settings,
-  # Pages > Build and deployment > Source must be "GitHub Actions".
-  deploy:
+  # Pages > Build and deployment > Source must be "GitHub Actions". The artifact upload and the
+  # deploy are separate jobs so the uploaded artifact is visible before deploy-pages looks for it
+  # (running them back to back in one job raced and failed with "No artifacts named github-pages").
+  pages-artifact:
     needs: check
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: pages-artifact
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -56,12 +70,5 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: site
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
       - id: deployment
         uses: actions/deploy-pages@v4

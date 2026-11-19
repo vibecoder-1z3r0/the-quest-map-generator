@@ -32,3 +32,13 @@ def test_the_site_is_published_with_githubs_official_pages_actions():
     assert "actions/upload-pages-artifact@" in ci and "actions/deploy-pages@" in ci
     assert "pages: write" in ci and "id-token: write" in ci
     assert "github.ref == 'refs/heads/main'" in ci  # only merges to main deploy
+
+
+def test_the_pages_artifact_is_uploaded_in_a_job_before_the_one_that_deploys_it():
+    """Uploading and deploying in the same job raced ("No artifacts named github-pages")."""
+    ci = (WORKFLOWS[0].parent / "ci.yml").read_text(encoding="utf-8")
+    upload_job = ci.index("pages-artifact:")
+    deploy_job = ci.index("\n  deploy:")
+    assert ci.index("actions/upload-pages-artifact@") < deploy_job
+    assert upload_job < ci.index("actions/deploy-pages@")
+    assert "needs: pages-artifact" in ci[deploy_job:]
