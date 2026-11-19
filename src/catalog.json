@@ -12,13 +12,23 @@
  },
  {
   "id": 2,
+  "slug": "hidden-door",
+  "name": "Hidden door",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 1,
+  "h": 1,
+  "edge": true,
+  "set": "base"
+ },
+ {
+  "id": 4,
   "slug": "secret-door",
   "name": "Secret door",
   "folder": "doors",
   "group": "Doors & walls",
   "w": 1,
   "h": 1,
-  "edge": true,
   "set": "base"
  },
  {

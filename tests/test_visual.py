@@ -26,7 +26,8 @@ def demo_state(catalog: dict[str, int]) -> dict:
     put("throne", 20, 4)
     put("door", 4, 3)
     put("door", 8, 6, 1)
-    put("secret-door", 12, 9, 2)
+    put("hidden-door", 12, 9, 2)
+    put("secret-door", 13, 9)
     for i, slug in enumerate(
         ["goblin", "orc", "abomination", "skeleton", "zombie", "mummy", "gargoyle", "dread-warrior"]
     ):

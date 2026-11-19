@@ -136,3 +136,14 @@ def test_every_monster_has_body_points_or_is_explicitly_variable():
             assert isinstance(piece["bp"], int) or piece.get("bp_varies") is True, piece["slug"]
     warlock = next(p for p in CATALOG if p["slug"] == "dread-warlock")
     assert warlock["bp"] is None and warlock["bp_varies"] is True
+
+
+def test_the_hidden_door_keeps_id_2_and_the_secret_door_is_a_separate_rotatable_tile():
+    by_slug = {p["slug"]: p for p in CATALOG}
+    assert by_slug["hidden-door"]["id"] == 2 and by_slug["hidden-door"]["edge"] is True
+    secret = by_slug["secret-door"]
+    assert secret["id"] == 4 and secret["name"] == "Secret door"
+    assert (
+        (secret["w"], secret["h"]) == (1, 1) and not secret.get("edge") and not secret.get("tile")
+    )
+    assert secret["group"] == by_slug["door"]["group"]  # joins the doors group, no group of its own

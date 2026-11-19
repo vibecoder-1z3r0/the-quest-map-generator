@@ -128,7 +128,7 @@ byte 2   bits 0-4       y       0..18
   the board.
 - A piece's whole rotated footprint must lie on the board. Records that do not fit are dropped and
   a warning is shown.
-- **Doors and secret doors** are ordinary 1x1 pieces. Their artwork sits on the **north** edge at
+- **Doors and hidden doors** (catalog entries marked `edge`) are ordinary 1x1 pieces. Their artwork sits on the **north** edge at
   rotation 0; rotation 1, 2 and 3 move it to the east, south and west edges. A door on the outer
   edge of the board is valid.
 - **Order is the z-order.** Items are drawn in list order, so later items are on top. The editor

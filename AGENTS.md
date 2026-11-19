@@ -83,8 +83,10 @@ map. It can be hosted anywhere static.
   are not in the repo). There is no floor painting. Rooms are lettered A-Z in reading order.
 - Everything placed (except room tiles) is an item record **`[icon index, x, y, rotation]`**, rotation 0–3. `x, y` is the
   top-left square of the piece's footprint. A rotation swaps width and height.
-- Doors and secret doors are 1×1 pieces; the door art sits on the north edge at rotation 0 and
-  rotation selects the edge. Doors on outer board edges are allowed.
+- Doors and **hidden doors** are 1×1 edge pieces (catalog `edge: true`); the art sits on the north edge
+  at rotation 0 and rotation selects the edge. Doors on outer board edges are allowed. The **secret
+  door** is a separate 1×1 rotatable *tile* piece (id 4, not an edge piece), as in the physical game;
+  the former "secret door" frame (id 2) was renamed Hidden door and keeps its permanent id.
 - Merging two rooms is done by placing a **room tile**, as with the physical game. Tiles are
   **resizable rectangles** stored in their **own `tiles` list** in the link (`[tile id, x, y, width,
   height]`, see `docs/FORMAT.md` section 4.3), never in the piece list. Tile styles are catalog
@@ -114,7 +116,8 @@ map. It can be hosted anywhere static.
 - Base-game pieces (footprints from memory — **verify**): stairs 2×2, table 3×2 (2×3 rotated),
   tomb 3×2?, bookcase 3×1, cupboard 3×1?, fireplace 3×1, throne 1×1, weapons rack 3×1, alchemist's
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
-  rubble (the fallen rock tile, distinct from the falling rock trap), door, secret door. Monsters:
+  rubble (the fallen rock tile, distinct from the falling rock trap), door, hidden door, secret door
+  tile. Monsters:
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
   caster; BP varies by quest). Heroes: barbarian,
   dwarf, elf, wizard; plus the expansion heroes bard, warlock, druid, berzerker, explorer, commander

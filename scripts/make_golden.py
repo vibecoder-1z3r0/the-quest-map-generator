@@ -53,7 +53,7 @@ CASES = [
         items=[
             (catalog["door"], 0, 0, 0),
             (catalog["door"], 25, 18, 1),
-            (catalog["secret-door"], 12, 9, 2),
+            (catalog["hidden-door"], 12, 9, 2),
             (catalog["door"], 0, 5, 3),
         ],
     ),

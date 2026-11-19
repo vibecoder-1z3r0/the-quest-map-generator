@@ -517,3 +517,15 @@ def test_picking_the_same_piece_again_keeps_its_rotation(page):
     pick_piece(page, "table")
     click_cell(page, 10, 10)
     assert items(page)[0]["r"] == 1
+
+
+def test_the_secret_door_tile_rotates_like_a_piece_while_the_hidden_door_snaps_to_an_edge(page):
+    pick_piece(page, "secret-door")
+    page.keyboard.press("r")
+    page.keyboard.press("r")
+    click_cell(page, 6, 6, fy=0.05)  # near the north edge: a secret door tile ignores that
+    pick_piece(page, "hidden-door")
+    click_cell(page, 8, 6, fx=0.95)  # near the east edge: a hidden door snaps to it
+    got = items(page)
+    assert (got[0]["id"], got[0]["r"]) == (piece_id(page, "secret-door"), 2)
+    assert (got[1]["id"], got[1]["r"]) == (piece_id(page, "hidden-door"), 1)
