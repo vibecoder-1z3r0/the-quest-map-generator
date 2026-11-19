@@ -39,11 +39,12 @@ body {
 #topbar { display: flex; flex-direction: column; gap: 6px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--border);
 }
 .toprow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.head-title { flex: 1 1 200px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.head-title { flex: 1 1 120px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .ver { font: 400 11px system-ui, sans-serif; color: var(--muted); }
 #topbar h1 { margin: 0; font: 700 17px Georgia, serif; color: var(--accent); }
 .linkinfo { color: var(--muted); font-size: 12px; }
 .linkinfo.privacy::before { content: "\00B7"; margin-right: 10px; }
+.subrow { gap: 0 10px; }
 .hint.keys { margin: 0 0 6px; }
 .linkinfo.warn { color: var(--danger); font-weight: 600; }
 .actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
