@@ -1,0 +1,33 @@
+"""Workflow policy: only GitHub's own actions, and no secrets passed around."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+WORKFLOWS = sorted((Path(__file__).resolve().parent.parent / ".github/workflows").glob("*.yml"))
+
+
+def test_there_are_workflows():
+    assert {w.name for w in WORKFLOWS} >= {"ci.yml", "release.yml", "pr-preview-cleanup.yml"}
+
+
+def test_only_githubs_own_actions_are_used():
+    for workflow in WORKFLOWS:
+        for line in workflow.read_text(encoding="utf-8").splitlines():
+            match = re.match(r"\s*-?\s*uses:\s*(\S+)", line)
+            if match:
+                assert match.group(1).startswith("actions/"), (
+                    f"{workflow.name}: third-party action {match.group(1)}"
+                )
+
+
+def test_no_repository_secrets_are_referenced():
+    for workflow in WORKFLOWS:
+        assert "secrets." not in workflow.read_text(encoding="utf-8"), workflow.name
+
+
+def test_workflows_publish_through_the_tested_script():
+    text = "\n".join(w.read_text(encoding="utf-8") for w in WORKFLOWS)
+    for mode in ("main", "preview", "remove"):
+        assert f"pages_publish.sh {mode}" in text
