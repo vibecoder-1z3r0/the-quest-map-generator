@@ -134,8 +134,7 @@ browser; there is no npm or Node).
 ```
 make build   # build dist/index.html
 make lint    # deno lint (JS), HTML check, ruff (Python)
-make test    # build, then run the Playwright tests against dist/index.html
-make check   # lint + test (what CI runs)
+make test    # run the Playwright tests against dist/index.html
 make screenshots  # regenerate docs/screenshots/
 make baselines    # regenerate the visual baselines (tests/baselines/)
 make clean   # remove dist/

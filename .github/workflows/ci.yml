@@ -23,7 +23,12 @@ jobs:
           cache-dependency-path: pyproject.toml
       - run: pip install -e '.[dev]'
       - run: python -m playwright install --with-deps chromium
-      - run: make check PY=python
+      - name: Build
+        run: make build PY=python
+      - name: Lint
+        run: make lint PY=python
+      - name: Test
+        run: make test PY=python
       - uses: actions/upload-artifact@v4
         if: always()
         with:

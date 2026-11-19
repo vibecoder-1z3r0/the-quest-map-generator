@@ -34,7 +34,9 @@ map. It can be hosted anywhere static.
   markdown), `catalog.json`, `board.svg`, `icons/`. No bundler, no runtime dependencies.
 - `make build` inlines CSS, JS, the icon sprite, the board and the catalog into a **single
   `dist/index.html`**. That file is what is tested and what is published.
-- Make targets: `build`, `lint`, `test`, `check` (lint + test, what CI runs), `clean`. No `make serve`.
+- Make targets: `build` (always rebuilds), `lint`, `test` (both reuse the built page and only rebuild
+  it if it is missing or older than the sources), `clean`. There is no umbrella target and no
+  `make serve`.
 - **No npm, no Node.** All tooling is Python-installable (`pip install -e '.[dev]'`). Lint: `deno lint`
   (the Deno binary from PyPI, configured in `deno.json`) for JS, `scripts/lint_html.py` (strict html5lib
   parse, unique ids, references) for HTML, ruff for Python. Tests use Playwright for Python.
@@ -44,7 +46,8 @@ map. It can be hosted anywhere static.
   CI artifacts only. Unit tests for the encoder, markdown parser and character filter.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
-- CI (GitHub Actions): `make check` on every PR/push. A merge to `main` deploys `dist/index.html` to
+- CI (GitHub Actions) runs `make build`, `make lint` and `make test` as separate steps, in that
+  order, on every PR/push. A merge to `main` deploys `dist/index.html` to
   GitHub Pages **with GitHub's official `actions/upload-pages-artifact` and `actions/deploy-pages`**,
   only if green. The repository's Pages source must be set to **GitHub Actions**. There are no PR
   previews (the official action replaces the whole site, so it cannot host per-PR folders); every CI
