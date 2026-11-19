@@ -771,6 +771,8 @@ function toolButton(label, kind, value, lead) {
   if (lead) button.append(lead);
   button.append(document.createTextNode(label));
   button.addEventListener("click", () => {
+    // Picking a different piece starts it upright; re-picking the same one keeps your rotation.
+    if (app.tool.kind !== kind || app.tool.value !== value) app.ghostRot = 0;
     app.tool = { kind, value };
     if (kind !== "select") {
       app.selected = -1;

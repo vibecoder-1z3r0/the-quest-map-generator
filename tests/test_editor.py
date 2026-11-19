@@ -499,3 +499,21 @@ def test_the_quest_sheet_is_not_printed_but_the_print_sheet_is(page):
     page.emulate_media(media="print")
     assert page.locator("#quest-sheet").is_hidden()
     assert page.locator("#print-title").inner_text() == "Crypt"
+
+
+def test_a_new_piece_starts_unrotated_even_after_rotating_a_different_one(page):
+    pick_piece(page, "table")
+    page.keyboard.press("r")
+    click_cell(page, 10, 10)
+    assert items(page)[0]["r"] == 1  # the table was placed turned
+    pick_piece(page, "goblin")
+    click_cell(page, 3, 3)
+    assert [i["r"] for i in items(page)] == [1, 0]  # the goblin starts upright
+
+
+def test_picking_the_same_piece_again_keeps_its_rotation(page):
+    pick_piece(page, "table")
+    page.keyboard.press("r")
+    pick_piece(page, "table")
+    click_cell(page, 10, 10)
+    assert items(page)[0]["r"] == 1
