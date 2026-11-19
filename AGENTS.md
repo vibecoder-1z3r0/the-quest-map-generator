@@ -158,3 +158,12 @@ Repo is MIT. Footer and README carry a notice along these lines:
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
   (3) editor (fixed board, stacking, drag, panel, undo/redo); (4) markdown + character allowlist;
   (5) chibi style sample, then full icon set; (6) footer/notice, README, Pages deploy.
+
+## Future development (tabled — do not build yet)
+
+- **Fog of war mode.** Someone sends a link and the recipient reveals parts of the map as they play
+  through. Not part of v1; the format and UI should not be bent to accommodate it yet. Questions to
+  settle when it is picked up: where the revealed state lives (it should stay in the URL, with no
+  storage), how Zargon's secret notes and hidden pieces are kept out of a player-facing link
+  (everything in a link is readable by anyone who has it), and how reveals relate to the highlight
+  layer.
