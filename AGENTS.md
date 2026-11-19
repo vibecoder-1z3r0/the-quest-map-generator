@@ -94,7 +94,10 @@ map. It can be hosted anywhere static.
   always "Solid rock" with no editable legend. Colors 2-15 may carry an optional editable label stored
   in the URL; the legend beside the map lists each color that is used on the map.
 - `catalog.json` gives each piece a **permanent numeric ID (never reused, max 255)**, name, group,
-  footprint (default orientation), and icon slug. IDs go in the URL, never filenames.
+  footprint (default orientation), icon slug, and **the set it comes from** (`"set"`, an id from
+  `src/sets.json`; everything is currently `base`, "Base game"). Sets are static data, not in the
+  link, and every piece must name a known set (the build and tests enforce it). IDs go in the URL,
+  never filenames.
 - Base-game pieces (footprints from memory — **verify**): stairs 2×2, table 3×2 (2×3 rotated),
   tomb 3×2?, bookcase 3×1, cupboard 3×1?, fireplace 3×1, throne 1×1, weapons rack 3×1, alchemist's
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
@@ -193,6 +196,9 @@ Repo is MIT. Footer and README carry a notice along these lines:
 
 ## Future development (tabled — do not build yet)
 
+- **Palette filtering by name and set.** A search box plus checkboxes per set (from `src/sets.json`)
+  to filter the piece palette. Deliberately not built yet because it would add noise while there is
+  only one set; the per-piece `set` data is already in place for it.
 - **Fog of war mode.** Someone sends a link and the recipient reveals parts of the map as they play
   through. Not part of v1; the format and UI should not be bent to accommodate it yet. Questions to
   settle when it is picked up: where the revealed state lives (it should stay in the URL, with no

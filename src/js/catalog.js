@@ -2,6 +2,9 @@ import { CELL } from "./constants.js";
 
 // The build replaces the placeholder below with src/catalog.json.
 export const CATALOG = /*@CATALOG@*/ [];
+// The sets a piece can come from (src/sets.json). Every piece names its set in catalog.json.
+// Not in the link. Reserved for palette filtering by name and set (see AGENTS.md).
+export const SETS = /*@SETS@*/ [];
 export const BY_ID = new Map(CATALOG.map((piece) => [piece.id, piece]));
 export const GROUPS = [...new Set(CATALOG.map((piece) => piece.group))];
 export const MONSTERS = CATALOG.filter((piece) => piece.monster);

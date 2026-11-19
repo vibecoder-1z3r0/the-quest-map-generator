@@ -84,3 +84,18 @@ def test_tiles_are_one_by_one_icons_and_not_in_the_item_groups():
 
 def test_the_provisional_open_wall_piece_is_gone():
     assert "open-wall" not in {p["slug"] for p in CATALOG}
+
+
+SETS = json.loads((ROOT / "src/sets.json").read_text(encoding="utf-8"))
+
+
+def test_every_piece_names_a_known_set():
+    set_ids = {s["id"] for s in SETS}
+    assert len(set_ids) == len(SETS)
+    for piece in CATALOG:
+        assert piece.get("set") in set_ids, f"{piece['slug']} has no valid set"
+
+
+def test_everything_is_from_the_base_game_for_now():
+    assert {s["id"] for s in SETS} == {"base"}
+    assert {p["set"] for p in CATALOG} == {"base"}
