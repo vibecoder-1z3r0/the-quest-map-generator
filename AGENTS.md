@@ -98,6 +98,11 @@ map. It can be hosted anywhere static.
   `src/sets.json`; everything is currently `base`, "Base game"). Sets are static data, not in the
   link, and every piece must name a known set (the build and tests enforce it). IDs go in the URL,
   never filenames.
+- **Expansion pieces go in their natural palette group, never in a group of their own.** A new
+  monster belongs in "Monsters", new furniture in "Furniture", and so on; the `set` field records
+  where it came from (and drives the tabled palette filter). Never name a group after a set. The
+  palette lists a group's pieces in `catalog.json` order, so insert a new piece next to related ones
+  (file order is independent of the permanent numeric id); the test suite enforces the group rule.
 - Base-game pieces (footprints from memory — **verify**): stairs 2×2, table 3×2 (2×3 rotated),
   tomb 3×2?, bookcase 3×1, cupboard 3×1?, fireplace 3×1, throne 1×1, weapons rack 3×1, alchemist's
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
