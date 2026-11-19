@@ -141,6 +141,6 @@ def test_hostile_text_through_a_link_is_stripped_and_inert(page, site):
     st["title"] = "<img src=x onerror=window.pwned=1>"
     open_link(page, site, ref.encode(st))
     assert page.evaluate("window.pwned === undefined")
-    assert page.locator("#notes-preview script, #notes-preview img").count() == 0
+    assert page.locator("#sheet-notes script, #sheet-notes img").count() == 0
     assert page.evaluate("QMG.app.state.notes") == "scriptwindow.pwned1/script **ok**"
     assert "Some unsupported characters" in page.locator("#banner").inner_text()

@@ -489,8 +489,8 @@ function renderUndoRedo() {
 }
 
 function renderPreviews() {
-  renderIntro($("#intro-preview"), app.state.intro);
-  renderNotes($("#notes-preview"), app.state.notes);
+  renderIntro($("#sheet-intro"), app.state.intro);
+  renderNotes($("#sheet-notes"), app.state.notes);
   renderIntro($("#print-intro"), app.state.intro);
   renderNotes($("#print-notes"), app.state.notes);
   const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
@@ -498,6 +498,14 @@ function renderPreviews() {
   const monster = BY_ID.get(app.state.wmId);
   const wm = [monster?.name, app.state.wmText].filter(Boolean).join(" – ");
   $("#print-wm").textContent = wm ? `Wandering monster: ${wm}` : "";
+  // The live quest sheet below the legend shows the same information as it is typed.
+  $("#sheet-title").textContent = title;
+  $("#sheet-title").hidden = !title;
+  $("#sheet-wm").textContent = wm ? `Wandering monster: ${wm}` : "";
+  $("#sheet-wm").hidden = !wm;
+  $("#sheet-intro-section").hidden = !app.state.intro.trim();
+  $("#sheet-notes-section").hidden = !app.state.notes.trim();
+  $("#sheet-empty").hidden = Boolean(title || wm || app.state.intro.trim() || app.state.notes.trim());
   document.title = `${title || "Quest"} – Quest Map Generator`;
 }
 

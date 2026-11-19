@@ -41,6 +41,20 @@
       <svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quest map"></svg>
     </div>
     <ul id="legend" class="legend"></ul>
+
+    <article id="quest-sheet" class="sheet" aria-label="Quest information, updated as you type">
+      <h2 id="sheet-title" class="sheet-title"></h2>
+      <p id="sheet-wm" class="sheet-wm"></p>
+      <section id="sheet-intro-section">
+        <h3>Introduction</h3>
+        <div id="sheet-intro" class="preview"></div>
+      </section>
+      <section id="sheet-notes-section" class="secret">
+        <h3>Zargon's notes <span>(secret)</span></h3>
+        <div id="sheet-notes" class="preview"></div>
+      </section>
+      <p id="sheet-empty" class="muted">The quest title, introduction and notes you type on the right appear here.</p>
+    </article>
   </section>
 
   <aside id="side" aria-label="Details and quest text">
@@ -65,11 +79,9 @@
       </div>
       <div class="field"><label for="qintro">Intro (bold and italics only)</label>
         <textarea id="qintro" rows="5" maxlength="2500"></textarea>
-        <div id="intro-preview" class="preview"></div>
       </div>
       <div class="field secret"><label for="notes">Zargon's notes &mdash; secret</label>
         <textarea id="notes" rows="9" maxlength="10000"></textarea>
-        <div id="notes-preview" class="preview"></div>
       </div>
     </section>
 

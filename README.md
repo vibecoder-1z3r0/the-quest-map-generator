@@ -35,6 +35,12 @@ opened from disk).
 - Hover a square to see everything in it in the **What's here** panel (squares are labeled like
   `E8`). Click to pin the panel.
 
+### Live quest sheet
+
+Below the map and its legend, the quest is shown rendered (title, wandering monster, introduction
+and Zargon's notes with their formatting), and it updates as you type in the Quest panel. It isn't
+printed; the print page has its own layout.
+
 ### Room tiles
 
 To merge rooms (as with a physical room tile laid over them), choose **Room tile** under *Room tiles*
