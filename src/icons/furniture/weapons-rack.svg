@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Weapons rack (id 17): 3x1 squares, viewBox 0 0 96 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 32">
+<title>Weapons rack</title>
+<desc>Weapons rack: 3x1 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="4" width="90" height="24" rx="4" fill="#8a5a2b"/><path d="M12 6 V25" stroke="#d7dce2" stroke-width="3.2"/><rect x="8" y="19" width="8" height="2.2" rx="1" fill="#d9a82e" stroke-width="1"/><path d="M30 6 V26" stroke="#7a4a22" stroke-width="2.6"/><path d="M24 4 L36 4 L34 12 L26 12 Z" fill="#aeb4bc" stroke-width="1.4"/><path d="M50 8 V27" stroke="#c4c9d1" stroke-width="3"/><path d="M50 3.6 L53 9 L47 9 Z" fill="#e8ecf0" stroke-width="1.2"/><path d="M68 12 V27" stroke="#7a4a22" stroke-width="2.6"/><circle cx="68" cy="9" r="5" fill="#8f949c" stroke-width="1.4"/><path d="M84 6 V25" stroke="#d7dce2" stroke-width="3.2"/><rect x="80" y="19" width="8" height="2.2" rx="1" fill="#d9a82e" stroke-width="1"/></g>
+</svg>

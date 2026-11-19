@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tomb (id 12): 3x2 squares, viewBox 0 0 96 64.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64">
+<title>Tomb</title>
+<desc>Tomb: 3x2 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="5" width="86" height="54" rx="9" fill="#a6adb3"/><rect x="12" y="12" width="72" height="40" rx="7" fill="#c6ccd1"/><circle cx="28" cy="32" r="9" fill="#f5f2e8"/><ellipse cx="25" cy="31" rx="2.2" ry="2.6" fill="#2b2118" stroke="none"/><ellipse cx="31" cy="31" rx="2.2" ry="2.6" fill="#2b2118" stroke="none"/><path d="M24 37 H32 M26 35.6 V38.4 M28 35.6 V38.4 M30 35.6 V38.4" stroke-width="1" fill="none"/><path d="M50 32 H78 M64 20 V44" stroke="#8d949b" stroke-width="5" fill="none"/><path d="M16 16 H40" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2" stroke-linecap="round"/></g>
+</svg>

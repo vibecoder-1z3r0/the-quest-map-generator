@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Spear trap (id 32): 1x1 squares, viewBox 0 0 32 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Spear trap</title>
+<desc>Spear trap: 1x1 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><rect x="3.5" y="3.5" width="25" height="25" rx="5" fill="#a6abb3"/><path d="M7 25 V12 M16 25 V8 M25 25 V12" stroke="#7a4a22" stroke-width="2.2" fill="none"/><path d="M7 5.6 L9.6 12 L4.4 12 Z M16 2.4 L18.6 9 L13.4 9 Z M25 5.6 L27.6 12 L22.4 12 Z" fill="#e8ecf0" stroke-width="1.3"/><circle cx="16" cy="25" r="1.6" fill="#d33" stroke-width="1"/></g>
+</svg>

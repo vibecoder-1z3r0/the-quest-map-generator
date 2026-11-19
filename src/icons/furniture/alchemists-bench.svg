@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Alchemist's bench (id 18): 3x2 squares, viewBox 0 0 96 64.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64">
+<title>Alchemist's bench</title>
+<desc>Alchemist's bench: 3x2 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="6" width="88" height="52" rx="8" fill="#a8743f"/><path d="M5 22H91" stroke="#8a5a2b" stroke-width="1.4"/><path d="M18 20 V14 H26 V20 L31 33 Q32 37 28 37 H16 Q12 37 13 33 Z" fill="#e04a5f" fill-opacity=".85" stroke-width="1.6"/><circle cx="46" cy="30" r="8" fill="#5cc27a" fill-opacity=".85"/><rect x="43" y="17" width="6" height="7" rx="1" fill="#dfe6ea" stroke-width="1.4"/><path d="M64 20 V14 H72 V20 L76 34 H60 Z" fill="#9d6bd9" fill-opacity=".85" stroke-width="1.6"/><ellipse cx="22" cy="48" rx="9" ry="5" fill="#d9dde3"/><rect x="21" y="39" width="3" height="9" rx="1" fill="#7a4a22" stroke-width="1.2"/><circle cx="62" cy="48" r="5" fill="#ffb02e" stroke-width="1.5"/><circle cx="76" cy="46" r="3" fill="#5cc27a" stroke-width="1.2"/><path d="M10 12 H40" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2" stroke-linecap="round"/></g>
+</svg>

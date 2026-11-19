@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Open wall (provisional) (id 3): 1x1 squares, viewBox 0 0 32 32.  Art sits on the NORTH edge of the square (rotation 0); rotation moves it to the other edges.  Provisional piece.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Open wall (provisional)</title>
+<desc>Open wall (provisional): 1x1 squares, chibi style.</desc>
+<rect x="2" y="-4.5" width="28" height="9" fill="#efe3c2"/><path d="M2 -4.5 V4.5 M30 -4.5 V4.5" stroke="#2b2118" stroke-width="1.6" stroke-dasharray="2 2" fill="none"/>
+</svg>

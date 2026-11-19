@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Barbarian (id 60): 1x1 squares, viewBox 0 0 32 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Barbarian</title>
+<desc>Barbarian: 1x1 squares, chibi style.</desc>
+<ellipse cx="16" cy="29.4" rx="8.5" ry="2" fill="#000" fill-opacity=".2"/><g stroke="#2b2118" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M24 3 L27 3 L28 19 L23 19 Z" fill="#d7dce2"/><rect x="21.5" y="19" width="8" height="2.2" rx="1" fill="#7a4a22"/><rect x="24.6" y="21" width="2" height="5" fill="#5b3a1a"/><ellipse cx="12.4" cy="28" rx="3.2" ry="1.9" fill="#5a4636"/><ellipse cx="19.6" cy="28" rx="3.2" ry="1.9" fill="#5a4636"/><rect x="10" y="20" width="12" height="8.4" rx="3.4" fill="#9a6a36"/><path d="M12 20.5 L16 25 L20 20.5" fill="#d9b27a" stroke-width="1.2"/><ellipse cx="16" cy="13" rx="10.5" ry="10.5" fill="#f1c7a0"/><circle cx="11.6" cy="14.4" r="1.8" fill="#2b2118" stroke="none"/><circle cx="20.4" cy="14.4" r="1.8" fill="#2b2118" stroke="none"/><circle cx="12.2" cy="13.700000000000001" r=".6" fill="#fff" stroke="none"/><circle cx="21" cy="13.700000000000001" r=".6" fill="#fff" stroke="none"/><ellipse cx="8.4" cy="17.6" rx="1.7" ry="1" fill="#ff7f7f" fill-opacity=".5" stroke="none"/><ellipse cx="23.6" cy="17.6" rx="1.7" ry="1" fill="#ff7f7f" fill-opacity=".5" stroke="none"/><path d="M14.2 18.4 Q16 20.2 17.8 18.4" fill="none" stroke-width="1.4"/><path d="M5.8 11.5 Q6 2.6 16 2.4 Q26 2.6 26.2 11.5 Q22 7.6 16 8.4 Q10 7.6 5.8 11.5 Z" fill="#7a4a22"/><path d="M5.6 10 Q16 6.4 26.4 10 L26.2 12.2 Q16 8.8 5.8 12.2 Z" fill="#c0392b" stroke-width="1.4"/></g>
+</svg>
