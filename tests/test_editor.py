@@ -657,7 +657,7 @@ def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
     solid_grid = page.locator("#tools h2", has_text="Solid stone areas").locator(
         "xpath=following-sibling::div[1]"
     )
-    assert solid_grid.inner_text().strip() == "Grey"
+    assert solid_grid.inner_text().split() == ["Grey", "Clear"]
     solid_grid.get_by_role("button", name="Grey").click()
     click_cell(page, 3, 3)
     assert page.evaluate("QMG.app.state.hl[3 * 26 + 3]") == 1  # still the grey highlight, value 1

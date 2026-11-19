@@ -47,15 +47,15 @@
       <h2 id="sheet-title" class="sheet-title"></h2>
       <p id="sheet-wm" class="sheet-wm"></p>
       <section id="sheet-intro-section">
-        <h3>Introduction</h3>
+        <h3>Introduction <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-intro" checked> Print</label></h3>
         <div id="sheet-intro" class="preview"></div>
       </section>
       <section id="sheet-notes-section" class="secret">
-        <h3>Zargon's notes <span>(secret)</span></h3>
+        <h3>Zargon's notes <span>(secret)</span> <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-notes" checked> Print</label></h3>
         <div id="sheet-notes" class="preview"></div>
       </section>
       <section id="sheet-key-section">
-        <h3>Pieces on this map</h3>
+        <h3>Pieces on this map <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-key" checked> Print</label> <label class="pcheck"><input type="checkbox" id="po-monsters"> Monsters only</label></h3>
         <div id="sheet-key" class="piece-key"></div>
       </section>
       <p id="sheet-empty" class="muted">The quest title, introduction and notes you type on the right appear here.</p>
@@ -93,24 +93,13 @@
     </section>
 
     <section class="card">
-      <h2>Quest stats</h2>
+      <h2>Quest stats <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-stats" checked> Print</label></h2>
       <dl id="stats" class="stats"></dl>
     </section>
 
-    <section class="card" id="print-options">
-      <h2>Print options</h2>
-      <label class="check"><input type="checkbox" id="po-intro" checked> Introduction</label>
-      <label class="check"><input type="checkbox" id="po-key" checked> Piece key</label>
-      <label class="check sub"><input type="checkbox" id="po-monsters"> Monsters only</label>
-      <label class="check"><input type="checkbox" id="po-legend" checked> Highlight legend</label>
-      <label class="check"><input type="checkbox" id="po-stats" checked> Quest statistics</label>
-      <label class="check"><input type="checkbox" id="po-notes" checked> Zargon's notes (if any)</label>
-      <p class="muted">Not stored in the link.</p>
-    </section>
-
     <section class="card">
-      <h2>Highlight legend</h2>
-      <p class="hint">Grey is always solid stone. Orange means a trap. Name the other colors; labels show beside the map once a color is used.</p>
+      <h2>Highlight legend <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-legend" checked> Print</label></h2>
+  
       <div id="legend-edit"></div>
     </section>
 
