@@ -109,6 +109,7 @@ input[type="text"] { width: 100%; }
 .preview th, .preview td { border: 1px solid var(--border); padding: 2px 6px; text-align: left; }
 .md-spacer { height: 1em; }
 .sheet { margin-top: 14px; padding: 14px 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; max-width: 900px; }
+.sheet .sheet-series { margin: 0 0 2px; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
 .sheet .sheet-title { margin: 0 0 4px; font: 700 22px Georgia, serif; }
 .sheet .sheet-wm { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
 .sheet section { margin-top: 12px; }
@@ -168,6 +169,7 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #board .hover, #board .selected, #board .pinned, #layer-overlay { display: none !important; }
   .sheet { display: none !important; }
   #printsheet { display: block; font-family: Georgia, serif; margin-top: 10px; }
+  #printsheet .print-series { font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; margin: 0 0 2px; }
   #printsheet .print-title { margin: 0 0 4px; font-size: 20px; font-weight: 700; }
   #printsheet h3 { margin: 10px 0 2px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
   #printsheet .preview { border: 0; padding: 0; font-size: 12px; }

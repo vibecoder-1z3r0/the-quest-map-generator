@@ -10,7 +10,7 @@ export const MAX_ITEMS = 1024;
 export const MAX_TILES = 256;
 export const SOFT_LINK_LIMIT = 2000;
 
-export const LIMITS = { num: 10, title: 160, intro: 2500, notes: 10000, wmText: 160, legend: 40 };
+export const LIMITS = { series: 160, num: 10, title: 160, intro: 2500, notes: 10000, wmText: 160, legend: 40 };
 
 // Highlight values are permanent once assigned (docs/FORMAT.md section 4.1).
 export const HIGHLIGHTS = [

@@ -66,7 +66,8 @@ color is listed beside the map.
 
 ### Quest text
 
-- **Quest number** and **title**: plain text.
+- **Series** (optional, for example "The Order of the Oth"), **quest number** and **title**: plain
+  text. The series shows above the title on the quest sheet and the print page.
 - **Intro**: text for the heroes, with **bold** and *italics* only.
 - **Zargon's notes**: your secret notes, with headings, bullet and numbered lists, bold, italics,
   rules and tables.

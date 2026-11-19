@@ -86,9 +86,14 @@ CASES = [
         wm_id=catalog["orc"],
         wm_text="plus 1 goblin",
     ),
+    case("series", series="The Order of the Oth", num="1", title="The Stone Tablets of Uganoth"),
     case("unicode", title="日本語 éèê", notes="Привет - hello"),
 ]
 
 out = ROOT / "tests/golden/v1.json"
-out.write_text(json.dumps(CASES, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-print(f"wrote {out.relative_to(ROOT)} ({len(CASES)} cases)")
+existing = json.loads(out.read_text(encoding="utf-8")) if out.exists() else []
+known = {c["name"] for c in existing}
+added = [c for c in CASES if c["name"] not in known]
+# Append-only: links already in the file are what real users hold, so they are never rewritten.
+out.write_text(json.dumps(existing + added, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+print(f"{out.relative_to(ROOT)}: kept {len(existing)} existing case(s), added {len(added)}")

@@ -41,6 +41,7 @@ def blank() -> dict:
         "notes": "",
         "wm_id": 0,
         "wm_text": "",
+        "series": "",
     }
 
 
@@ -62,6 +63,7 @@ def encode_body(st: dict) -> bytes:
     for key in ("num", "title", "intro", "notes"):
         out += string(st[key])
     out += bytes([st["wm_id"]]) + string(st["wm_text"])
+    out += string(st["series"])
     return bytes(out)
 
 
@@ -121,4 +123,6 @@ def decode(payload: str) -> dict:
         st[key] = read_string()
     st["wm_id"] = byte()
     st["wm_text"] = read_string()
+    if pos < len(body):  # optional trailing field; older links end before it
+        st["series"] = read_string()
     return st

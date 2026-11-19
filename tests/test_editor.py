@@ -529,3 +529,27 @@ def test_the_secret_door_tile_rotates_like_a_piece_while_the_hidden_door_snaps_t
     got = items(page)
     assert (got[0]["id"], got[0]["r"]) == (piece_id(page, "secret-door"), 2)
     assert (got[1]["id"], got[1]["r"]) == (piece_id(page, "hidden-door"), 1)
+
+
+def test_the_series_shows_above_the_title_on_the_sheet_print_page_and_tab(page, site):
+    assert page.locator("#sheet-series").is_hidden()
+    page.fill("#series", "The Order of the Oth")
+    page.fill("#qtitle", "The Stone Tablets")
+    assert page.locator("#sheet-series").inner_text().lower() == "the order of the oth"
+    order = page.evaluate(
+        "[...document.querySelector('#quest-sheet').children].map((e) => e.id).slice(0, 2)"
+    )
+    assert order == ["sheet-series", "sheet-title"]
+    assert page.locator("#print-series").inner_text() == "The Order of the Oth"
+    assert page.title().startswith("The Order of the Oth: The Stone Tablets")
+    page.wait_for_timeout(500)
+    settle(page)
+    payload = page.evaluate("location.hash").lstrip("#")
+    open_link(page, site, payload)
+    assert page.input_value("#series") == "The Order of the Oth"
+
+
+def test_clearing_the_series_hides_it_again(page):
+    page.fill("#series", "A series")
+    page.fill("#series", "")
+    assert page.locator("#sheet-series").is_hidden() and page.locator("#print-series").is_hidden()

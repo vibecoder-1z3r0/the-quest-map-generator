@@ -68,6 +68,7 @@ def showcase() -> dict:
         st["hl"][15 * 26 + x] = 2
     st["hl"][12 * 26 + 13] = 4
     st["legend"] = {4: "secret room"}
+    st["series"] = "The Order of the Oth"
     st["num"] = "1"
     st["title"] = "The Dusty Crypt"
     st["wm_id"] = CATALOG["goblin"]

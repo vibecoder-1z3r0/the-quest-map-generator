@@ -499,18 +499,22 @@ function renderPreviews() {
   renderNotes($("#print-notes"), app.state.notes);
   const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
   $("#print-title").textContent = title;
+  $("#print-series").textContent = app.state.series;
+  $("#print-series").hidden = !app.state.series;
   const monster = BY_ID.get(app.state.wmId);
   const wm = [monster?.name, app.state.wmText].filter(Boolean).join(" – ");
   $("#print-wm").textContent = wm ? `Wandering monster: ${wm}` : "";
   // The live quest sheet below the legend shows the same information as it is typed.
+  $("#sheet-series").textContent = app.state.series;
+  $("#sheet-series").hidden = !app.state.series;
   $("#sheet-title").textContent = title;
   $("#sheet-title").hidden = !title;
   $("#sheet-wm").textContent = wm ? `Wandering monster: ${wm}` : "";
   $("#sheet-wm").hidden = !wm;
   $("#sheet-intro-section").hidden = !app.state.intro.trim();
   $("#sheet-notes-section").hidden = !app.state.notes.trim();
-  $("#sheet-empty").hidden = Boolean(title || wm || app.state.intro.trim() || app.state.notes.trim());
-  document.title = `${title || "Quest"} – Quest Map Generator`;
+  $("#sheet-empty").hidden = Boolean(app.state.series || title || wm || app.state.intro.trim() || app.state.notes.trim());
+  document.title = `${app.state.series ? `${app.state.series}: ` : ""}${title || "Quest"} – Quest Map Generator`;
 }
 
 function renderAll() {
@@ -880,6 +884,7 @@ function textChanged() {
 }
 
 function syncFields() {
+  $("#series").value = app.state.series;
   $("#qnum").value = app.state.num;
   $("#qtitle").value = app.state.title;
   $("#qintro").value = app.state.intro;
@@ -942,6 +947,7 @@ export function initUi() {
   board.addEventListener("pointerleave", onPointerLeave);
   document.addEventListener("keydown", onKeyDown);
 
+  bindField("#series", "series", { limit: LIMITS.series });
   bindField("#qnum", "num", { limit: LIMITS.num });
   bindField("#qtitle", "title", { limit: LIMITS.title });
   bindField("#qintro", "intro", { multiline: true, limit: LIMITS.intro });

@@ -7,7 +7,7 @@ golden-link tests enforce this). This document is the contract; the code follows
 A map is stored entirely in the URL **hash** (`#...`). The hash is never sent to a server.
 
 ```
-https://example.com/quest-map/#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkDwA
+https://example.com/quest-map/#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkz-xfkgEA
                                └──────────────── payload ────────────────┘
 ```
 
@@ -64,6 +64,7 @@ The body is these sections, in this order, with no padding between them.
 | 8 | Zargon's notes | string |
 | 9 | Wandering monster id | 1 byte |
 | 10 | Wandering monster text | string |
+| 11 | Series (optional, trailing) | string |
 
 ### 4.0 Flags
 
@@ -183,6 +184,12 @@ filtered like single-line text (§6).
 | Intro | multi-line, bold/italics only | 2,500 |
 | Zargon's notes | multi-line, markdown subset | 10,000 |
 | Wandering monster text | single line, plain | 160 |
+| Series | single line, plain | 160 |
+
+**Series** (for example "The Order of the Oth") is an optional *trailing* field: the last string in
+the body. Encoders always write it, but a decoder must accept a body that ends right after the
+wandering monster text and treat the series as empty, so links made before the field existed keep
+working. Later fields can be added after it the same way.
 
 Limits count Unicode code points after filtering. A decoded field longer than its limit is
 truncated and a warning is shown. The editor stops accepting input at the limit.
@@ -236,9 +243,9 @@ distinct in the link. Nothing is merged, sorted or de-duplicated on decode.
 Highlights: `A1` grey, `B1` orange. Two items at `E8` (illustrative ids `1` and `2`; real ids come
 from `catalog.json`): id 1 at rotation 0, and id 2 at rotation 3. One tile (illustrative id `100`)
 at `E6`, 2 wide and 3 high. A legend entry `2 = "trap"`. Quest number `3`, title `Vault`,
-everything else empty, light theme.
+series `Oth`, everything else empty, light theme.
 
-Body (280 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
+Body (284 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
 
 ```
 00                                 flags: light theme
@@ -254,12 +261,13 @@ Body (280 bytes) as hex, with the 246 zero bytes after the first highlight byte 
 00                                 notes ""
 00                                 wandering monster id 0
 00                                 wandering monster text ""
+03 4f 74 68                        series "Oth"
 ```
 
 One valid encoding (raw deflate from zlib level 9; other deflaters give other bytes):
 
 ```
-#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkDwA
+#AWNQZBiRgImRhZ0phZ0xhYWViZmRiaWkKLGA0Zg1LLE0pwQkz-xfkgEA
 ```
 
 ## 9. Changing the format
