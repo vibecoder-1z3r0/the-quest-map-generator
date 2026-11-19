@@ -54,7 +54,8 @@ A **Quest stats** card (and the print page) summarises the quest, recalculated a
 monsters on the map, total quest BP, the average BP per *active* room (a room with no grey square)
 and per room that has monsters, the highest room, monsters in corridors (counted in the totals only),
 and a breakdown by type. The wandering monster is shown separately and never counted. Rooms are
-lettered A to V on the board. BP comes from each monster's body points in `src/catalog.json`.
+lettered A to V on the board. BP comes from each monster's body points in `src/catalog.json`. The Dread Warlock's body points vary
+by quest, so it counts as a monster but its BP is left out, and the card says so.
 
 ### Highlights
 

@@ -127,3 +127,12 @@ def test_monster_body_points_match_the_owner_supplied_values():
         "gargoyle": 3, "dread-warrior": 3,
         "dread-warlock": None,  # not set yet: shown as n/a in the statistics, never guessed
     }  # fmt: skip
+
+
+def test_every_monster_has_body_points_or_is_explicitly_variable():
+    """No monster is left with an unexplained missing BP; the Dread Warlock's varies by quest."""
+    for piece in CATALOG:
+        if piece.get("monster"):
+            assert isinstance(piece["bp"], int) or piece.get("bp_varies") is True, piece["slug"]
+    warlock = next(p for p in CATALOG if p["slug"] == "dread-warlock")
+    assert warlock["bp"] is None and warlock["bp_varies"] is True

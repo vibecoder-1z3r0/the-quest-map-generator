@@ -298,7 +298,8 @@
   "h": 1,
   "monster": true,
   "bp": null,
-  "set": "base"
+  "set": "base",
+  "bp_varies": true
  },
  {
   "id": 60,

@@ -60,6 +60,7 @@ def showcase() -> dict:
     put("secret-door", 8, 15, 1)
     put("weapons-rack", 11, 14, 1)
     put("orc", 0, 9)
+    put("dread-warlock", 10, 15)
     put("marker-1", 6, 12)
     put("marker-2", 13, 11)
     for x in (6, 7):
