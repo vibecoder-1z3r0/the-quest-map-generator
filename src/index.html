@@ -27,6 +27,7 @@
   <div class="toprow">
     <button id="copy" type="button" class="primary">Copy map link</button>
     <span id="linkinfo" class="linkinfo">The whole quest is in the link.</span>
+    <span class="linkinfo privacy">Anyone with the link can read Zargon's secret notes.</span>
     <button id="clear" type="button">New map</button>
   </div>
 </header>
@@ -42,6 +43,10 @@
       <button id="zoom-fit" type="button" title="Fit to window">Fit</button>
       <button id="zoom-in" type="button" title="Zoom in">+</button>
     </div>
+    <p class="hint keys">
+      <kbd>R</kbd> rotate &middot; <kbd>Del</kbd> remove &middot; arrows nudge &middot;
+      <kbd>Esc</kbd> deselect and back to Select &middot; <kbd>Ctrl+Z</kbd>/<kbd>Ctrl+Y</kbd> undo/redo
+    </p>
     <div id="viewport">
       <svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quest map"></svg>
     </div>

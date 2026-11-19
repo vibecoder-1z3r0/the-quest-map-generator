@@ -43,6 +43,8 @@ body {
 .ver { font: 400 11px system-ui, sans-serif; color: var(--muted); }
 #topbar h1 { margin: 0; font: 700 17px Georgia, serif; color: var(--accent); }
 .linkinfo { color: var(--muted); font-size: 12px; }
+.linkinfo.privacy::before { content: "\00B7"; margin-right: 10px; }
+.hint.keys { margin: 0 0 6px; }
 .linkinfo.warn { color: var(--danger); font-weight: 600; }
 .actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
 .themepick { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
@@ -171,7 +173,7 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 
 @media print {
   html, body { background: #fff !important; color: #000 !important; }
-  #topbar, #banner, #app > #tools, #app > #side, .zoombar, #footer, #unsupported { display: none !important; }
+  .hint.keys, #topbar, #banner, #app > #tools, #app > #side, .zoombar, #footer, #unsupported { display: none !important; }
   #app { display: block; }
   #stage { background: #fff; padding: 0; min-height: 0; }
   #viewport { overflow: visible; }
