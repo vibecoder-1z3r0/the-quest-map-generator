@@ -123,7 +123,7 @@ input[type="text"] { width: 100%; }
 .piece-key .keygroup { break-inside: avoid; margin-bottom: 12px; padding: 8px 10px 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel2); }
 .piece-key h4 { margin: 0 0 3px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); break-after: avoid; }
 .piece-key ul { list-style: none; margin: 0; padding: 0; }
-.piece-key li { display: flex; align-items: center; gap: 8px; margin: 0 0 5px; padding: 2px 8px 2px 4px; break-inside: avoid; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); }
+.piece-key li { display: flex; align-items: center; gap: 8px; margin: 3px 0; break-inside: avoid; }
 .piece-key .keyicon { flex: none; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; }
 .piece-key .keyicon svg { width: 40px; height: 30px; overflow: visible; }
 .piece-key .keycount { color: var(--muted); }
@@ -185,7 +185,6 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #printsheet .stats { font-size: 12px; max-width: 420px; }
   #printsheet .piece-key { font-size: 12px; }
   #printsheet .piece-key .keygroup { background: #fff; border-color: #777; }
-  #printsheet .piece-key li { background: #fff; border-color: #999; }
   #printsheet .piece-key h4 { color: #000; }
   #printsheet .piece-key .keycount { color: #000; }
   #printsheet .stats dt, #printsheet .stats dd { color: #000; }
