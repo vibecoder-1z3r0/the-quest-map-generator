@@ -73,6 +73,7 @@ def test_monsters_are_one_by_one_and_listed():
         "mummy",
         "gargoyle",
         "dread-warrior",
+        "dread-warlock",
     }
 
 
@@ -114,4 +115,5 @@ def test_monster_body_points_match_the_owner_supplied_values():
         "goblin": 1, "orc": 1, "zombie": 1, "skeleton": 1,
         "abomination": 2, "mummy": 2,
         "gargoyle": 3, "dread-warrior": 3,
+        "dread-warlock": None,  # not set yet: shown as n/a in the statistics, never guessed
     }  # fmt: skip

@@ -107,7 +107,8 @@ map. It can be hosted anywhere static.
   tomb 3×2?, bookcase 3×1, cupboard 3×1?, fireplace 3×1, throne 1×1, weapons rack 3×1, alchemist's
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
   rubble (the fallen rock tile, distinct from the falling rock trap), door, secret door. Monsters:
-  goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior. Heroes: barbarian,
+  goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
+  caster; BP not set yet). Heroes: barbarian,
   dwarf, elf, wizard. Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
   later.
 
