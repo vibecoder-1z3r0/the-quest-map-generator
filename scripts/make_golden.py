@@ -60,7 +60,7 @@ CASES = [
     case(
         "highlights",
         hl=hl_cells({0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 493: 1, 25: 6}),
-        legend={2: "pit trap area", 3: "secret room"},
+        legend={2: "any trap", 3: "secret room"},
     ),
     case(
         "full-quest",
