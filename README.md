@@ -105,6 +105,15 @@ On a phone the map comes first:
 
 ![Phone layout](docs/screenshots/06-phone.png)
 
+## Hosting and previews
+
+- Merges to `main` publish the site to GitHub Pages (the root of the `gh-pages` branch).
+- Every pull request gets its own preview at
+  `https://<owner>.github.io/<repo>/pr-preview/pr-<number>/`, linked in a comment on the PR. The
+  preview is removed when the PR is merged or closed, and other open previews are untouched.
+- One-time setup: in the repository's **Settings, Pages**, set the source to *Deploy from a branch*,
+  `gh-pages`, `/ (root)`. The branch is created by the first deploy or preview run.
+
 ## Known limitations
 
 - **Statistics use the board's fixed rooms.** You can merge rooms by laying a room tile over them,
