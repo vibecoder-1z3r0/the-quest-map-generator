@@ -85,6 +85,7 @@ def click_cell(pg: Page, x: int, y: int, fx: float = 0.5, fy: float = 0.5) -> No
 def pick_piece(pg: Page, slug: str) -> None:
     pid = pg.evaluate("(s) => QMG.CATALOG.find((c) => c.slug === s).id", slug)
     pg.click(f'#tools button[data-kind="piece"][data-value="{pid}"]')
+    pg.evaluate("window.scrollTo(0, 0)")  # clicking a far-down palette button can scroll the page
 
 
 def settle(pg: Page) -> None:

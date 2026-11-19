@@ -119,6 +119,14 @@ input[type="text"] { width: 100%; }
 .sheet section.secret > h3 { color: var(--danger); }
 .sheet section.secret .preview { border-left-color: var(--danger); }
 .sheet .muted { margin: 0; }
+.piece-key { column-width: 210px; column-gap: 24px; font-size: 14px; }
+.piece-key .keygroup { break-inside: avoid; margin-bottom: 10px; }
+.piece-key h4 { margin: 0 0 3px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); break-after: avoid; }
+.piece-key ul { list-style: none; margin: 0; padding: 0; }
+.piece-key li { display: flex; align-items: center; gap: 8px; margin: 3px 0; break-inside: avoid; }
+.piece-key .keyicon { flex: none; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.piece-key .keyicon svg { width: 40px; height: 30px; overflow: visible; }
+.piece-key .keycount { color: var(--muted); }
 .stats { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; font-size: 13px; }
 .stats dt { color: var(--muted); }
 .stats dd { margin: 0; font-weight: 600; text-align: right; }
@@ -175,6 +183,9 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #printsheet .preview { border: 0; padding: 0; font-size: 12px; }
   #printsheet table, #printsheet th, #printsheet td { border: 1px solid #000; }
   #printsheet .stats { font-size: 12px; max-width: 420px; }
+  #printsheet .piece-key { font-size: 12px; }
+  #printsheet .piece-key h4 { color: #000; }
+  #printsheet .piece-key .keycount { color: #000; }
   #printsheet .stats dt, #printsheet .stats dd { color: #000; }
   #stage .legend { margin-top: 6px; }
   @page { margin: 10mm; }
