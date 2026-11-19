@@ -184,7 +184,7 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #printsheet table, #printsheet th, #printsheet td { border: 1px solid #000; }
   #printsheet .stats { font-size: 12px; max-width: 420px; }
   #printsheet .piece-key { font-size: 12px; }
-  #printsheet .piece-key .keygroup { background: #fff; border-color: #777; }
+  #printsheet .piece-key .keygroup { border: 0; background: none; padding: 0; margin-bottom: 10px; }
   #printsheet .piece-key h4 { color: #000; }
   #printsheet .piece-key .keycount { color: #000; }
   #printsheet .stats dt, #printsheet .stats dd { color: #000; }
