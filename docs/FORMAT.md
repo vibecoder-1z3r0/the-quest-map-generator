@@ -7,7 +7,7 @@ golden-link tests enforce this). This document is the contract; the code follows
 A map is stored entirely in the URL **hash** (`#...`). The hash is never sent to a server.
 
 ```
-https://example.com/quest-map/#AVNkGJGAiZGFnSmFnZGJpaQosYDRmDUssTSnBCQDAA
+https://example.com/quest-map/#AWNQZBiRgImRhZ0phZ2RiaWkKLGA0Zg1LLE0pwQkAwA
                                └──────────────── payload ────────────────┘
 ```
 
@@ -50,6 +50,7 @@ The body is these sections, in this order, with no padding between them.
 
 | # | Section | Size |
 |---|---|---|
+| 0 | Flags | 1 byte |
 | 1 | Highlights | fixed 247 bytes |
 | 2 | Items | `varint count` + 3 bytes per item |
 | 3 | Legend | `varint count` + entries |
@@ -59,6 +60,18 @@ The body is these sections, in this order, with no padding between them.
 | 7 | Zargon's notes | string |
 | 8 | Wandering monster id | 1 byte |
 | 9 | Wandering monster text | string |
+
+### 4.0 Flags
+
+One byte of view settings.
+
+| Bit | Meaning |
+|---|---|
+| 0 | editor theme: `0` light, `1` dark |
+| 1-7 | reserved (`0`) |
+
+The theme only affects the editor on screen. **Printing is always light**, whatever this bit says.
+Opening a link applies its theme; toggling the theme updates the link but is not an undo step.
 
 ### 4.1 Highlights
 
@@ -178,11 +191,12 @@ distinct in the link. Nothing is merged, sorted or de-duplicated on decode.
 
 Highlights: `A1` grey, `B1` orange. Two items at `E8` (illustrative ids `1` and `2`; real ids come
 from `catalog.json`): id 1 at rotation 0, and id 2 at rotation 3. A legend entry `2 = "trap"`.
-Quest number `3`, title `Vault`, everything else empty.
+Quest number `3`, title `Vault`, everything else empty, light theme.
 
-Body (273 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
+Body (274 bytes) as hex, with the 246 zero bytes after the first highlight byte elided:
 
 ```
+00                                 flags: light theme
 21 [00 x246]                       highlights (247 bytes)
 02                                 item count
 01 04 07                           id 1, x=4, rot 0, y=7
@@ -199,7 +213,7 @@ Body (273 bytes) as hex, with the 246 zero bytes after the first highlight byte 
 One valid encoding (raw deflate from zlib level 9; other deflaters give other bytes):
 
 ```
-#AVNkGJGAiZGFnSmFnZGJpaQosYDRmDUssTSnBCQDAA
+#AWNQZBiRgImRhZ0phZ2RiaWkKLGA0Zg1LLE0pwQkAwA
 ```
 
 ## 9. Changing the format
