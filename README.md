@@ -26,7 +26,7 @@ opened from disk).
 
 - The board is the standard fixed board, with its rooms lettered A to V. Quests are made by placing
   pieces on it, not by drawing walls. Grey out the rooms a quest doesn't use.
-- Pieces: doors, hidden doors and secret door tiles, stairs, furniture, treasure chests, traps, monsters, heroes and
+- Pieces: doors, hidden doors, secret door tiles, wall tiles and double wall tiles, stairs, furniture, treasure chests, traps, monsters, heroes and
   numbered markers for pointing at things from your notes.
 - Pieces can be **rotated** (`R`), **moved** (drag, arrow keys, or the buttons in the panel) and
   **removed** (`Del` or the Eraser). Several pieces can share a square. New pieces go on top, and
@@ -82,7 +82,11 @@ color is listed beside the map.
 - The editor opens in **light mode**. Switch to **dark mode** (or any later theme) for easier editing. The choice is
   stored in the link, so a shared link opens in the theme it was saved with. Printing never uses a dark
   theme: light themes print as themselves, and dark ones print in light.
-- **Print** gives a clean page with the map, the intro, the notes and the wandering monster.
+- **Print** gives a one-page portrait sheet in the order of the official books: the map, the
+  quest title, the introduction, Zargon's notes (if any), the wandering monster, then a compact key
+  of the pieces and small quest statistics. Tick or untick **Print** next to a section's title to
+  include or leave it out; **Monsters only** trims the key to the monsters. These choices are not
+  stored in the link.
 
 ### Heads up
 
