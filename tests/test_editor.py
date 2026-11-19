@@ -166,7 +166,7 @@ def test_legend_lists_only_used_colors_with_fixed_grey_and_default_orange(page):
     assert page.locator("#legend li").count() == 0
     paint(page, 1, 3, 3)
     paint(page, 2, 4, 3)
-    assert page.locator("#legend li").all_inner_texts() == ["Solid rock", "Trap"]
+    assert page.locator("#legend li").all_inner_texts() == ["Solid stone", "Trap"]
 
 
 def test_grey_has_no_editable_legend_but_the_others_do(page):

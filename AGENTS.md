@@ -99,9 +99,9 @@ map. It can be hosted anywhere static.
   buttons (Bring forward, Send back) reorder any piece past any other. Any number of pieces may share
   a square; the editor refuses only an exact duplicate.
 - **Highlights**: 4 bits per square, drawn as a translucent tint over whatever is beneath. `0` none,
-  `1` grey (solid rock, with a faint hatch), `2` orange, `3` cyan, `4` yellow, `5` bright green; `6–15`
+  `1` grey (solid stone, with a faint hatch), `2` orange, `3` cyan, `4` yellow, `5` bright green; `6–15`
   reserved. Numbers are permanent. Orange means a trap of any kind (default legend text "Trap"). Grey is
-  always "Solid rock" with no editable legend. In the palette, Grey sits in its own **"Solid stone
+  always "Solid stone" with no editable legend. In the palette, Grey sits in its own **"Solid stone
   areas"** section directly above "Doors & walls" (the button is still called "Grey"); the Highlight
   section keeps Clear, Orange, Cyan, Yellow and Bright green. Colors 2-15 may carry an optional editable label stored
   in the URL; the legend beside the map lists each color that is used on the map.
