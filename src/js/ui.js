@@ -515,7 +515,7 @@ function renderPieceKey(container, groups) {
         list.append(el("li", {}, el("span", { class: "keyicon" }, iconThumb(piece)), label));
       }
     }
-    container.append(el("div", { class: "keygroup" }, el("h4", { text: group }), list));
+    container.append(el("div", { class: "keygroup", "data-group": group }, el("h4", { text: group }), list));
   }
 }
 
@@ -537,6 +537,8 @@ function renderPreviews() {
   renderNotes($("#sheet-notes"), app.state.notes);
   renderIntro($("#print-intro"), app.state.intro);
   renderNotes($("#print-notes"), app.state.notes);
+  $("#print-notes-section").hidden = !app.state.notes.trim();
+  $("#print-intro").hidden = !app.state.intro.trim();
   const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
   $("#print-title").textContent = title;
   $("#print-series").textContent = app.state.series;
@@ -849,7 +851,10 @@ function buildPalette() {
     (h.value === 1 ? solid : hls).append(button);
   }
   root.append(hls);
-  root.append(el("h2", { text: "Solid stone areas" }), solid);
+  root.append(
+    el("h2", { text: "Solid stone areas" }, el("span", { class: "muted", text: " (paints like a color; Clear erases)" })),
+    solid,
+  );
   for (const group of GROUPS) {
     root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
@@ -1009,6 +1014,10 @@ export function initUi() {
   $("#zoom-out").addEventListener("click", () => setZoom(app.zoom / 1.25));
   $("#zoom-fit").addEventListener("click", () => setZoom(1));
   $("#print-btn").addEventListener("click", () => window.print());
+  for (const [id, cls] of [["intro", "np-intro"], ["key", "np-key"], ["stats", "np-stats"], ["notes", "np-notes"], ["legend", "np-legend"]]) {
+    $(`#po-${id}`).addEventListener("change", (e) => document.body.classList.toggle(cls, !e.target.checked));
+  }
+  $("#po-monsters").addEventListener("change", (e) => document.body.classList.toggle("po-monsters", e.target.checked));
   $("#clear").addEventListener("click", () => {
     if (!window.confirm("Start a new, empty map? You can get back with Undo or the browser's back button.")) return;
     const theme = app.state.theme;

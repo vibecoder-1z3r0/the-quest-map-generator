@@ -155,7 +155,9 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 #legend-edit .lg { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
 #legend-edit input { flex: 1; }
 
-#printsheet { display: none; }
+#printsheet, #printhead { display: none; }
+.check { display: block; font-size: 13px; margin: 2px 0; }
+.check.sub { margin-left: 22px; }
 #footer { padding: 12px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); }
 #footer p { margin: 0; max-width: 1000px; }
 
@@ -176,18 +178,29 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #board { width: 100%; border-radius: 0; }
   #board .hover, #board .selected, #board .pinned, #layer-overlay { display: none !important; }
   .sheet { display: none !important; }
-  #printsheet { display: block; font-family: Georgia, serif; margin-top: 10px; }
-  #printsheet .print-series { font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; margin: 0 0 2px; }
-  #printsheet .print-title { margin: 0 0 4px; font-size: 20px; font-weight: 700; }
-  #printsheet h3 { margin: 10px 0 2px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
-  #printsheet .preview { border: 0; padding: 0; font-size: 12px; }
+  #printhead, #printsheet { display: block; font-family: Georgia, serif; }
+  #printhead { margin: 8px 0 0; }
+  #printhead h3 { margin: 6px 0 2px; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+  #printhead .print-series { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; margin: 0; }
+  #printhead .print-title { margin: 0 0 2px; font-size: 20px; font-weight: 700; }
+  #printhead #print-wm { margin: 0 0 4px; font-size: 11px; }
+  #printhead .preview, #printsheet .preview { border: 0; padding: 0; font-size: 11px; }
+  #printsheet { margin-top: 6px; }
+  #printsheet h3 { margin: 6px 0 2px; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
   #printsheet table, #printsheet th, #printsheet td { border: 1px solid #000; }
-  #printsheet .stats { font-size: 12px; max-width: 420px; }
-  #printsheet .piece-key { font-size: 12px; }
-  #printsheet .piece-key .keygroup { border: 0; background: none; padding: 0; margin-bottom: 10px; }
-  #printsheet .piece-key h4 { color: #000; }
-  #printsheet .piece-key .keycount { color: #000; }
-  #printsheet .stats dt, #printsheet .stats dd { color: #000; }
+  #printsheet .stats { font-size: 8px; gap: 1px 10px; grid-template-columns: repeat(3, max-content max-content); }
+  #printsheet .stats .sub, #printsheet .stats .note { grid-column: 1 / -1; font-size: 8px; }
+  #printsheet .piece-key { font-size: 8px; column-width: auto; display: flex; flex-wrap: wrap; gap: 2px 14px; }
+  #printsheet .piece-key .keygroup { border: 0; background: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; }
+  #printsheet .piece-key h4 { color: #000; margin: 0; font-size: 8px; }
+  #printsheet .piece-key ul { display: flex; flex-wrap: wrap; gap: 2px 8px; margin: 0; padding: 0; }
+  #printsheet .piece-key li { display: flex; align-items: center; gap: 3px; }
+  #printsheet .piece-key .keyicon { width: 24px; height: 18px; }
+  #printsheet .piece-key .keycount, #printsheet .stats dt, #printsheet .stats dd { color: #000; }
+  #board .coords { display: none; }
+  body.np-intro #print-intro, body.np-key #print-key-section, body.np-stats #print-stats-section,
+  body.np-notes #print-notes-section, body.np-legend #stage .legend { display: none !important; }
+  body.po-monsters #print-key .keygroup:not([data-group="Monsters"]) { display: none; }
   #stage .legend { margin-top: 6px; }
   @page { margin: 10mm; }
 }

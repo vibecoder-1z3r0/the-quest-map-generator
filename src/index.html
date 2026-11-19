@@ -97,6 +97,17 @@
       <dl id="stats" class="stats"></dl>
     </section>
 
+    <section class="card" id="print-options">
+      <h2>Print options</h2>
+      <label class="check"><input type="checkbox" id="po-intro" checked> Introduction</label>
+      <label class="check"><input type="checkbox" id="po-key" checked> Piece key</label>
+      <label class="check sub"><input type="checkbox" id="po-monsters"> Monsters only</label>
+      <label class="check"><input type="checkbox" id="po-legend" checked> Highlight legend</label>
+      <label class="check"><input type="checkbox" id="po-stats" checked> Quest statistics</label>
+      <label class="check"><input type="checkbox" id="po-notes" checked> Zargon's notes (if any)</label>
+      <p class="muted">Not stored in the link.</p>
+    </section>
+
     <section class="card">
       <h2>Highlight legend</h2>
       <p class="hint">Grey is always solid stone. Orange means a trap. Name the other colors; labels show beside the map once a color is used.</p>
@@ -113,20 +124,26 @@
 
 <div id="unsupported" role="alert" hidden></div>
 
-<div id="printsheet" aria-hidden="true">
+<div id="printhead" aria-hidden="true">
   <div id="print-series" class="print-series"></div>
   <div id="print-title" class="print-title"></div>
+  <div id="print-intro" class="preview"></div>
+  <div id="print-notes-section">
+    <h3>Zargon's notes</h3>
+    <div id="print-notes" class="preview"></div>
+  </div>
   <p id="print-wm"></p>
+</div>
+
+<div id="printsheet" aria-hidden="true">
   <div id="print-key-section">
     <h3>Pieces on this map</h3>
     <div id="print-key" class="piece-key"></div>
   </div>
-  <h3>Quest statistics</h3>
-  <dl id="print-stats" class="stats"></dl>
-  <h3>Introduction</h3>
-  <div id="print-intro" class="preview"></div>
-  <h3>Zargon's notes</h3>
-  <div id="print-notes" class="preview"></div>
+  <div id="print-stats-section">
+    <h3>Quest statistics</h3>
+    <dl id="print-stats" class="stats"></dl>
+  </div>
 </div>
 
 <footer id="footer">
