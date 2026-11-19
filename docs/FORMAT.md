@@ -70,17 +70,19 @@ One byte of view settings.
 | 0-3 | editor **theme** id, 0..15 |
 | 4-7 | reserved (`0`) |
 
-| Theme id | Theme |
-|---|---|
-| 0 | light (default) |
-| 1 | dark |
-| 2-15 | reserved for future themes |
+| Theme id | Theme | Prints as |
+|---|---|---|
+| 0 | light (default) | itself |
+| 1 | dark | light (id 0) |
+| 2-15 | reserved for future themes | each declares its own |
 
 Theme ids are permanent once assigned. A decoder that meets an unknown theme id shows the light
 theme but keeps the id in the map, so it survives re-encoding.
 
-The theme only affects the editor on screen. **Printing is always light**, whatever the theme id
-says. Opening a link applies its theme; changing the theme updates the link but is not an undo step.
+Every theme declares whether it is **print-safe** (a light theme). **Printing never uses a dark
+theme**: a print-safe theme prints as itself, and any other theme prints using the default light
+theme (id 0). So a link in a future light theme prints in that theme, and a dark one prints light.
+Opening a link applies its theme; changing the theme updates the link but is not an undo step.
 
 ### 4.1 Highlights
 
