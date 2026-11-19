@@ -109,9 +109,10 @@ map. It can be hosted anywhere static.
   rubble (the fallen rock tile, distinct from the falling rock trap), door, secret door. Monsters:
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
   caster; BP not set yet). Heroes: barbarian,
-  dwarf, elf, wizard; expansion heroes bard, warlock, druid, berzerker, explorer, commander of the
-  guardian knights, rogue heir of elethorn and wandering monk (set `expansion-heroes`, a provisional
-  name until the real set names are given; "Berzerker" is spelled as the owner wrote it). Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
+  dwarf, elf, wizard; plus the expansion heroes bard, warlock, druid, berzerker, explorer, commander
+  of the guardian knights, rogue heir of elethorn and wandering monk. Those eight are **really
+  expansion heroes but are tagged `base` for now** (owner's call); re-tag them when the real set
+  names are known. "Berzerker" is spelled as the owner wrote it. Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
   later.
 
 ## Quest statistics (derived, never stored in the link)
@@ -198,6 +199,7 @@ Repo is MIT. Footer and README carry a notice along these lines:
 ## Open items
 
 - Additional room tile styles, if wanted (only the plain "Room tile" exists).
+- Re-tag the eight expansion heroes (and the Dread Warlock's BP) once the real set names and values are known.
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
   (3) editor (fixed board, stacking, drag, panel, undo/redo); (4) markdown + character allowlist;

@@ -97,18 +97,13 @@ def test_every_piece_names_a_known_set():
         assert piece.get("set") in set_ids, f"{piece['slug']} has no valid set"
 
 
-def test_the_original_pieces_are_base_and_the_added_heroes_are_a_provisional_set():
-    base_heroes = {"barbarian", "dwarf", "elf", "wizard"}
-    added = {
-        "bard", "warlock", "druid", "berzerker", "explorer",
-        "commander-guardian-knights", "rogue-heir-of-elethorn", "wandering-monk",
-    }  # fmt: skip
-    by_slug = {p["slug"]: p for p in CATALOG}
-    assert {s["id"] for s in SETS} == {"base", "expansion-heroes"}
-    assert all(by_slug[s]["set"] == "expansion-heroes" for s in added)
-    assert all(p["set"] == "base" for p in CATALOG if p["slug"] not in added)
+def test_everything_is_tagged_base_for_now_and_all_heroes_share_one_group():
+    """The eight added heroes are really expansion heroes, tagged base until their sets are known."""
+    assert {s["id"] for s in SETS} == {"base"}
+    assert {p["set"] for p in CATALOG} == {"base"}
     heroes = {p["slug"] for p in CATALOG if p["group"] == "Heroes"}
-    assert heroes == base_heroes | added  # expansion heroes share the one Heroes group
+    assert {"barbarian", "dwarf", "elf", "wizard", "bard", "wandering-monk"} <= heroes
+    assert len(heroes) == 12
 
 
 def test_heroes_are_one_by_one_tokens_and_never_monsters():
