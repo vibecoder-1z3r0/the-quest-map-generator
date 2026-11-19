@@ -108,6 +108,12 @@ input[type="text"] { width: 100%; }
 .preview table { border-collapse: collapse; margin: 4px 0; }
 .preview th, .preview td { border: 1px solid var(--border); padding: 2px 6px; text-align: left; }
 .md-spacer { height: 1em; }
+.stats { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; font-size: 13px; }
+.stats dt { color: var(--muted); }
+.stats dd { margin: 0; font-weight: 600; text-align: right; }
+.stats .note { grid-column: 1 / -1; color: var(--danger); font-size: 12px; }
+.stats .sub { grid-column: 1 / -1; font-weight: 400; }
+#board .room-labels text { font: 700 12px system-ui, sans-serif; fill: #3b2a1a; fill-opacity: 0.4; pointer-events: none; }
 .hint { color: var(--muted); font-size: 12px; }
 kbd { background: var(--panel2); border: 1px solid var(--border); border-radius: 3px; padding: 0 4px; font-size: 11px; }
 
@@ -150,6 +156,8 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #printsheet h3 { margin: 10px 0 2px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
   #printsheet .preview { border: 0; padding: 0; font-size: 12px; }
   #printsheet table, #printsheet th, #printsheet td { border: 1px solid #000; }
+  #printsheet .stats { font-size: 12px; max-width: 420px; }
+  #printsheet .stats dt, #printsheet .stats dd { color: #000; }
   #stage .legend { margin-top: 6px; }
   @page { margin: 10mm; }
 }

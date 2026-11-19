@@ -27,6 +27,8 @@ SVG_NS = "http://www.w3.org/2000/svg"
 JS_ORDER = [
     "constants",
     "catalog",
+    "board",
+    "stats",
     "text",
     "markdown",
     "format",
@@ -111,12 +113,115 @@ def build_sprites(catalog: list[dict]) -> str:
     return "\n".join(symbols)
 
 
-def build_board() -> str:
+ROOM_COLORS = [
+    "#f0d9b5",
+    "#ecbcb4",
+    "#bddbd1",
+    "#cdd3ec",
+    "#efe2a6",
+    "#d3e6ae",
+    "#f3cba8",
+    "#bcd9e9",
+]
+CORRIDOR_COLOR = "#e2d9c6"
+SOLID_COLOR = "#5b554e"
+WALL_COLOR = "#3b2a1a"
+
+
+def load_board() -> list[str]:
+    """Parse src/board.txt into 19 strings of 26 characters and validate it."""
+    path = SRC / "board.txt"
+    rows = [
+        line.rstrip("\n")
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("//")
+    ]
+    if len(rows) != ROWS:
+        raise BuildError(f"board.txt: expected {ROWS} rows, found {len(rows)}")
+    for n, row in enumerate(rows, 1):
+        if len(row) != COLS:
+            raise BuildError(f"board.txt: row {n} has {len(row)} columns, expected {COLS}")
+        for ch in row:
+            if not (ch in ".#" or "A" <= ch <= "Z"):
+                raise BuildError(f"board.txt: row {n} has unknown character {ch!r}")
+    for letter in sorted({ch for row in rows for ch in row if ch.isalpha()}):
+        cells = {(x, y) for y, row in enumerate(rows) for x, ch in enumerate(row) if ch == letter}
+        seen, stack = set(), [next(iter(cells))]
+        while stack:
+            x, y = stack.pop()
+            if (x, y) in seen:
+                continue
+            seen.add((x, y))
+            stack += [c for c in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)) if c in cells]
+        if seen != cells:
+            raise BuildError(f"board.txt: room {letter} is not one connected area")
+    return rows
+
+
+def room_colors(rows: list[str]) -> dict[str, str]:
+    """Greedy colouring so rooms that share a wall get different tints."""
+    letters = sorted({ch for row in rows for ch in row if ch.isalpha()})
+    touching: dict[str, set[str]] = {k: set() for k in letters}
+    for y in range(ROWS):
+        for x in range(COLS):
+            for nx, ny in ((x + 1, y), (x, y + 1)):
+                if nx < COLS and ny < ROWS:
+                    a, b = rows[y][x], rows[ny][nx]
+                    if a != b and a.isalpha() and b.isalpha():
+                        touching[a].add(b)
+                        touching[b].add(a)
+    colors: dict[str, str] = {}
+    for letter in letters:
+        used = {colors[o] for o in touching[letter] if o in colors}
+        colors[letter] = next((c for c in ROOM_COLORS if c not in used), ROOM_COLORS[0])
+    return colors
+
+
+def board_svg(rows: list[str]) -> str:
+    colors = room_colors(rows)
+    w, h = COLS * CELL, ROWS * CELL
+    tiles, walls = [], []
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            fill = CORRIDOR_COLOR if ch == "." else SOLID_COLOR if ch == "#" else colors[ch]
+            tiles.append(
+                f'<rect x="{x * CELL}" y="{y * CELL}" '
+                f'width="{CELL}" height="{CELL}" fill="{fill}"/>'
+            )
+            for nx, ny, edge in (
+                (x + 1, y, f"M{(x + 1) * CELL} {y * CELL}v{CELL}"),
+                (x, y + 1, f"M{x * CELL} {(y + 1) * CELL}h{CELL}"),
+            ):
+                if nx < COLS and ny < ROWS:
+                    other = rows[ny][nx]
+                    if other != ch:
+                        walls.append(edge)
+    grid = "".join(f"M{i * CELL} 0V{h}" for i in range(1, COLS)) + "".join(
+        f"M0 {j * CELL}H{w}" for j in range(1, ROWS)
+    )
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}">'
+        "<title>Board</title><desc>Generated from src/board.txt.</desc>"
+        + "".join(tiles)
+        + f'<path d="{grid}" stroke="#000" stroke-opacity=".13" stroke-width="1" fill="none"/>'
+        + f'<path d="{"".join(walls)}" stroke="{WALL_COLOR}" stroke-width="5" '
+        + 'stroke-linecap="square" fill="none"/>'
+        + f'<rect x="3" y="3" width="{w - 6}" height="{h - 6}" fill="none" '
+        + f'stroke="{WALL_COLOR}" stroke-width="6"/>'
+        + "</svg>"
+    )
+
+
+def build_board(rows: list[str]) -> str:
     vb = f"0 0 {COLS * CELL} {ROWS * CELL}"
     custom = CUSTOM / "board.svg"
-    path = custom if custom.is_file() else SRC / "board.svg"
-    root = validate_svg(path, vb)
-    print(f"board: {path.relative_to(ROOT)} ({'custom' if path == custom else 'default'})")
+    if custom.is_file():
+        root = validate_svg(custom, vb)
+        print(f"board art: {custom.relative_to(ROOT)} (custom); room map from src/board.txt")
+    else:
+        tmp = ET.fromstring(board_svg(rows))
+        root = tmp
+        print("board art: generated from src/board.txt")
     return f'<symbol id="board-art" viewBox="{vb}">{inner_xml(root)}</symbol>'
 
 
@@ -185,10 +290,15 @@ def main() -> int:
     try:
         catalog = json.loads((SRC / "catalog.json").read_text(encoding="utf-8"))
         check_catalog(catalog)
-        sprites = build_sprites(catalog) + "\n" + build_board()
+        board_rows = load_board()
+        sprites = build_sprites(catalog) + "\n" + build_board(board_rows)
         js = bundle_js().replace("/*@CATALOG@*/ []", json.dumps(catalog, separators=(",", ":")))
-        if "/*@CATALOG@*/" in js:
-            raise BuildError("catalog placeholder not replaced")
+        js = js.replace("/*@BOARD@*/ []", json.dumps(board_rows))
+        if "/*@CATALOG@*/" in js or "/*@BOARD@*/" in js:
+            raise BuildError("catalog or board placeholder not replaced")
+        unset = [p["name"] for p in catalog if p.get("monster") and p.get("bp") is None]
+        if unset:
+            print(f"note: no body point (BP) value yet for: {', '.join(unset)}")
         css = (SRC / "style.css").read_text(encoding="utf-8")
         html = (SRC / "index.html").read_text(encoding="utf-8")
         for marker in ("/*@CSS@*/", "/*@JS@*/", "<!--@SPRITES@-->"):

@@ -12,6 +12,7 @@ import {
 } from "./constants.js";
 import { blankState, decodeHash, encodeState } from "./format.js";
 import { renderIntro, renderNotes } from "./markdown.js";
+import { computeStats } from "./stats.js";
 import {
   boardSkeleton,
   boardViewBox,
@@ -355,6 +356,63 @@ function renderLegend() {
   $("#legend").replaceChildren(...items);
 }
 
+function formatNumber(value) {
+  return String(Math.round(value * 100) / 100);
+}
+
+function plural(count, name) {
+  return `${count} ${name}${count === 1 ? "" : "s"}`;
+}
+
+// Rows for the Quest stats card: [label, value] pairs, or { note } / { sub } lines.
+function statRows(stats) {
+  const bp = (value) => (stats.bpKnown ? formatNumber(value) : "n/a");
+  const rows = [["Monsters", String(stats.monsters)], ["Total quest BP", bp(stats.bp)]];
+  rows.push([
+    `Avg BP, active rooms (${stats.activeRooms.length})`,
+    stats.averageActive === null || !stats.bpKnown ? "n/a" : formatNumber(stats.averageActive),
+  ]);
+  rows.push([
+    `Avg BP, occupied rooms (${stats.occupiedRooms.length})`,
+    stats.averageOccupied === null || !stats.bpKnown ? "n/a" : formatNumber(stats.averageOccupied),
+  ]);
+  rows.push([
+    "Highest room BP",
+    stats.highest && stats.bpKnown ? `${formatNumber(stats.highest.bp)} (room ${stats.highest.rooms.join(", ")})` : "n/a",
+  ]);
+  rows.push(["In corridors", `${plural(stats.corridor.count, "monster")}, ${bp(stats.corridor.bp)} BP`]);
+  if (stats.types.length) {
+    rows.push({ sub: stats.types.map((t) => plural(t.count, t.name)).join(", ") });
+  }
+  const wm = stats.wandering;
+  const wandering = [wm.monster, wm.text].filter(Boolean).join(" \u2013 ");
+  if (wandering) {
+    const extra = wm.monster ? ` (${wm.bp === null ? "BP not set" : `${wm.bp} BP`})` : "";
+    rows.push(["Wandering (not counted)", `${wandering}${extra}`]);
+  }
+  if (!stats.bpKnown) {
+    rows.push({ note: `BP is not set yet for: ${stats.missing.join(", ")}.` });
+  }
+  return rows;
+}
+
+function renderStats() {
+  const rows = statRows(computeStats(app.state));
+  for (const id of ["#stats", "#print-stats"]) {
+    const list = $(id);
+    list.replaceChildren();
+    for (const row of rows) {
+      if (Array.isArray(row)) {
+        list.append(el("dt", { text: row[0] }), el("dd", { text: row[1] }));
+      } else if (row.sub) {
+        list.append(el("dd", { class: "sub", text: row.sub }));
+      } else {
+        list.append(el("dd", { class: "note", text: row.note }));
+      }
+    }
+  }
+}
+
 function renderUndoRedo() {
   $("#undo").disabled = !app.past.length;
   $("#redo").disabled = !app.future.length;
@@ -378,6 +436,7 @@ function renderAll() {
   renderOverlay();
   renderInspector();
   renderLegend();
+  renderStats();
   renderUndoRedo();
   renderPreviews();
   markTools();

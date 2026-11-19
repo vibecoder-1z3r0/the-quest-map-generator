@@ -4,10 +4,11 @@ A browser-only, static HTML5 quest map editor for HeroQuest-style quests. The **
 quest text live in the URL hash**; nothing is saved, no server, no storage. Any link regenerates the
 map. It can be hosted anywhere static.
 
-> Status: first working version on a **placeholder board**. The rebuilt editor, `make` build, lint,
-> tests (golden links, hostile-input, visual baselines) and CI are in place. Still to come: the real
-> board layout, the open-wall mechanism (the current "Open wall" piece is provisional), verified
-> furniture footprints, and the release and Pages setup in the GitHub repository settings.
+> Status: working editor on the **real board layout** (22 rooms) with quest statistics. The `make`
+> build, lint, tests (golden links, hostile-input, visual baselines) and CI are in place. Still to
+> come: monster body point (BP) values, the open-wall mechanism (the current "Open wall" piece is
+> provisional), verified furniture footprints, and the release and Pages setup in the GitHub
+> repository settings.
 
 ## Git conventions
 
@@ -67,9 +68,12 @@ map. It can be hosted anywhere static.
 
 ## Board, pieces and layers
 
-- The board is a **fixed 26×19 background** with rooms and thick wall borders already drawn
-  (`src/board.svg`, replaceable). The layout will be supplied by the owner; use a placeholder 26×19
-  grid until then. There is no floor painting and no derived walls.
+- The board is a **fixed 26×19 background**. Its single source of truth is **`src/board.txt`**: one
+  character per square (`.` corridor, `A`-`Z` a room, `#` solid). The build generates the board art
+  (walls wherever neighboring squares differ, tinted rooms) and the room map the statistics use. To
+  replace only the art, drop `board.svg` in `icons-custom/`; the room map still comes from
+  `board.txt`. The layout was traced from the owner's photo of the board (the photo and official art
+  are not in the repo). There is no floor painting. Rooms are lettered A-Z in reading order.
 - Everything placed is an item record **`[icon index, x, y, rotation]`**, rotation 0–3. `x, y` is the
   top-left square of the piece's footprint. A rotation swaps width and height.
 - Doors and secret doors are 1×1 pieces; the door art sits on the north edge at rotation 0 and
@@ -93,6 +97,19 @@ map. It can be hosted anywhere static.
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior. Heroes: barbarian,
   dwarf, elf, wizard. Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
   later.
+
+## Quest statistics (derived, never stored in the link)
+
+Shown in a "Quest stats" card and on the print page. Every monster counts at its catalog `bp`
+(body points); `bp: null` means not set yet, and the card then shows "n/a" and names the monsters
+without a value (never guess a BP).
+- Monsters on the map and total quest BP (corridor monsters included).
+- Average BP over **active rooms** (a room with no grey square at all) and over **rooms that contain
+  monsters**; highest room BP (ties listed). Empty rooms count as 0 in the active average.
+- Monsters standing in corridors are in the totals only, and get their own "In corridors" line.
+- The wandering monster is **never counted**; it has its own line (BP shown if a monster is picked).
+- Not counted by design: off-map or reinforcement monsters, and per-monster BP overrides.
+- A per-type breakdown ("2 Goblins, 1 Mummy").
 
 ## Quest text
 
@@ -162,7 +179,8 @@ Repo is MIT. Footer and README carry a notice along these lines:
 
 ## Open items
 
-- Board layout from the owner; how rooms were merged (open-wall piece vs overlay tile).
+- Body point (BP) values for the eight monsters (set `bp` in `src/catalog.json`; currently null).
+- How rooms were merged (open-wall piece vs overlay tile).
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
   (3) editor (fixed board, stacking, drag, panel, undo/redo); (4) markdown + character allowlist;

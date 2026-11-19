@@ -1,4 +1,5 @@
 // SVG rendering of the map: board, highlights, pieces, coordinate labels and overlays.
+import { roomSquares } from "./board.js";
 import { BY_ID, footprint } from "./catalog.js";
 import { CELL, COLS, HIGHLIGHTS, ROWS } from "./constants.js";
 
@@ -16,6 +17,10 @@ export function boardSkeleton() {
   for (let y = 0; y < ROWS; y++) {
     labels.push(`<text x="-8" y="${y * CELL + CELL / 2 + 4}" text-anchor="end">${y + 1}</text>`);
   }
+  const roomLabels = [...roomSquares()].map(
+    ([letter, squares]) =>
+      `<text x="${squares[0].x * CELL + 5}" y="${squares[0].y * CELL + 13}">${letter}</text>`,
+  );
   return `
     <defs>
       <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -24,6 +29,7 @@ export function boardSkeleton() {
       </pattern>
     </defs>
     <use href="#board-art" x="0" y="0" width="${BOARD_W}" height="${BOARD_H}"/>
+    <g id="layer-rooms" class="room-labels">${roomLabels.join("")}</g>
     <g id="layer-hl"></g>
     <g id="layer-items"></g>
     <g id="layer-overlay" pointer-events="none"></g>

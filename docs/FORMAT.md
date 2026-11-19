@@ -39,6 +39,9 @@ payload = base64url( [ version byte ] ++ deflateRaw( body ) )
 
 ## 3. Grid
 
+> The room map and the quest statistics are derived from `src/board.txt` and the placed pieces.
+> Nothing about them is stored in the link.
+
 - 26 columns (`x` = 0..25) by 19 rows (`y` = 0..18). Origin is the top-left square.
 - Board-style labels are for display only: column letter `A`..`Z` plus row number `1`..`19`.
   `x=4, y=7` is `E8`. The URL always uses numbers.

@@ -25,42 +25,46 @@ CATALOG = {p["slug"]: p["id"] for p in json.loads((ROOT / "src/catalog.json").re
 MARGIN, CELL = 22, 32
 
 
+def board_rows() -> list[str]:
+    lines = (ROOT / "src/board.txt").read_text(encoding="utf-8").splitlines()
+    return [ln for ln in lines if ln.strip() and not ln.startswith("//")]
+
+
 def showcase() -> dict:
+    """A small quest on the real board: unused rooms are greyed out, as in the printed quests."""
     st = ref.blank()
+    rows = board_rows()
+    in_play = set("TLMQKR")
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch.isalpha() and ch not in in_play:
+                st["hl"][y * 26 + x] = 1
     put = lambda slug, x, y, r=0: st["items"].append((CATALOG[slug], x, y, r))  # noqa: E731
-    put("stairs", 2, 2)
-    put("door", 6, 3, 1)
-    put("table", 9, 3)
-    put("bookcase", 9, 1)
-    put("fireplace", 16, 1, 0)
-    put("throne", 19, 3)
-    put("goblin", 8, 4)
-    put("goblin", 11, 5)
-    put("orc", 13, 4)
-    put("abomination", 16, 4)
-    put("mummy", 21, 6)
-    put("treasure-chest", 12, 8)
-    put("pit-trap", 5, 8)
-    put("spear-trap", 6, 8)
-    put("tomb", 15, 10, 1)
-    put("secret-door", 14, 9, 2)
-    put("sorcerers-table", 20, 11)
-    put("weapons-rack", 3, 12)
-    put("rubble", 9, 12)
-    put("falling-rock-trap", 10, 12)
-    put("barbarian", 2, 4)
-    put("dwarf", 3, 4)
-    put("elf", 2, 5)
-    put("wizard", 3, 5)
-    for n in (1, 2, 3):
-        put(f"marker-{n}", 4 + n * 4, 14)
-    for y in range(0, 4):
-        for x in range(22, 26):
-            st["hl"][y * 26 + x] = 1
-    for x in (5, 6, 7):
-        st["hl"][8 * 26 + x] = 2
-    for x in range(12, 15):
-        st["hl"][9 * 26 + x] = 4
+    put("stairs", 1, 16)
+    for x, y in ((3, 16), (4, 16), (3, 17), (4, 17)):
+        put(["barbarian", "dwarf", "elf", "wizard"][(x - 3) + 2 * (y - 16)], x, y)
+    put("door", 2, 14, 0)
+    put("table", 2, 11, 0)
+    put("goblin", 1, 10)
+    put("goblin", 4, 12)
+    put("treasure-chest", 1, 13)
+    put("door", 5, 11, 3)
+    put("mummy", 6, 11)
+    put("door", 8, 14, 0)
+    put("pit-trap", 6, 15)
+    put("spear-trap", 7, 15)
+    put("orc", 5, 17)
+    put("door", 7, 13, 1)
+    put("tomb", 12, 8, 1)
+    put("abomination", 14, 10)
+    put("secret-door", 8, 15, 1)
+    put("weapons-rack", 11, 14, 1)
+    put("orc", 0, 9)
+    put("marker-1", 6, 12)
+    put("marker-2", 13, 11)
+    for x in (6, 7):
+        st["hl"][15 * 26 + x] = 2
+    st["hl"][12 * 26 + 13] = 4
     st["legend"] = {4: "secret room"}
     st["num"] = "1"
     st["title"] = "The Dusty Crypt"
@@ -71,9 +75,9 @@ def showcase() -> dict:
         "**Beware**: something *moves* in the dark."
     )
     st["notes"] = (
-        "# Zargon's secrets\n- The chest holds **150 gold**\n- The pit trap is at F9\n"
+        "# Zargon's secrets\n- The chest holds **150 gold**\n- Pit and spear traps in room Q\n"
         "- A secret door hides the tomb room\n\n## Monsters\n| Monster | Where |\n|---|---|\n"
-        "| 2 Goblins | Near the table |\n| Mummy | Guards the stairs |"
+        "| 2 Goblins | Room L |\n| Mummy | Room M |"
     )
     return st
 
@@ -118,8 +122,8 @@ def main() -> None:
         ctx, page = open_page("#" + link)
         page.click('#tools button[data-kind="select"]')
         box = page.locator("#board").bounding_box()
-        page.mouse.click(*center(box, 11, 5))
-        page.mouse.move(*center(box, 11, 5))
+        page.mouse.click(*center(box, 4, 12))
+        page.mouse.move(*center(box, 4, 12))
         page.screenshot(path=str(OUT / "02-quest-in-progress.png"))
         page.locator("#side").screenshot(path=str(OUT / "03-quest-text.png"))
         page.select_option("#theme", label="Dark")
