@@ -36,14 +36,15 @@ body {
   color: var(--ink);
   font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
-#topbar {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--border);
+#topbar { display: flex; flex-direction: column; gap: 6px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--border);
 }
+.toprow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.head-title { flex: 1 1 200px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.ver { font: 400 11px system-ui, sans-serif; color: var(--muted); }
 #topbar h1 { margin: 0; font: 700 17px Georgia, serif; color: var(--accent); }
-.linkinfo { color: var(--muted); font-size: 12px; margin-right: auto; }
+.linkinfo { color: var(--muted); font-size: 12px; }
 .linkinfo.warn { color: var(--danger); font-weight: 600; }
-.actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
 .themepick { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
 button, select, input, textarea { font: inherit; color: var(--ink); }
 button {
