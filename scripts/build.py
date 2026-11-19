@@ -225,7 +225,15 @@ def build_board(rows: list[str]) -> str:
     return f'<symbol id="board-art" viewBox="{vb}">{inner_xml(root)}</symbol>'
 
 
-def check_catalog(catalog: list[dict]) -> None:
+def check_catalog(catalog: list[dict], sets: list[dict]) -> None:
+    set_ids = [s["id"] for s in sets]
+    if len(set(set_ids)) != len(set_ids):
+        raise BuildError("sets.json: duplicate set ids")
+    for p in catalog:
+        if p.get("set") not in set_ids:
+            raise BuildError(
+                f"catalog.json: '{p['slug']}' has unknown or missing set {p.get('set')!r}"
+            )
     ids = [p["id"] for p in catalog]
     slugs = [p["slug"] for p in catalog]
     if len(set(ids)) != len(ids):
@@ -291,13 +299,15 @@ def version_string() -> str:
 def main() -> int:
     try:
         catalog = json.loads((SRC / "catalog.json").read_text(encoding="utf-8"))
-        check_catalog(catalog)
+        sets = json.loads((SRC / "sets.json").read_text(encoding="utf-8"))
+        check_catalog(catalog, sets)
         board_rows = load_board()
         sprites = build_sprites(catalog) + "\n" + build_board(board_rows)
         js = bundle_js().replace("/*@CATALOG@*/ []", json.dumps(catalog, separators=(",", ":")))
         js = js.replace("/*@BOARD@*/ []", json.dumps(board_rows))
-        if "/*@CATALOG@*/" in js or "/*@BOARD@*/" in js:
-            raise BuildError("catalog or board placeholder not replaced")
+        js = js.replace("/*@SETS@*/ []", json.dumps(sets, separators=(",", ":")))
+        if any(m in js for m in ("/*@CATALOG@*/", "/*@BOARD@*/", "/*@SETS@*/")):
+            raise BuildError("catalog, board or sets placeholder not replaced")
         unset = [p["name"] for p in catalog if p.get("monster") and p.get("bp") is None]
         if unset:
             print(f"note: no body point (BP) value yet for: {', '.join(unset)}")
