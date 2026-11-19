@@ -6,7 +6,7 @@ map. It can be hosted anywhere static.
 
 > Status: working editor on the **real board layout** (22 rooms) with quest statistics. The `make`
 > build, lint, tests (golden links, hostile-input, visual baselines) and CI are in place. Still to
-> come: monster body point (BP) values, the open-wall mechanism (the current "Open wall" piece is
+> come: monster body point (BP) values, the room tile pieces (the current "Open wall" piece is
 > provisional), verified furniture footprints, and the release and Pages setup in the GitHub
 > repository settings.
 
@@ -78,8 +78,11 @@ map. It can be hosted anywhere static.
   top-left square of the piece's footprint. A rotation swaps width and height.
 - Doors and secret doors are 1×1 pieces; the door art sits on the north edge at rotation 0 and
   rotation selects the edge. Doors on outer board edges are allowed.
-- Merging two rooms is done with a piece that covers a wall (an "open wall" edge piece and/or
-  floor-colored overlay tile). Exact mechanism pending the owner's input.
+- Merging two rooms is done by placing a **room tile** that covers the rooms (a large flat floor
+  piece), as with the physical game. The statistics deliberately keep the board's **fixed rooms**, so
+  merged rooms still count as their printed rooms; this is a documented limitation in the README.
+  The current "Open wall" piece is provisional and will be replaced by room tile pieces once their
+  sizes are decided.
 - **Z-order = list order**; later records draw on top. A new piece is always appended on top. Panel
   buttons (Bring forward, Send back) reorder any piece past any other. Any number of pieces may share
   a square; the editor refuses only an exact duplicate.
@@ -180,7 +183,7 @@ Repo is MIT. Footer and README carry a notice along these lines:
 ## Open items
 
 - Body point (BP) values for the eight monsters (set `bp` in `src/catalog.json`; currently null).
-- How rooms were merged (open-wall piece vs overlay tile).
+- Room tile pieces: which sizes to offer (replaces the provisional "Open wall" piece, id 3).
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
   (3) editor (fixed board, stacking, drag, panel, undo/redo); (4) markdown + character allowlist;

@@ -91,6 +91,16 @@ On a phone the map comes first:
 
 ![Phone layout](docs/screenshots/06-phone.png)
 
+## Known limitations
+
+- **Statistics use the board's fixed rooms.** You can merge rooms by laying a room tile over them,
+  but the statistics still treat them as the separate rooms printed on the board. Averages and the
+  highest room are therefore per printed room, not per merged room.
+- Only monsters placed on the map are counted. Reinforcements, summoned monsters and anything
+  described only in the notes are not, and the wandering monster is never included.
+- Every monster counts at its standard body points; there are no per-monster overrides.
+- The board layout is fixed. There is no support for other boards or custom room shapes.
+
 ## Building and testing
 
 The source lives in `src/`; `make build` combines it into one `dist/index.html`, which is what is
