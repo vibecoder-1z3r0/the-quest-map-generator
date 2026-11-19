@@ -541,7 +541,7 @@ function renderPreviews() {
   $("#print-intro").hidden = !app.state.intro.trim();
   const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
   $("#print-title").textContent = title;
-  const head = [app.state.series ? `${app.state.series}:` : "", app.state.num ? `${app.state.num} -` : "", app.state.title]
+  const head = [app.state.series ? `${app.state.series}:` : "", app.state.num ? `Quest ${app.state.num} -` : "", app.state.title]
     .filter(Boolean)
     .join(" ");
   $("#head-title").textContent = head;

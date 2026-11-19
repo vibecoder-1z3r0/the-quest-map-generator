@@ -32,6 +32,26 @@
   "set": "base"
  },
  {
+  "id": 5,
+  "slug": "wall-tile",
+  "name": "Wall tile",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 6,
+  "slug": "double-wall-tile",
+  "name": "Double wall tile",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 2,
+  "h": 1,
+  "set": "base"
+ },
+ {
   "id": 100,
   "slug": "room-tile",
   "name": "Room tile",

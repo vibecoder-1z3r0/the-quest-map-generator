@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Wall tile (id 5): 1x1 tile, viewBox 0 0 32 32. A single section of stone wall, seen from above. Replace by dropping a same-named file in
+     icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Wall tile</title>
+<desc>Wall tile: 1x1, chibi style. One block of stone wall made of bricks.</desc>
+<g stroke="#2b2118" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+<rect x="2" y="2" width="28" height="28" rx="3" fill="#8f8a82"/>
+<path d="M4 28V4H28" stroke="#cfcac0" stroke-width="1.6" fill="none"/>
+<path d="M28 4V28H4" stroke="#625d56" stroke-width="1.6" fill="none"/>
+<path d="M6 11H26M6 20H26M13 4V11M21 11V20M13 20V28" stroke="#5b564f" stroke-width="1.2" fill="none"/>
+</g>
+</svg>
