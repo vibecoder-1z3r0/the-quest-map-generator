@@ -118,7 +118,9 @@ map. It can be hosted anywhere static.
 - Base-game pieces (footprints from memory — **verify**): stairs 2×2, table 3×2 (2×3 rotated),
   tomb 3×2?, bookcase 3×1, cupboard 3×1?, fireplace 3×1, throne 1×1, weapons rack 3×1, alchemist's
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
-  rubble (the fallen rock tile, distinct from the falling rock trap), door, hidden door, secret door
+  rubble (the fallen rock tile, distinct from the falling rock trap), door, hidden door, wall tile
+  (1×1, id 5) and double wall tile (2 wide × 1 high, id 6; both from the owner, plain rotatable pieces
+  in Doors & walls, id 3 stays retired), secret door
   tile. Monsters:
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
   caster; BP varies by quest). Heroes: barbarian,
@@ -180,7 +182,18 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
   piece, clicking again cycles down.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
-- Touch: pinch-zoom and pan. Print view with the map, intro, notes and wandering monster.
+- Touch: pinch-zoom and pan.
+- **Header**: two rows. Row 1: app name and build, the quest line (`Series: Quest N - Title`, blank
+  parts dropped, truncated with a tooltip), then Undo, Redo, Print and Theme on the right. Row 2:
+  Copy map link, link length, the privacy note ("Anyone with the link can read Zargon's secret
+  notes") and New map. The keyboard shortcut line sits under the zoom controls above the map.
+- **Print view (portrait, one page for a typical quest), in the order of the official books:** the
+  map (row/column markings hidden in print), then series and title, the introduction (no heading),
+  Zargon's notes (only when there are any), the wandering monster, then a compact piece key and very
+  small statistics (about 8pt). Each printable section has a **Print checkbox next to its title**
+  (Introduction, Pieces on this map with a "Monsters only" option, Quest stats, Highlight legend,
+  Zargon's notes). These choices are not stored in the link (the flags byte has spare bits if that
+  is ever wanted).
 - Footer notice (below) and MIT license line.
 - **Send the owner screenshots whenever the UI changes** (`make screenshots`, then show the relevant
   images in the reply). Don't just regenerate them silently.
