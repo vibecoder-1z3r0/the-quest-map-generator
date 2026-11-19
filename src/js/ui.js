@@ -487,6 +487,46 @@ function renderStats() {
   }
 }
 
+// "Pieces on this map": every distinct piece or tile style in use, grouped like the palette, with its
+// icon and how many there are. Numbered markers share one line.
+function pieceKeyGroups(state) {
+  const counts = new Map();
+  for (const item of state.items) counts.set(item.id, (counts.get(item.id) ?? 0) + 1);
+  for (const tile of state.tiles) counts.set(tile.id, (counts.get(tile.id) ?? 0) + 1);
+  const groups = [];
+  for (const group of GROUPS) {
+    const used = CATALOG.filter((piece) => piece.group === group && counts.has(piece.id));
+    if (used.length) groups.push({ group, pieces: used.map((piece) => ({ piece, count: counts.get(piece.id) })) });
+  }
+  return groups;
+}
+
+function renderPieceKey(container, groups) {
+  container.replaceChildren();
+  for (const { group, pieces } of groups) {
+    const list = el("ul");
+    if (group === "Markers") {
+      const numbers = pieces.map(({ piece }) => piece.name.replace("Marker ", "")).join(", ");
+      list.append(el("li", {}, el("span", { class: "keyicon" }, iconThumb(pieces[0].piece)), el("span", { text: `Markers ${numbers}` })));
+    } else {
+      for (const { piece, count } of pieces) {
+        const label = el("span", { text: piece.name });
+        if (count > 1) label.append(el("span", { class: "keycount", text: ` \u00D7${count}` }));
+        list.append(el("li", {}, el("span", { class: "keyicon" }, iconThumb(piece)), label));
+      }
+    }
+    container.append(el("div", { class: "keygroup" }, el("h4", { text: group }), list));
+  }
+}
+
+function renderPieceKeys() {
+  const groups = pieceKeyGroups(app.state);
+  renderPieceKey($("#sheet-key"), groups);
+  renderPieceKey($("#print-key"), groups);
+  $("#sheet-key-section").hidden = groups.length === 0;
+  $("#print-key-section").hidden = groups.length === 0;
+}
+
 function renderUndoRedo() {
   $("#undo").disabled = !app.past.length;
   $("#redo").disabled = !app.future.length;
@@ -523,6 +563,7 @@ function renderAll() {
   renderInspector();
   renderLegend();
   renderStats();
+  renderPieceKeys();
   renderUndoRedo();
   renderPreviews();
   markTools();
@@ -763,7 +804,8 @@ function iconThumb(piece) {
   const w = piece.w * CELL;
   const h = piece.h * CELL;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", `${piece.edge ? -4 : 0} ${piece.edge ? -8 : 0} ${w + (piece.edge ? 8 : 0)} ${h + (piece.edge ? 8 : 0)}`);
+  // Edge pieces (doors) are drawn centered on the top edge, so center that strip in the thumbnail.
+  svg.setAttribute("viewBox", piece.edge ? `-2 -10 ${w + 4} 20` : `0 0 ${w} ${h}`);
   svg.setAttribute("aria-hidden", "true");
   const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
   use.setAttribute("href", `#icon-${piece.slug}`);
@@ -799,11 +841,15 @@ function buildPalette() {
   root.append(basics);
   root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
+  const solid = el("div", { class: "tgrid" });
   for (const h of HIGHLIGHTS) {
     const swatch = el("span", { class: "swatch", style: h.color ? `background:${h.color}` : "background:transparent" });
-    hls.append(toolButton(h.value ? h.name.replace(" (solid rock)", "") : "Clear", "highlight", h.value, swatch));
+    const button = toolButton(h.value ? h.name.replace(" (solid rock)", "") : "Clear", "highlight", h.value, swatch);
+    // Grey (value 1) marks solid stone, so it has its own section; the other colors stay together.
+    (h.value === 1 ? solid : hls).append(button);
   }
   root.append(hls);
+  root.append(el("h2", { text: "Solid stone areas" }), solid);
   for (const group of GROUPS) {
     root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });

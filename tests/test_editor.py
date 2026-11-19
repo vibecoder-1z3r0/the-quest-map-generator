@@ -598,3 +598,63 @@ def test_escape_deselects_and_unpins_in_the_select_tool(page):
     page.keyboard.press("Escape")
     assert page.evaluate("QMG.app.selected") == -1 and page.evaluate("QMG.app.pinned") is None
     assert active_tool(page) == "select"
+
+
+def key_lines(page, selector="#sheet-key"):
+    return page.evaluate(
+        """(sel) => [...document.querySelectorAll(sel + ' h4, ' + sel + ' li')].map((e) => e.textContent.trim())""",
+        selector,
+    )
+
+
+def test_the_piece_key_is_hidden_until_something_is_placed(page):
+    assert page.locator("#sheet-key-section").is_hidden()
+    assert page.locator("#print-key-section").is_hidden()
+
+
+def test_the_piece_key_lists_used_pieces_grouped_like_the_palette_with_counts(page):
+    place(page, "goblin", 5, 5)
+    place(page, "goblin", 6, 5)
+    place(page, "orc", 7, 5)
+    place(page, "table", 10, 10)
+    assert key_lines(page) == ["Furniture", "Table", "Monsters", "Goblin \u00d72", "Orc"]
+    assert key_lines(page, "#print-key") == key_lines(page)
+    assert (
+        page.locator('#sheet-key li:has-text("Goblin") use').get_attribute("href") == "#icon-goblin"
+    )
+
+
+def test_the_piece_key_includes_room_tiles_and_combines_numbered_markers(page):
+    place(page, "marker-3", 2, 2)
+    place(page, "marker-1", 3, 2)
+    pick_tile(page)
+    drag_cells(page, 8, 8, 9, 9)
+    lines = key_lines(page)
+    assert "Room tiles" in lines and "Room tile" in lines
+    assert lines[-2:] == ["Markers", "Markers 1, 3"]
+
+
+def test_the_piece_key_follows_edits_and_undo(page):
+    place(page, "goblin", 5, 5)
+    assert key_lines(page) == ["Monsters", "Goblin"]
+    page.click('#tools button[data-kind="erase"]')
+    click_cell(page, 5, 5)
+    assert page.locator("#sheet-key-section").is_hidden()
+    page.click("#undo")
+    assert key_lines(page) == ["Monsters", "Goblin"]
+
+
+def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
+    headings = [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
+    assert headings[:4] == ["tools", "highlight", "solid stone areas", "doors & walls"]
+    highlight_grid = page.locator("#tools h2", has_text="Highlight").locator(
+        "xpath=following-sibling::div[1]"
+    )
+    assert "Grey" not in highlight_grid.inner_text()
+    solid_grid = page.locator("#tools h2", has_text="Solid stone areas").locator(
+        "xpath=following-sibling::div[1]"
+    )
+    assert solid_grid.inner_text().strip() == "Grey"
+    solid_grid.get_by_role("button", name="Grey").click()
+    click_cell(page, 3, 3)
+    assert page.evaluate("QMG.app.state.hl[3 * 26 + 3]") == 1  # still the grey highlight, value 1
