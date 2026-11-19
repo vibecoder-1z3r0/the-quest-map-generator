@@ -35,7 +35,9 @@ map. It can be hosted anywhere static.
 - `make build` inlines CSS, JS, the icon sprite, the board and the catalog into a **single
   `dist/index.html`**. That file is what is tested and what is published.
 - Make targets: `build`, `lint`, `test`, `check` (lint + test, what CI runs), `clean`. No `make serve`.
-- Lint: ESLint (JS), html-validate (HTML), ruff (Python); Prettier check optional.
+- **No npm, no Node.** All tooling is Python-installable (`pip install -e '.[dev]'`). Lint: `deno lint`
+  (the Deno binary from PyPI, configured in `deno.json`) for JS, `scripts/lint_html.py` (strict html5lib
+  parse, unique ids, references) for HTML, ruff for Python. Tests use Playwright for Python.
 - Tests: pytest + Playwright (Python) against `dist/index.html`, served by a throwaway HTTP server in
   a fixture (matches Pages). Prefer DOM/SVG assertions; a few board-only screenshot baselines
   (committed, generated in the CI container, small tolerance); full-page and mobile screenshots are

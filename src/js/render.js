@@ -23,7 +23,7 @@ export function boardSkeleton() {
         <line x1="0" y1="0" x2="0" y2="8" stroke="#2b2b32" stroke-opacity="0.55" stroke-width="3"/>
       </pattern>
     </defs>
-    <use id="board-art" href="#board-art" x="0" y="0" width="${BOARD_W}" height="${BOARD_H}"/>
+    <use href="#board-art" x="0" y="0" width="${BOARD_W}" height="${BOARD_H}"/>
     <g id="layer-hl"></g>
     <g id="layer-items"></g>
     <g id="layer-overlay" pointer-events="none"></g>
