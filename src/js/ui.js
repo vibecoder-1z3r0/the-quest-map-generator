@@ -336,11 +336,19 @@ function renderInspector() {
   box.append(list);
 }
 
+// A legend entry shows for each color used on the map: grey is always "Solid rock", orange
+// defaults to "Trap", the others show the label typed in the legend editor (if any).
+function legendLabel(h) {
+  if (h.fixedLabel) return h.fixedLabel;
+  return app.state.legend[h.value] || h.defaultLabel || "";
+}
+
 function renderLegend() {
+  const used = new Set(app.state.hl);
   const items = [];
   for (const h of HIGHLIGHTS) {
-    const label = app.state.legend[h.value];
-    if (h.value && label) {
+    const label = h.value && used.has(h.value) ? legendLabel(h) : "";
+    if (label) {
       items.push(el("li", {}, el("span", { class: "swatch", style: `background:${h.color}` }), label));
     }
   }
@@ -599,12 +607,12 @@ function markTools() {
 function buildLegendEditor() {
   const root = $("#legend-edit");
   root.replaceChildren();
-  for (const h of HIGHLIGHTS.filter((x) => x.value)) {
+  for (const h of HIGHLIGHTS.filter((x) => x.value > 1)) {
     const input = el("input", {
       type: "text",
       "data-color": String(h.value),
       maxlength: String(LIMITS.legend),
-      placeholder: h.name,
+      placeholder: h.defaultLabel || h.name,
       "aria-label": `Legend label for ${h.name}`,
       autocomplete: "off",
     });

@@ -157,9 +157,28 @@ def test_highlight_painting_by_dragging(page):
     assert page.evaluate("QMG.app.state.hl[3 * 26 + 3]") == 0
 
 
-def test_legend_labels_show_beside_the_map(page):
-    page.fill('#legend-edit input[data-color="2"]', "pit trap area")
-    assert "pit trap area" in page.locator("#legend").inner_text()
+def paint(page, value, x, y):
+    page.click(f'#tools button[data-kind="highlight"][data-value="{value}"]')
+    click_cell(page, x, y)
+
+
+def test_legend_lists_only_used_colors_with_fixed_grey_and_default_orange(page):
+    assert page.locator("#legend li").count() == 0
+    paint(page, 1, 3, 3)
+    paint(page, 2, 4, 3)
+    assert page.locator("#legend li").all_inner_texts() == ["Solid rock", "Trap"]
+
+
+def test_grey_has_no_editable_legend_but_the_others_do(page):
+    assert page.locator('#legend-edit input[data-color="1"]').count() == 0
+    assert page.locator("#legend-edit input").count() == 4
+    page.fill('#legend-edit input[data-color="3"]', "secret room")
+    assert page.locator("#legend li").count() == 0  # cyan is not used yet
+    paint(page, 3, 5, 5)
+    assert "secret room" in page.locator("#legend").inner_text()
+    page.fill('#legend-edit input[data-color="2"]', "pit or spear trap")
+    paint(page, 2, 6, 5)
+    assert "pit or spear trap" in page.locator("#legend").inner_text()
     settle(page)
 
 

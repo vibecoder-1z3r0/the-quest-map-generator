@@ -93,7 +93,7 @@ Opening a link applies its theme; changing the theme updates the link but is not
 |---|---|
 | 0 | none |
 | 1 | grey (solid rock) |
-| 2 | orange |
+| 2 | orange (a trap of any kind) |
 | 3 | cyan |
 | 4 | yellow |
 | 5 | bright green |
@@ -135,11 +135,18 @@ byte 2   bits 0-4       y       0..18
 
 ### 4.3 Legend
 
-Optional labels for highlight colors (for example "orange = pit trap area").
+Optional labels for highlight colors (for example "cyan = secret room").
 
-`varint count` (0..16), then per entry: one byte **color value** (1..15), then a **string** label
+`varint count` (0..16), then per entry: one byte **color value** (2..15), then a **string** label
 (at most 40 characters). A color appears at most once; if repeated, the last entry wins. Labels are
 filtered like single-line text (§6).
+
+- **Grey (1) has no editable label.** It always means solid rock and is shown as "Solid rock". An
+  entry for color 1 is never written, and one read from a link is ignored.
+- **Orange (2) means a trap of any kind.** With no label it is shown as "Trap"; a stored label
+  replaces that text.
+- Display: the viewer lists an entry for each color that is used on the map (grey as "Solid rock",
+  orange as its label or "Trap", the others only if they have a label).
 
 ### 4.4 Quest text
 

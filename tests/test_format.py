@@ -195,3 +195,15 @@ def test_editing_updates_the_hash_without_reload_and_it_roundtrips(page, site):
     assert ref.decode(payload)["items"] == [(40, 6, 5, 0)]
     open_link(page, site, payload)
     assert page.evaluate("QMG.app.state.items.length") == 1
+
+
+def test_a_stored_grey_legend_label_is_ignored(page):
+    st = ref.blank()
+    st["legend"] = {1: "not rock", 2: "any trap"}
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert js["legend"] == {"2": "any trap"}
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert ref.decode(payload)["legend"] == {2: "any trap"}

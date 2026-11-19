@@ -101,7 +101,7 @@ export async function encodeState(st) {
   pushVarint(out, st.items.length);
   for (const it of st.items) out.push(it.id, it.x | (it.r << 5), it.y);
   const legend = Object.entries(st.legend)
-    .filter(([, label]) => label)
+    .filter(([color, label]) => label && Number(color) >= 2)
     .sort((a, b) => a[0] - b[0]);
   pushVarint(out, legend.length);
   for (const [color, label] of legend) {
@@ -204,7 +204,7 @@ export async function decodeHash(payload) {
     const color = r.byte();
     const label = cleanText(r.string(), { limit: LIMITS.legend });
     stripped ||= label.removed;
-    if (color >= 1 && color <= 15) st.legend[color] = label.text;
+    if (color >= 2 && color <= 15) st.legend[color] = label.text;
   }
 
   const field = (key, opts) => {

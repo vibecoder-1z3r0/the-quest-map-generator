@@ -46,7 +46,6 @@ def demo_state(catalog: dict[str, int]) -> dict:
             st["hl"][y * 26 + 20 + x] = 1
     for i, v in enumerate([2, 3, 4, 5]):
         st["hl"][5 + i] = v
-    st["legend"] = {2: "pit trap area"}
     return st
 
 

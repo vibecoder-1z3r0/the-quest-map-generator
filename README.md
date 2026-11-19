@@ -37,9 +37,10 @@ opened from disk).
 
 ### Highlights
 
-Paint squares with a highlight color: grey for solid rock, orange (traditionally traps), cyan,
-yellow or bright green. Highlights tint whatever is underneath. You can give each color a short
-label ("orange = pit trap area") that is shown beside the map.
+Paint squares with a highlight color: grey for solid rock, orange for traps (of any kind), cyan,
+yellow or bright green. Highlights tint whatever is underneath. Grey is always labeled "Solid rock"
+and orange "Trap". Name the other colors in the legend editor ("cyan = secret room"); each used
+color is listed beside the map.
 
 ### Quest text
 
