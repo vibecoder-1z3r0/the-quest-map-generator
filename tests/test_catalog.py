@@ -99,3 +99,10 @@ def test_every_piece_names_a_known_set():
 def test_everything_is_from_the_base_game_for_now():
     assert {s["id"] for s in SETS} == {"base"}
     assert {p["set"] for p in CATALOG} == {"base"}
+
+
+def test_groups_are_categories_not_sets():
+    """Expansion pieces join their natural group (Monsters, Furniture, ...), never a group per set."""
+    names = {s["id"].lower() for s in SETS} | {s["name"].lower() for s in SETS}
+    for piece in CATALOG:
+        assert piece["group"].lower() not in names, f"{piece['slug']}: group is named after a set"
