@@ -457,8 +457,12 @@ function statRows(stats) {
   const wm = stats.wandering;
   const wandering = [wm.monster, wm.text].filter(Boolean).join(" \u2013 ");
   if (wandering) {
-    const extra = wm.monster ? ` (${wm.bp === null ? "BP not set" : `${wm.bp} BP`})` : "";
+    const bpText = wm.bpVaries ? "BP varies" : wm.bp === null ? "BP not set" : `${wm.bp} BP`;
+    const extra = wm.monster ? ` (${bpText})` : "";
     rows.push(["Wandering (not counted)", `${wandering}${extra}`]);
+  }
+  if (stats.varies.length) {
+    rows.push({ note: `BP not included (varies by quest): ${stats.varies.join(", ")}.`, info: true });
   }
   if (!stats.bpKnown) {
     rows.push({ note: `BP is not set yet for: ${stats.missing.join(", ")}.` });
@@ -477,7 +481,7 @@ function renderStats() {
       } else if (row.sub) {
         list.append(el("dd", { class: "sub", text: row.sub }));
       } else {
-        list.append(el("dd", { class: "note", text: row.note }));
+        list.append(el("dd", { class: row.info ? "note info" : "note", text: row.note }));
       }
     }
   }
@@ -864,6 +868,7 @@ function bindField(selector, key, options) {
 function textChanged() {
   renderPreviews();
   renderLegend();
+  renderStats();
   scheduleUrl(false, 300);
   clearTimeout(textTimer);
   textTimer = setTimeout(() => {

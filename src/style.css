@@ -122,6 +122,7 @@ input[type="text"] { width: 100%; }
 .stats dt { color: var(--muted); }
 .stats dd { margin: 0; font-weight: 600; text-align: right; }
 .stats .note { grid-column: 1 / -1; color: var(--danger); font-size: 12px; }
+.stats .note.info { color: var(--muted); }
 .stats .sub { grid-column: 1 / -1; font-weight: 400; }
 #board .room-labels text { font: 700 12px system-ui, sans-serif; fill: #3b2a1a; fill-opacity: 0.4; pointer-events: none; }
 .hint { color: var(--muted); font-size: 12px; }

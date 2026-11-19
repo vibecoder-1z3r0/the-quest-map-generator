@@ -108,7 +108,7 @@ map. It can be hosted anywhere static.
   bench 3×2?, sorcerer's table 3×2?, torture rack 3×2?, treasure chest, pit/spear/falling-rock traps,
   rubble (the fallen rock tile, distinct from the falling rock trap), door, secret door. Monsters:
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
-  caster; BP not set yet). Heroes: barbarian,
+  caster; BP varies by quest). Heroes: barbarian,
   dwarf, elf, wizard; plus the expansion heroes bard, warlock, druid, berzerker, explorer, commander
   of the guardian knights, rogue heir of elethorn and wandering monk. Those eight are **really
   expansion heroes but are tagged `base` for now** (owner's call); re-tag them when the real set
@@ -121,7 +121,9 @@ Shown in a "Quest stats" card and on the print page. Every monster counts at its
 (body points; from the owner: Goblin, Orc, Zombie, Skeleton 1; Abomination and Mummy 2; Gargoyle and
 Dread Warrior 3, where the Abomination is the Fimir and the Dread Warrior is the Chaos Warrior of the
 source tables). `bp: null` means not set yet (a future monster), and the card then shows "n/a" and
-names the monsters without a value (never guess a BP).
+names the monsters without a value (never guess a BP). The **Dread Warlock's BP varies by quest**
+(`bp: null` with `bp_varies: true`): it counts as a monster, its BP is left out of every BP figure,
+and the card notes "BP not included (varies by quest)" instead of going n/a.
 - Monsters on the map and total quest BP (corridor monsters included).
 - Average BP over **active rooms** (a room with no grey square at all) and over **rooms that contain
   monsters**; highest room BP (ties listed). Empty rooms count as 0 in the active average.
@@ -199,7 +201,7 @@ Repo is MIT. Footer and README carry a notice along these lines:
 ## Open items
 
 - Additional room tile styles, if wanted (only the plain "Room tile" exists).
-- Re-tag the eight expansion heroes (and the Dread Warlock's BP) once the real set names and values are known.
+- Re-tag the eight expansion heroes once the real set names are known.
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
   (3) editor (fixed board, stacking, drag, panel, undo/redo); (4) markdown + character allowlist;

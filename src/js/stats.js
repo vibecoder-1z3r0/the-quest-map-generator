@@ -12,12 +12,14 @@ export function computeStats(state) {
   const corridor = { count: 0, bp: 0 };
   const total = { count: 0, bp: 0 };
   const missing = new Set(); // monster names without a BP value
+  const varies = new Set(); // monsters whose BP varies by quest: counted, but their BP is left out
 
   for (const item of state.items) {
     const piece = BY_ID.get(item.id);
     if (!piece?.monster) continue;
     const known = typeof piece.bp === "number";
-    if (!known) missing.add(piece.name);
+    if (!known && piece.bp_varies) varies.add(piece.name);
+    else if (!known) missing.add(piece.name);
     const bp = known ? piece.bp : 0;
     total.count += 1;
     total.bp += bp;
@@ -54,6 +56,7 @@ export function computeStats(state) {
     bp: total.bp,
     bpKnown: missing.size === 0,
     missing: [...missing],
+    varies: [...varies],
     activeRooms,
     averageActive: activeRooms.length ? activeTotal / activeRooms.length : null,
     occupiedRooms: occupied.sort(),
@@ -64,6 +67,7 @@ export function computeStats(state) {
     wandering: {
       monster: monster?.monster ? monster.name : "",
       bp: monster?.monster && typeof monster.bp === "number" ? monster.bp : null,
+      bpVaries: Boolean(monster?.monster && monster.bp_varies),
       text: state.wmText,
     },
   };

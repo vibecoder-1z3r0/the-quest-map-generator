@@ -308,7 +308,11 @@ def main() -> int:
         js = js.replace("/*@SETS@*/ []", json.dumps(sets, separators=(",", ":")))
         if any(m in js for m in ("/*@CATALOG@*/", "/*@BOARD@*/", "/*@SETS@*/")):
             raise BuildError("catalog, board or sets placeholder not replaced")
-        unset = [p["name"] for p in catalog if p.get("monster") and p.get("bp") is None]
+        unset = [
+            p["name"]
+            for p in catalog
+            if p.get("monster") and p.get("bp") is None and not p.get("bp_varies")
+        ]
         if unset:
             print(f"note: no body point (BP) value yet for: {', '.join(unset)}")
         css = (SRC / "style.css").read_text(encoding="utf-8")

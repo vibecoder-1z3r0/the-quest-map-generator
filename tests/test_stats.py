@@ -90,7 +90,12 @@ def test_breakdown_by_type(quest):
 
 def test_the_wandering_monster_is_never_counted(quest):
     s = quest.evaluate(STATS_JS, BPS)
-    assert s["wandering"] == {"monster": "Gargoyle", "bp": 3, "text": "plus a rat"}
+    assert s["wandering"] == {
+        "monster": "Gargoyle",
+        "bp": 3,
+        "bpVaries": False,
+        "text": "plus a rat",
+    }
     assert s["monsters"] == 5  # unchanged by the wandering monster
 
 
@@ -123,3 +128,29 @@ def test_the_card_shows_na_until_bp_values_exist_and_updates_live(page):
 def test_room_letters_are_labeled_on_the_board(page):
     assert page.locator("#layer-rooms text").count() == 22
     assert page.locator("#layer-rooms text").first.text_content() == "A"
+
+
+def test_a_variable_bp_monster_is_counted_but_its_bp_is_left_out_and_noted(quest):
+    quest.evaluate(
+        """() => { QMG.app.state.items.push({ id: QMG.CATALOG.find((c) => c.slug === 'dread-warlock').id, x: 1, y: 1, r: 0 }); }"""
+    )
+    s = quest.evaluate(STATS_JS, BPS)
+    assert s["monsters"] == 6  # the warlock counts as a monster
+    assert s["bp"] == 6  # but adds no BP
+    assert s["bpKnown"] is True and s["missing"] == []
+    assert s["varies"] == ["Dread Warlock"]
+    assert {(t["name"], t["count"]) for t in s["types"]} >= {("Dread Warlock", 1)}
+
+
+def test_the_card_notes_that_variable_bp_is_not_included(page):
+    pick_piece(page, "dread-warlock")
+    click_cell(page, 2, 2)
+    text = page.locator("#stats").inner_text()
+    assert "BP not included (varies by quest): Dread Warlock." in text
+    assert "BP is not set yet" not in text
+    assert "Monsters\n1" in text and "Total quest BP\n0" in text
+
+
+def test_a_wandering_dread_warlock_says_its_bp_varies(page):
+    page.select_option("#wm-select", label="Dread Warlock")
+    assert "Dread Warlock (BP varies)" in page.locator("#stats").inner_text()
