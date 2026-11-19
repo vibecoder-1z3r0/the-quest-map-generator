@@ -43,6 +43,7 @@
     <ul id="legend" class="legend"></ul>
 
     <article id="quest-sheet" class="sheet" aria-label="Quest information, updated as you type">
+      <p id="sheet-series" class="sheet-series"></p>
       <h2 id="sheet-title" class="sheet-title"></h2>
       <p id="sheet-wm" class="sheet-wm"></p>
       <section id="sheet-intro-section">
@@ -65,6 +66,8 @@
 
     <section class="card">
       <h2>Quest</h2>
+      <div class="field"><label for="series">Series (optional)</label>
+        <input type="text" id="series" autocomplete="off" maxlength="160" placeholder="e.g. The Order of the Oth"></div>
       <div class="row2">
         <div class="field narrow"><label for="qnum">Number</label>
           <input type="text" id="qnum" autocomplete="off" maxlength="10"></div>
@@ -107,6 +110,7 @@
 <div id="unsupported" role="alert" hidden></div>
 
 <div id="printsheet" aria-hidden="true">
+  <div id="print-series" class="print-series"></div>
   <div id="print-title" class="print-title"></div>
   <p id="print-wm"></p>
   <h3>Quest statistics</h3>

@@ -26,6 +26,7 @@ export function snapshot(st) {
     notes: st.notes,
     wmId: st.wmId,
     wmText: st.wmText,
+    series: st.series,
   };
 }
 
@@ -40,10 +41,11 @@ export function restore(st, snap) {
   st.notes = snap.notes;
   st.wmId = snap.wmId;
   st.wmText = snap.wmText;
+  st.series = snap.series;
 }
 
 const snapshotKey = (a) =>
-  JSON.stringify([Array.from(a.hl), a.items, a.tiles, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText]);
+  JSON.stringify([Array.from(a.hl), a.items, a.tiles, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText, a.series]);
 
 export function sameSnapshot(a, b) {
   return snapshotKey(a) === snapshotKey(b);

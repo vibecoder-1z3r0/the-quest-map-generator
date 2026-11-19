@@ -145,7 +145,9 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 
 ## Quest text
 
-- Quest number (plain, max 10), quest title (plain, max 160), intro (bold/italics only, max 2,500),
+- Series (optional, plain, max 160; shown above the title on the sheet, print page and tab title; an
+  optional *trailing* field in the link so older links still decode), quest number (plain, max 10),
+  quest title (plain, max 160), intro (bold/italics only, max 2,500),
   Zargon's secret notes (max 10,000), and a wandering monster (monster picker + free text ≤160;
   both blank means none).
 - Notes support a small markdown subset: `#`/`##`/`###` headings, bullets, numbered lists, bold,

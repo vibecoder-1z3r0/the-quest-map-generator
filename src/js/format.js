@@ -91,6 +91,7 @@ export function blankState() {
     notes: "",
     wmId: 0,
     wmText: "",
+    series: "",
   };
 }
 
@@ -118,6 +119,7 @@ export async function encodeState(st) {
   pushString(out, st.notes);
   out.push(st.wmId);
   pushString(out, st.wmText);
+  pushString(out, st.series);
   const body = new Uint8Array(out);
   if (body.length > MAX_BODY) throw new Error("quest is too large to store in a link");
   const packed = await deflate(body);
@@ -131,6 +133,10 @@ class Reader {
   constructor(bytes) {
     this.b = bytes;
     this.p = 0;
+  }
+
+  get remaining() {
+    return this.b.length - this.p;
   }
 
   need(n) {
@@ -244,6 +250,8 @@ export async function decodeHash(payload) {
   } else {
     warnings.push("The wandering monster in this link is not a monster and was ignored.");
   }
+  // The series is an optional trailing field: links made before it existed simply end here.
+  if (r.remaining > 0) st.series = field("series", { limit: LIMITS.series });
   if (stripped) warnings.push("Some unsupported characters in this link were removed.");
   return { state: st, warnings };
 }

@@ -22,7 +22,7 @@ async (payload) => {
     items: state.items.map((i) => [i.id, i.x, i.y, i.r]),
     tiles: state.tiles.map((t) => [t.id, t.x, t.y, t.w, t.h]),
     legend: state.legend, num: state.num, title: state.title, intro: state.intro, notes: state.notes,
-    wm_id: state.wmId, wm_text: state.wmText, warnings,
+    wm_id: state.wmId, wm_text: state.wmText, series: state.series, warnings,
   };
 }
 """
@@ -41,6 +41,7 @@ def normalized(st: dict) -> dict:
     st["legend"] = {int(k): v for k, v in st["legend"].items()}
     st["items"] = [tuple(i) for i in st["items"]]
     st["tiles"] = [tuple(t) for t in st["tiles"]]
+    st.setdefault("series", "")  # links made before the series field existed have none
     return st
 
 
@@ -251,3 +252,28 @@ def test_too_many_tiles_is_refused(page):
     body[head : head + 1] = ref.varint(300)
     with pytest.raises(Exception, match="too many"):
         page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(bytes(body)))
+
+
+def test_links_made_before_the_series_field_existed_still_decode_with_no_series(page):
+    st = ref.blank()
+    st["title"] = "An old quest"
+    old_body = ref.encode_body(st)[:-1]  # drop the trailing (empty) series string
+    js = page.evaluate(DECODE_JS, ref.raw_payload(old_body))
+    assert js["title"] == "An old quest" and js["series"] == "" and js["warnings"] == []
+
+
+def test_the_series_roundtrips_and_is_filtered_and_limited(page):
+    st = ref.blank()
+    st["series"] = "The Order of the Oth"
+    assert page.evaluate(DECODE_JS, ref.encode(st))["series"] == "The Order of the Oth"
+    st["series"] = "<b>" + "s" * 400 + "</b>"
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert len(js["series"]) == 160 and "<" not in js["series"]
+    assert any("series" in w and "shortened" in w for w in js["warnings"])
+
+
+def test_the_js_encoder_writes_the_series_in_the_spec_position(page):
+    payload = page.evaluate(
+        "async () => { QMG.app.state.series = 'Oth'; return QMG.encodeState(QMG.app.state); }"
+    )
+    assert ref.decode(payload)["series"] == "Oth"
