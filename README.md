@@ -53,7 +53,8 @@ label ("orange = pit trap area") that is shown beside the map.
 
 - **Undo / Redo** buttons (`Ctrl+Z` / `Ctrl+Y`) step through your edits. The browser's back and
   forward buttons work too.
-- The editor opens in **light mode**. Switch to **dark mode** for easier editing. Printing is always
+- The editor opens in **light mode**. Switch to **dark mode** for easier editing. The choice is
+  stored in the link, so a shared link opens in the theme it was saved with. Printing is always
   light, whichever mode you are in.
 - **Print** gives a clean page with the map, the intro, the notes and the wandering monster.
 
