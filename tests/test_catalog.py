@@ -97,9 +97,24 @@ def test_every_piece_names_a_known_set():
         assert piece.get("set") in set_ids, f"{piece['slug']} has no valid set"
 
 
-def test_everything_is_from_the_base_game_for_now():
-    assert {s["id"] for s in SETS} == {"base"}
-    assert {p["set"] for p in CATALOG} == {"base"}
+def test_the_original_pieces_are_base_and_the_added_heroes_are_a_provisional_set():
+    base_heroes = {"barbarian", "dwarf", "elf", "wizard"}
+    added = {
+        "bard", "warlock", "druid", "berzerker", "explorer",
+        "commander-guardian-knights", "rogue-heir-of-elethorn", "wandering-monk",
+    }  # fmt: skip
+    by_slug = {p["slug"]: p for p in CATALOG}
+    assert {s["id"] for s in SETS} == {"base", "expansion-heroes"}
+    assert all(by_slug[s]["set"] == "expansion-heroes" for s in added)
+    assert all(p["set"] == "base" for p in CATALOG if p["slug"] not in added)
+    heroes = {p["slug"] for p in CATALOG if p["group"] == "Heroes"}
+    assert heroes == base_heroes | added  # expansion heroes share the one Heroes group
+
+
+def test_heroes_are_one_by_one_tokens_and_never_monsters():
+    for piece in CATALOG:
+        if piece["group"] == "Heroes":
+            assert (piece["w"], piece["h"]) == (1, 1) and not piece.get("monster")
 
 
 def test_groups_are_categories_not_sets():

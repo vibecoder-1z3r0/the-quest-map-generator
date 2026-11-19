@@ -341,6 +341,86 @@
   "set": "base"
  },
  {
+  "id": 64,
+  "slug": "bard",
+  "name": "Bard",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 65,
+  "slug": "warlock",
+  "name": "Warlock",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 66,
+  "slug": "druid",
+  "name": "Druid",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 67,
+  "slug": "berzerker",
+  "name": "Berzerker",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 68,
+  "slug": "explorer",
+  "name": "Explorer",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 69,
+  "slug": "commander-guardian-knights",
+  "name": "Commander of the Guardian Knights",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 70,
+  "slug": "rogue-heir-of-elethorn",
+  "name": "Rogue Heir of Elethorn",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
+  "id": 71,
+  "slug": "wandering-monk",
+  "name": "Wandering Monk",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1,
+  "set": "expansion-heroes"
+ },
+ {
   "id": 80,
   "slug": "marker-1",
   "name": "Marker 1",

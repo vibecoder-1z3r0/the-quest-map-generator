@@ -109,7 +109,9 @@ map. It can be hosted anywhere static.
   rubble (the fallen rock tile, distinct from the falling rock trap), door, secret door. Monsters:
   goblin, orc, abomination, skeleton, zombie, mummy, gargoyle, dread warrior, dread warlock (the spell
   caster; BP not set yet). Heroes: barbarian,
-  dwarf, elf, wizard. Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
+  dwarf, elf, wizard; expansion heroes bard, warlock, druid, berzerker, explorer, commander of the
+  guardian knights, rogue heir of elethorn and wandering monk (set `expansion-heroes`, a provisional
+  name until the real set names are given; "Berzerker" is spelled as the owner wrote it). Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
   later.
 
 ## Quest statistics (derived, never stored in the link)
