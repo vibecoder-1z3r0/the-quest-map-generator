@@ -9,7 +9,7 @@ WORKFLOWS = sorted((Path(__file__).resolve().parent.parent / ".github/workflows"
 
 
 def test_there_are_workflows():
-    assert {w.name for w in WORKFLOWS} >= {"ci.yml", "release.yml", "pr-preview-cleanup.yml"}
+    assert {w.name for w in WORKFLOWS} >= {"ci.yml", "release.yml"}
 
 
 def test_only_githubs_own_actions_are_used():
@@ -27,7 +27,8 @@ def test_no_repository_secrets_are_referenced():
         assert "secrets." not in workflow.read_text(encoding="utf-8"), workflow.name
 
 
-def test_workflows_publish_through_the_tested_script():
-    text = "\n".join(w.read_text(encoding="utf-8") for w in WORKFLOWS)
-    for mode in ("main", "preview", "remove"):
-        assert f"pages_publish.sh {mode}" in text
+def test_the_site_is_published_with_githubs_official_pages_actions():
+    ci = (WORKFLOWS[0].parent / "ci.yml").read_text(encoding="utf-8")
+    assert "actions/upload-pages-artifact@" in ci and "actions/deploy-pages@" in ci
+    assert "pages: write" in ci and "id-token: write" in ci
+    assert "github.ref == 'refs/heads/main'" in ci  # only merges to main deploy

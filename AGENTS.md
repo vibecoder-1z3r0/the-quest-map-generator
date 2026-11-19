@@ -44,15 +44,14 @@ map. It can be hosted anywhere static.
   CI artifacts only. Unit tests for the encoder, markdown parser and character filter.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
-- CI (GitHub Actions): `make check` on every PR/push. Merge to `main` publishes `dist/index.html` to
-  the root of the **`gh-pages` branch** (GitHub Pages source: "Deploy from a branch", `gh-pages`,
-  root), only if green. Every PR from this repo gets a **preview at `/pr-preview/pr-<number>/`** with
-  a comment link; `pr-preview-cleanup.yml` deletes it when the PR is closed or merged, and the main
-  deploy keeps `pr-preview/`. **Only GitHub's own actions (`actions/*`) are allowed, plus plain
-  `git` and the preinstalled `gh` CLI; never third-party actions** (a test enforces it). The
-  publishing logic is `scripts/pages_publish.sh`, which has its own tests against a local bare repo.
-  All gh-pages writers share one concurrency group. A `v*` tag attaches `dist/index.html` to a GitHub Release. The build stamps a
-  version/commit string in the footer.
+- CI (GitHub Actions): `make check` on every PR/push. A merge to `main` deploys `dist/index.html` to
+  GitHub Pages **with GitHub's official `actions/upload-pages-artifact` and `actions/deploy-pages`**,
+  only if green. The repository's Pages source must be set to **GitHub Actions**. There are no PR
+  previews (the official action replaces the whole site, so it cannot host per-PR folders); every CI
+  run uploads the built page as a downloadable `dist` artifact instead. **Only GitHub's own actions
+  (`actions/*`) are allowed, plus plain `git` and the preinstalled `gh` CLI; never third-party
+  actions** (a test enforces it). A `v*` tag attaches `dist/index.html` to a GitHub Release. The build
+  stamps a version/commit string in the footer.
 - Browser support: recent evergreen only. Feature-detect `CompressionStream`/`DecompressionStream`
   (`deflate-raw`) and show a banner with minimum versions (about Chrome 103, Safari 16.4, Firefox 113 —
   verify against current compat data before shipping) and disable the editor otherwise. No polyfill.
