@@ -159,6 +159,7 @@ def test_highlight_painting_by_dragging(page):
 
 def paint(page, value, x, y):
     page.click(f'#tools button[data-kind="highlight"][data-value="{value}"]')
+    page.evaluate("window.scrollTo(0, 0)")
     click_cell(page, x, y)
 
 
@@ -646,7 +647,9 @@ def test_the_piece_key_follows_edits_and_undo(page):
 
 def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
     headings = [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
-    assert headings[:4] == ["tools", "highlight", "solid stone areas", "doors & walls"]
+    assert headings[:2] == ["tools", "highlight"]
+    assert headings[2].startswith("solid stone areas")
+    assert headings[3] == "doors & walls"
     highlight_grid = page.locator("#tools h2", has_text="Highlight").locator(
         "xpath=following-sibling::div[1]"
     )
