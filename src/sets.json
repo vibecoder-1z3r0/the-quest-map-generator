@@ -2,5 +2,9 @@
  {
   "id": "base",
   "name": "Base game"
+ },
+ {
+  "id": "expansion-heroes",
+  "name": "Expansion heroes (set names to be confirmed)"
  }
 ]
