@@ -26,7 +26,7 @@ opened from disk).
 
 - The board is the standard fixed board, with its rooms lettered A to V. Quests are made by placing
   pieces on it, not by drawing walls. Grey out the rooms a quest doesn't use.
-- Pieces: doors and secret doors, stairs, furniture, treasure chests, traps, monsters, heroes and
+- Pieces: doors, hidden doors and secret door tiles, stairs, furniture, treasure chests, traps, monsters, heroes and
   numbered markers for pointing at things from your notes.
 - Pieces can be **rotated** (`R`), **moved** (drag, arrow keys, or the buttons in the panel) and
   **removed** (`Del` or the Eraser). Several pieces can share a square. New pieces go on top, and
