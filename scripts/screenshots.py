@@ -49,14 +49,14 @@ def showcase() -> dict:
     put("goblin", 4, 12)
     put("treasure-chest", 1, 13)
     st["tiles"] = [(CATALOG["room-tile"], 4, 10, 3, 3)]  # a room tile merging rooms L and M
-    put("skeleton", 6, 11)
+    put("mummy", 6, 11)
     put("door", 8, 14, 0)
     put("pit-trap", 6, 15)
     put("spear-trap", 7, 15)
     put("orc", 5, 17)
     put("door", 7, 13, 1)
     put("tomb", 12, 8, 1)
-    put("zombie", 14, 10)
+    put("abomination", 14, 10)
     put("secret-door", 8, 15, 1)
     put("weapons-rack", 11, 14, 1)
     put("orc", 0, 9)
@@ -77,7 +77,7 @@ def showcase() -> dict:
     st["notes"] = (
         "# Zargon's secrets\n- The chest holds **150 gold**\n- Pit and spear traps in room Q\n"
         "- A secret door hides the tomb room\n\n## Monsters\n| Monster | Where |\n|---|---|\n"
-        "| 2 Goblins | Room L |\n| Skeleton | Room M |"
+        "| 2 Goblins | Room L |\n| Mummy | Room M |"
     )
     return st
 

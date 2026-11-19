@@ -108,10 +108,10 @@ def test_groups_are_categories_not_sets():
         assert piece["group"].lower() not in names, f"{piece['slug']}: group is named after a set"
 
 
-def test_known_body_points_and_unset_ones_are_explicit():
+def test_monster_body_points_match_the_owner_supplied_values():
     bp = {p["slug"]: p["bp"] for p in CATALOG if p.get("monster")}
-    assert {k: bp[k] for k in ("goblin", "orc", "zombie", "skeleton")} == {
+    assert bp == {
         "goblin": 1, "orc": 1, "zombie": 1, "skeleton": 1,
+        "abomination": 2, "mummy": 2,
+        "gargoyle": 3, "dread-warrior": 3,
     }  # fmt: skip
-    for value in bp.values():
-        assert value is None or (isinstance(value, int) and value >= 0)  # never a guess

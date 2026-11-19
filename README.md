@@ -8,9 +8,9 @@ someone, and they see exactly the same quest.
 Because it's one static HTML file, it can be hosted anywhere (GitHub Pages, any web server, or just
 opened from disk).
 
-> **Status: first working version** on the standard 26 x 19 board with its 22 rooms. Monster body
-> point (BP) values are not filled in yet, so the BP statistics show "n/a" for now. See [AGENTS.md](./AGENTS.md) for the decisions and plan
-> and [docs/FORMAT.md](./docs/FORMAT.md) for the link format.
+> **Status: first working version** on the standard 26 x 19 board with its 22 rooms. See
+> [AGENTS.md](./AGENTS.md) for the decisions and plan and [docs/FORMAT.md](./docs/FORMAT.md) for the
+> link format.
 
 ![A quest in progress, with the What's here panel](docs/screenshots/02-quest-in-progress.png)
 
