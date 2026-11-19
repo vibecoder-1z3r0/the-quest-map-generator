@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Stairs (id 10): 2x2 squares, viewBox 0 0 64 64.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<title>Stairs</title>
+<desc>Stairs: 2x2 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="4" width="56" height="56" rx="7" fill="#c9ccd2"/><rect x="8" y="8" width="48" height="10" rx="2" fill="#dadde2"/><rect x="8" y="20" width="48" height="10" rx="2" fill="#bfc3ca"/><rect x="8" y="32" width="48" height="10" rx="2" fill="#a3a8b0"/><rect x="8" y="44" width="48" height="12" rx="2" fill="#7e838c"/><path d="M22 24 L32 30 L42 24 M22 36 L32 42 L42 36" fill="none" stroke="#2b2118" stroke-width="2.4"/></g>
+</svg>

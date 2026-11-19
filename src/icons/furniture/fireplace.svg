@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fireplace (id 15): 3x1 squares, viewBox 0 0 96 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 32">
+<title>Fireplace</title>
+<desc>Fireplace: 3x1 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3" width="90" height="26" rx="5" fill="#9aa0a8"/><path d="M6 8H90M6 14H20M26 14H48M54 14H76M82 14H90M6 20H34M40 20H66M72 20H90" stroke="#7c828a" stroke-width="1.2" fill="none"/><rect x="22" y="9" width="52" height="19" rx="4" fill="#3a2a22"/><path d="M32 27 Q30 18 36 14 Q36 19 40 17 Q40 11 46 9 Q47 16 51 14 Q54 19 52 27 Q58 22 56 16 Q62 19 62 27 Z" fill="#ff8a1c" stroke-width="1.4"/><path d="M42 27 Q42 21 47 19 Q50 23 49 27 Z" fill="#ffd23a" stroke-width="1.2"/></g>
+</svg>

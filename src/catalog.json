@@ -1,0 +1,373 @@
+[
+ {
+  "id": 1,
+  "slug": "door",
+  "name": "Door",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 1,
+  "h": 1,
+  "edge": true
+ },
+ {
+  "id": 2,
+  "slug": "secret-door",
+  "name": "Secret door",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 1,
+  "h": 1,
+  "edge": true
+ },
+ {
+  "id": 3,
+  "slug": "open-wall",
+  "name": "Open wall (provisional)",
+  "folder": "doors",
+  "group": "Doors & walls",
+  "w": 1,
+  "h": 1,
+  "edge": true
+ },
+ {
+  "id": 10,
+  "slug": "stairs",
+  "name": "Stairs",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 2,
+  "h": 2
+ },
+ {
+  "id": 11,
+  "slug": "table",
+  "name": "Table",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 2
+ },
+ {
+  "id": 12,
+  "slug": "tomb",
+  "name": "Tomb",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 2
+ },
+ {
+  "id": 13,
+  "slug": "bookcase",
+  "name": "Bookcase",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 1
+ },
+ {
+  "id": 14,
+  "slug": "cupboard",
+  "name": "Cupboard",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 1
+ },
+ {
+  "id": 15,
+  "slug": "fireplace",
+  "name": "Fireplace",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 1
+ },
+ {
+  "id": 16,
+  "slug": "throne",
+  "name": "Throne",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 17,
+  "slug": "weapons-rack",
+  "name": "Weapons rack",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 1
+ },
+ {
+  "id": 18,
+  "slug": "alchemists-bench",
+  "name": "Alchemist's bench",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 2
+ },
+ {
+  "id": 19,
+  "slug": "sorcerers-table",
+  "name": "Sorcerer's table",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 2
+ },
+ {
+  "id": 20,
+  "slug": "torture-rack",
+  "name": "Torture rack",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 3,
+  "h": 2
+ },
+ {
+  "id": 21,
+  "slug": "rubble",
+  "name": "Rubble (fallen rock)",
+  "folder": "furniture",
+  "group": "Furniture",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 30,
+  "slug": "treasure-chest",
+  "name": "Treasure chest",
+  "folder": "traps",
+  "group": "Treasure & traps",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 31,
+  "slug": "pit-trap",
+  "name": "Pit trap",
+  "folder": "traps",
+  "group": "Treasure & traps",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 32,
+  "slug": "spear-trap",
+  "name": "Spear trap",
+  "folder": "traps",
+  "group": "Treasure & traps",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 33,
+  "slug": "falling-rock-trap",
+  "name": "Falling rock trap",
+  "folder": "traps",
+  "group": "Treasure & traps",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 40,
+  "slug": "goblin",
+  "name": "Goblin",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 41,
+  "slug": "orc",
+  "name": "Orc",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 42,
+  "slug": "abomination",
+  "name": "Abomination",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 43,
+  "slug": "skeleton",
+  "name": "Skeleton",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 44,
+  "slug": "zombie",
+  "name": "Zombie",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 45,
+  "slug": "mummy",
+  "name": "Mummy",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 46,
+  "slug": "gargoyle",
+  "name": "Gargoyle",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 47,
+  "slug": "dread-warrior",
+  "name": "Dread Warrior",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true
+ },
+ {
+  "id": 60,
+  "slug": "barbarian",
+  "name": "Barbarian",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 61,
+  "slug": "dwarf",
+  "name": "Dwarf",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 62,
+  "slug": "elf",
+  "name": "Elf",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 63,
+  "slug": "wizard",
+  "name": "Wizard",
+  "folder": "heroes",
+  "group": "Heroes",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 80,
+  "slug": "marker-1",
+  "name": "Marker 1",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 81,
+  "slug": "marker-2",
+  "name": "Marker 2",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 82,
+  "slug": "marker-3",
+  "name": "Marker 3",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 83,
+  "slug": "marker-4",
+  "name": "Marker 4",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 84,
+  "slug": "marker-5",
+  "name": "Marker 5",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 85,
+  "slug": "marker-6",
+  "name": "Marker 6",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 86,
+  "slug": "marker-7",
+  "name": "Marker 7",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 87,
+  "slug": "marker-8",
+  "name": "Marker 8",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ },
+ {
+  "id": 88,
+  "slug": "marker-9",
+  "name": "Marker 9",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1
+ }
+]

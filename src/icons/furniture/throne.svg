@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Throne (id 16): 1x1 squares, viewBox 0 0 32 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Throne</title>
+<desc>Throne: 1x1 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="2.5" width="20" height="8" rx="3" fill="#d9a82e"/><rect x="4" y="9" width="5" height="16" rx="2" fill="#d9a82e"/><rect x="23" y="9" width="5" height="16" rx="2" fill="#d9a82e"/><rect x="8" y="9" width="16" height="17" rx="3" fill="#b3261e"/><circle cx="16" cy="6.4" r="1.8" fill="#7fe3f0" stroke-width="1.2"/></g>
+</svg>

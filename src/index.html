@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Map Generator</title>
+<style>/*@CSS@*/</style>
+</head>
+<body>
+<svg id="sprites" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<!--@SPRITES@-->
+</svg>
+
+<header id="topbar">
+  <h1>Quest Map Generator</h1>
+  <span id="linkinfo" class="linkinfo">The whole quest is in the link.</span>
+  <div class="actions">
+    <button id="undo" type="button" title="Undo (Ctrl+Z)">&#8630; Undo</button>
+    <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo &#8631;</button>
+    <label class="themepick">Theme
+      <select id="theme"></select>
+    </label>
+    <button id="copy" type="button" class="primary">Copy link</button>
+    <button id="print-btn" type="button">Print</button>
+    <button id="clear" type="button">New map</button>
+  </div>
+</header>
+
+<div id="banner" role="alert" hidden></div>
+
+<main id="app">
+  <aside id="tools" aria-label="Tools and pieces"></aside>
+
+  <section id="stage" aria-label="Map">
+    <div class="zoombar">
+      <button id="zoom-out" type="button" title="Zoom out">&minus;</button>
+      <button id="zoom-fit" type="button" title="Fit to window">Fit</button>
+      <button id="zoom-in" type="button" title="Zoom in">+</button>
+    </div>
+    <div id="viewport">
+      <svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quest map"></svg>
+    </div>
+    <ul id="legend" class="legend"></ul>
+  </section>
+
+  <aside id="side" aria-label="Details and quest text">
+    <section class="card" id="inspector-card">
+      <h2>What's here <span id="inspector-hint" class="muted"></span></h2>
+      <div id="inspector"></div>
+    </section>
+
+    <section class="card">
+      <h2>Quest</h2>
+      <div class="row2">
+        <div class="field narrow"><label for="qnum">Number</label>
+          <input type="text" id="qnum" autocomplete="off" maxlength="10"></div>
+        <div class="field"><label for="qtitle">Title</label>
+          <input type="text" id="qtitle" autocomplete="off" maxlength="160"></div>
+      </div>
+      <div class="field"><label for="wm-select">Wandering monster</label>
+        <div class="row2">
+          <select id="wm-select"></select>
+          <input type="text" id="wm-text" autocomplete="off" maxlength="160" placeholder="or other text" aria-label="Wandering monster, other text">
+        </div>
+      </div>
+      <div class="field"><label for="qintro">Intro (bold and italics only)</label>
+        <textarea id="qintro" rows="5" maxlength="2500"></textarea>
+        <div id="intro-preview" class="preview"></div>
+      </div>
+      <div class="field secret"><label for="notes">Zargon's notes &mdash; secret</label>
+        <textarea id="notes" rows="9" maxlength="10000"></textarea>
+        <div id="notes-preview" class="preview"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Highlight legend</h2>
+      <div id="legend-edit"></div>
+    </section>
+
+    <p class="hint">
+      <kbd>R</kbd> rotate &middot; <kbd>Del</kbd> remove &middot; arrows nudge &middot;
+      <kbd>Esc</kbd> deselect &middot; <kbd>Ctrl+Z</kbd>/<kbd>Ctrl+Y</kbd> undo/redo.<br>
+      Anyone with the link can read the secret notes: they are stored in the link.
+    </p>
+  </aside>
+</main>
+
+<div id="unsupported" role="alert" hidden></div>
+
+<div id="printsheet" aria-hidden="true">
+  <div id="print-title" class="print-title"></div>
+  <p id="print-wm"></p>
+  <h3>Introduction</h3>
+  <div id="print-intro" class="preview"></div>
+  <h3>Zargon's notes</h3>
+  <div id="print-notes" class="preview"></div>
+</div>
+
+<footer id="footer">
+  <p>Unofficial, free fan-made tool, a labor of love for the HeroQuest community. Not affiliated with,
+  endorsed by or sponsored by Hasbro, Inc. or any other owner of the game. HeroQuest and all related
+  names, characters, marks and artwork are trademarks or copyrighted works of their respective owners,
+  used only for identification; no infringement is intended. All artwork was created with AI assistance
+  and is not copied from official art. Released under the MIT License. Build @VERSION@.</p>
+</footer>
+
+<script>
+/*@JS@*/
+</script>
+</body>
+</html>

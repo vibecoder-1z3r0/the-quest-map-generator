@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Rubble (fallen rock) (id 21): 1x1 squares, viewBox 0 0 32 32.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Rubble (fallen rock)</title>
+<desc>Rubble (fallen rock): 1x1 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 24 L7 12 L15 8 L21 13 L19 22 L11 27 Z" fill="#8f949c"/><path d="M16 28 L19 17 L26 13 L30 21 L27 29 Z" fill="#aeb3bb"/><path d="M6 29 L9 24 L15 25 L14 30 Z" fill="#6f747c"/><path d="M9 14 L14 11" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" fill="none"/></g>
+</svg>

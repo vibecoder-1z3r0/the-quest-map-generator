@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Table (id 11): 3x2 squares, viewBox 0 0 96 64.
+     Replace by dropping a same-named file in icons-custom/. Rules: src/icons/README.md -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64">
+<title>Table</title>
+<desc>Table: 3x2 squares, chibi style.</desc>
+<g stroke="#2b2118" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="6" width="86" height="52" rx="9" fill="#b9814a"/><path d="M6 22H90M6 41H90" stroke="#8a5a2b" stroke-width="1.5" fill="none"/><circle cx="24" cy="31" r="5" fill="#f4e6b0"/><path d="M24 26 Q22 22 24 20 Q26 22 24 26Z" fill="#ffb02e" stroke-width="1.2"/><circle cx="66" cy="21" r="4.6" fill="#d9dde3"/><circle cx="74" cy="40" r="4.6" fill="#d9dde3"/><path d="M12 11 H44" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2" stroke-linecap="round"/></g>
+</svg>

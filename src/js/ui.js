@@ -1,0 +1,767 @@
+// The editor: tools, pointer handling, inspector, quest fields, history and URL sync.
+import { BY_ID, CATALOG, GROUPS, MONSTERS, footprint } from "./catalog.js";
+import {
+  CELL,
+  COLS,
+  HIGHLIGHTS,
+  LIMITS,
+  MIN_BROWSERS,
+  ROWS,
+  SOFT_LINK_LIMIT,
+  THEMES,
+} from "./constants.js";
+import { blankState, decodeHash, encodeState } from "./format.js";
+import { renderIntro, renderNotes } from "./markdown.js";
+import {
+  boardSkeleton,
+  boardViewBox,
+  cellMarkup,
+  highlightMarkup,
+  itemMarkup,
+  itemsMarkup,
+  outlineMarkup,
+} from "./render.js";
+import {
+  EDGE_NAMES,
+  highlightAt,
+  itemsAt,
+  moveItem,
+  placeItem,
+  removeItem,
+  reorderItem,
+  restore,
+  rotateItem,
+  sameSnapshot,
+  setHighlight,
+  snapshot,
+  squareLabel,
+} from "./state.js";
+import { cleanText } from "./text.js";
+
+const $ = (selector) => document.querySelector(selector);
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (key === "class") node.className = value;
+    else if (key === "text") node.textContent = value;
+    else if (value === true) node.setAttribute(key, "");
+    else if (value !== false && value !== null && value !== undefined) node.setAttribute(key, value);
+  }
+  for (const child of children) node.append(child);
+  return node;
+}
+
+export const app = {
+  state: blankState(),
+  tool: { kind: "select", value: 0 },
+  selected: -1,
+  pinned: null,
+  hover: null,
+  ghostRot: 0,
+  inside: false,
+  drag: null,
+  paint: null,
+  zoom: 1,
+  past: [],
+  future: [],
+  editable: true,
+};
+
+// ---------------------------------------------------------------- theme
+function themeSlug(id) {
+  return (THEMES.find((t) => t.id === id) || THEMES[0]).slug;
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = themeSlug(app.state.theme);
+  const select = $("#theme");
+  if (select.value !== String(app.state.theme)) {
+    select.value = THEMES.some((t) => t.id === app.state.theme) ? String(app.state.theme) : "0";
+  }
+}
+
+// ---------------------------------------------------------------- banner and link info
+function showBanner(messages, isError) {
+  const banner = $("#banner");
+  if (!messages.length) {
+    banner.hidden = true;
+    return;
+  }
+  banner.textContent = messages.join(" ");
+  banner.className = isError ? "error" : "";
+  banner.hidden = false;
+}
+
+function updateLinkInfo() {
+  const info = $("#linkinfo");
+  const length = location.href.length;
+  const long = length > SOFT_LINK_LIMIT;
+  info.textContent = long
+    ? `Link length: ${length.toLocaleString()} characters. Some chat apps may cut links this long.`
+    : `Link length: ${length.toLocaleString()} characters`;
+  info.classList.toggle("warn", long);
+}
+
+// ---------------------------------------------------------------- URL sync
+let urlSeq = 0;
+let pendingPush = false;
+let urlTimer = 0;
+let lastHash = "";
+
+function scheduleUrl(push, delay = 0) {
+  pendingPush ||= push;
+  clearTimeout(urlTimer);
+  urlTimer = setTimeout(syncUrl, delay);
+}
+
+export async function syncUrl() {
+  clearTimeout(urlTimer);
+  const mine = ++urlSeq;
+  let hash;
+  try {
+    hash = `#${await encodeState(app.state)}`;
+  } catch (error) {
+    showBanner([`Could not store this map in a link: ${error.message}.`], true);
+    return;
+  }
+  if (mine !== urlSeq) return;
+  const push = pendingPush;
+  pendingPush = false;
+  if (hash !== lastHash) {
+    lastHash = hash;
+    if (push) history.pushState(null, "", hash);
+    else history.replaceState(null, "", hash);
+  }
+  updateLinkInfo();
+}
+
+export async function loadFromHash() {
+  const hash = location.hash;
+  if (hash === lastHash) return;
+  lastHash = hash;
+  if (hash.length <= 1) {
+    app.state = blankState();
+    showBanner([], false);
+  } else {
+    try {
+      const { state, warnings } = await decodeHash(hash.slice(1));
+      app.state = state;
+      showBanner(warnings, false);
+    } catch (error) {
+      app.state = blankState();
+      showBanner([`Couldn't read a map from this link (${error.message}). Starting with a blank map.`], true);
+    }
+  }
+  app.selected = -1;
+  app.pinned = null;
+  app.past = [];
+  app.future = [];
+  app.baseline = snapshot(app.state);
+  syncFields();
+  applyTheme();
+  renderAll();
+  updateLinkInfo();
+}
+
+// ---------------------------------------------------------------- history
+function commit() {
+  const snap = snapshot(app.state);
+  if (app.baseline && sameSnapshot(snap, app.baseline)) {
+    renderAll();
+    return;
+  }
+  if (app.baseline) app.past.push(app.baseline);
+  if (app.past.length > 200) app.past.shift();
+  app.future = [];
+  app.baseline = snap;
+  scheduleUrl(true);
+  renderAll();
+}
+
+function undo() {
+  flushTextCommit();
+  if (!app.past.length) return;
+  app.future.push(app.baseline);
+  app.baseline = app.past.pop();
+  restore(app.state, app.baseline);
+  afterHistoryJump();
+}
+
+function redo() {
+  flushTextCommit();
+  if (!app.future.length) return;
+  app.past.push(app.baseline);
+  app.baseline = app.future.pop();
+  restore(app.state, app.baseline);
+  afterHistoryJump();
+}
+
+function afterHistoryJump() {
+  app.selected = -1;
+  syncFields();
+  scheduleUrl(false);
+  renderAll();
+}
+
+let textTimer = 0;
+function flushTextCommit() {
+  if (!textTimer) return;
+  clearTimeout(textTimer);
+  textTimer = 0;
+  commit();
+}
+
+// ---------------------------------------------------------------- geometry
+function boardPoint(event) {
+  const svg = $("#board");
+  const matrix = svg.getScreenCTM();
+  if (!matrix) return null;
+  const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
+  return { px: point.x, py: point.y };
+}
+
+function cellAt(event) {
+  const p = boardPoint(event);
+  if (!p) return null;
+  const x = Math.floor(p.px / CELL);
+  const y = Math.floor(p.py / CELL);
+  if (x < 0 || y < 0 || x >= COLS || y >= ROWS) return null;
+  return { x, y, fx: p.px / CELL - x, fy: p.py / CELL - y };
+}
+
+// Nearest edge of a square as a rotation (0 north, 1 east, 2 south, 3 west).
+function nearestEdge(cell) {
+  const d = [cell.fy, 1 - cell.fx, 1 - cell.fy, cell.fx];
+  return d.indexOf(Math.min(...d));
+}
+
+function ghostItem() {
+  if (app.tool.kind !== "piece" || !app.hover) return null;
+  const piece = BY_ID.get(app.tool.value);
+  const r = piece.edge ? app.hover.edge : app.ghostRot;
+  return { id: piece.id, x: app.hover.x, y: app.hover.y, r };
+}
+
+// ---------------------------------------------------------------- rendering
+function renderMap() {
+  $("#layer-hl").innerHTML = highlightMarkup(app.state.hl);
+  $("#layer-items").innerHTML = itemsMarkup(app.state.items);
+}
+
+function renderOverlay() {
+  let out = "";
+  const view = app.pinned || app.hover;
+  if (app.pinned) out += cellMarkup(app.pinned.x, app.pinned.y, "pinned");
+  if (app.hover && app.inside && !app.drag && !app.paint) {
+    if (app.tool.kind !== "piece") out += cellMarkup(app.hover.x, app.hover.y, "hover");
+    const ghost = ghostItem();
+    if (ghost) {
+      const clamped = { ...ghost };
+      const [fw, fh] = footprint(clamped);
+      clamped.x = Math.max(0, Math.min(COLS - fw, clamped.x));
+      clamped.y = Math.max(0, Math.min(ROWS - fh, clamped.y));
+      out += `<g class="ghost">${itemMarkup(clamped)}</g>`;
+    }
+  }
+  if (app.selected >= 0 && app.state.items[app.selected]) {
+    out += outlineMarkup(app.state.items[app.selected], "selected");
+  }
+  $("#layer-overlay").innerHTML = out;
+  return view;
+}
+
+function pieceLine(item) {
+  const piece = BY_ID.get(item.id);
+  const [w, h] = footprint(item);
+  const parts = [`${w}×${h}`];
+  if (piece.edge) parts.push(`${EDGE_NAMES[item.r]} edge`);
+  else if (item.r) parts.push(`rotated ${item.r * 90}°`);
+  parts.push(`anchor ${squareLabel(item.x, item.y)}`);
+  return parts.join(" · ");
+}
+
+function stackButton(label, title, handler) {
+  const button = el("button", { type: "button", title, text: label });
+  button.addEventListener("click", handler);
+  return button;
+}
+
+function renderInspector() {
+  const box = $("#inspector");
+  box.replaceChildren();
+  const cell = app.pinned || app.hover;
+  $("#inspector-hint").textContent = app.pinned ? "(pinned, Esc to unpin)" : "";
+  if (!cell) {
+    box.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
+    return;
+  }
+  const hl = highlightAt(app.state, cell.x, cell.y);
+  const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
+  box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
+  box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
+  const hits = itemsAt(app.state, cell.x, cell.y);
+  if (!hits.length) {
+    box.append(el("p", { class: "none", text: "No pieces here." }));
+    return;
+  }
+  const list = el("ol", { class: "stack", "aria-label": "Pieces here, top first" });
+  hits.forEach((index, position) => {
+    const item = app.state.items[index];
+    const piece = BY_ID.get(item.id);
+    const li = el("li", { class: index === app.selected ? "sel" : "" });
+    const name = el("div", { class: "name", text: piece.name });
+    name.addEventListener("click", () => selectItem(index));
+    li.append(name, el("div", { class: "meta", text: pieceLine(item) }));
+    const buttons = el("div", { class: "btns" });
+    const above = hits[position - 1];
+    const below = hits[position + 1];
+    const forward = stackButton("Forward", "Bring forward", () => reorderTo(index, above));
+    forward.disabled = above === undefined;
+    const back = stackButton("Back", "Send back", () => reorderTo(index, below));
+    back.disabled = below === undefined;
+    buttons.append(
+      forward,
+      back,
+      stackButton("Rotate", "Rotate a quarter turn clockwise", () => rotateAt(index)),
+      stackButton("←", "Move left", () => nudgeAt(index, -1, 0)),
+      stackButton("↑", "Move up", () => nudgeAt(index, 0, -1)),
+      stackButton("↓", "Move down", () => nudgeAt(index, 0, 1)),
+      stackButton("→", "Move right", () => nudgeAt(index, 1, 0)),
+      stackButton("Remove", "Remove this piece", () => removeAt(index)),
+    );
+    li.append(buttons);
+    list.append(li);
+  });
+  box.append(list);
+}
+
+function renderLegend() {
+  const items = [];
+  for (const h of HIGHLIGHTS) {
+    const label = app.state.legend[h.value];
+    if (h.value && label) {
+      items.push(el("li", {}, el("span", { class: "swatch", style: `background:${h.color}` }), label));
+    }
+  }
+  $("#legend").replaceChildren(...items);
+}
+
+function renderUndoRedo() {
+  $("#undo").disabled = !app.past.length;
+  $("#redo").disabled = !app.future.length;
+}
+
+function renderPreviews() {
+  renderIntro($("#intro-preview"), app.state.intro);
+  renderNotes($("#notes-preview"), app.state.notes);
+  renderIntro($("#print-intro"), app.state.intro);
+  renderNotes($("#print-notes"), app.state.notes);
+  const title = [app.state.num ? `Quest ${app.state.num}` : "", app.state.title].filter(Boolean).join(": ");
+  $("#print-title").textContent = title;
+  const monster = BY_ID.get(app.state.wmId);
+  const wm = [monster?.name, app.state.wmText].filter(Boolean).join(" – ");
+  $("#print-wm").textContent = wm ? `Wandering monster: ${wm}` : "";
+  document.title = `${title || "Quest"} – Quest Map Generator`;
+}
+
+function renderAll() {
+  renderMap();
+  renderOverlay();
+  renderInspector();
+  renderLegend();
+  renderUndoRedo();
+  renderPreviews();
+  markTools();
+}
+
+// ---------------------------------------------------------------- actions on pieces
+function selectItem(index) {
+  app.selected = index;
+  renderOverlay();
+  renderInspector();
+}
+
+function rotateAt(index) {
+  rotateItem(app.state, index);
+  commit();
+}
+
+function nudgeAt(index, dx, dy) {
+  const item = app.state.items[index];
+  if (moveItem(app.state, index, item.x + dx, item.y + dy)) commit();
+}
+
+function removeAt(index) {
+  removeItem(app.state, index);
+  app.selected = -1;
+  commit();
+}
+
+function reorderTo(index, targetIndex) {
+  if (targetIndex === undefined) return;
+  const newIndex = reorderItem(app.state, index, targetIndex - index);
+  app.selected = app.selected === index ? newIndex : app.selected;
+  commit();
+}
+
+// ---------------------------------------------------------------- pointer handling
+function onPointerDown(event) {
+  if (!app.editable || (event.pointerType === "mouse" && event.button !== 0)) return;
+  const cell = cellAt(event);
+  if (!cell) return;
+  app.hover = { ...cell, edge: nearestEdge(cell) };
+  app.inside = true;
+  const { kind, value } = app.tool;
+  if (kind === "piece") {
+    const ghost = ghostItem();
+    app.selected = placeItem(app.state, ghost.id, ghost.x, ghost.y, ghost.r);
+    commit();
+  } else if (kind === "erase") {
+    const hits = itemsAt(app.state, cell.x, cell.y);
+    if (hits.length) removeAt(hits[0]);
+  } else if (kind === "highlight") {
+    event.preventDefault();
+    $("#board").setPointerCapture(event.pointerId);
+    app.paint = { value, changed: false };
+    paintCell(cell);
+  } else {
+    app.pinned = { x: cell.x, y: cell.y };
+    const hits = itemsAt(app.state, cell.x, cell.y);
+    const already = hits.includes(app.selected);
+    if (hits.length) {
+      if (!already) app.selected = hits[0];
+      const item = app.state.items[app.selected];
+      event.preventDefault();
+      $("#board").setPointerCapture(event.pointerId);
+      app.drag = { index: app.selected, dx: cell.x - item.x, dy: cell.y - item.y, moved: false, already, hits };
+    } else {
+      app.selected = -1;
+    }
+    renderOverlay();
+    renderInspector();
+  }
+}
+
+function paintCell(cell) {
+  if (setHighlight(app.state, cell.x, cell.y, app.paint.value)) {
+    app.paint.changed = true;
+    renderMap();
+  }
+}
+
+function onPointerMove(event) {
+  const cell = cellAt(event);
+  app.inside = cell !== null;
+  if (cell) app.hover = { ...cell, edge: nearestEdge(cell) };
+  if (app.paint && cell) paintCell(cell);
+  if (app.drag && cell) {
+    const { index, dx, dy } = app.drag;
+    if (moveItem(app.state, index, cell.x - dx, cell.y - dy)) {
+      app.drag.moved = true;
+      renderMap();
+    }
+  }
+  renderOverlay();
+  renderInspector();
+}
+
+function onPointerUp() {
+  if (app.paint) {
+    const changed = app.paint.changed;
+    app.paint = null;
+    if (changed) commit();
+  }
+  if (app.drag) {
+    const { moved, already, hits, index } = app.drag;
+    app.drag = null;
+    if (moved) {
+      commit();
+    } else if (already && hits.length > 1) {
+      app.selected = hits[(hits.indexOf(index) + 1) % hits.length];
+      renderOverlay();
+      renderInspector();
+    }
+  }
+}
+
+// The last hovered square stays in the inspector so its buttons can be reached with the mouse.
+function onPointerLeave() {
+  if (app.paint || app.drag) return;
+  app.inside = false;
+  renderOverlay();
+}
+
+// ---------------------------------------------------------------- keyboard
+function onKeyDown(event) {
+  const target = event.target;
+  const typing = target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName);
+  if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+    const key = event.key.toLowerCase();
+    if (key === "z" && !typing) {
+      event.preventDefault();
+      if (event.shiftKey) redo();
+      else undo();
+    } else if (key === "y" && !typing) {
+      event.preventDefault();
+      redo();
+    }
+    return;
+  }
+  if (typing || !app.editable) return;
+  const key = event.key;
+  if (key === "r" || key === "R") {
+    if (app.tool.kind === "piece") {
+      app.ghostRot = (app.ghostRot + 1) % 4;
+      renderOverlay();
+    } else if (app.selected >= 0) {
+      rotateAt(app.selected);
+    }
+  } else if ((key === "Delete" || key === "Backspace") && app.selected >= 0) {
+    event.preventDefault();
+    removeAt(app.selected);
+  } else if (key === "Escape") {
+    app.selected = -1;
+    app.pinned = null;
+    renderOverlay();
+    renderInspector();
+  } else if (app.selected >= 0 && key.startsWith("Arrow")) {
+    event.preventDefault();
+    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[key];
+    nudgeAt(app.selected, d[0], d[1]);
+  }
+}
+
+// ---------------------------------------------------------------- tools palette
+function iconThumb(piece) {
+  const w = piece.w * CELL;
+  const h = piece.h * CELL;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `${piece.edge ? -4 : 0} ${piece.edge ? -8 : 0} ${w + (piece.edge ? 8 : 0)} ${h + (piece.edge ? 8 : 0)}`);
+  svg.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttribute("href", `#icon-${piece.slug}`);
+  use.setAttribute("width", String(w));
+  use.setAttribute("height", String(h));
+  svg.append(use);
+  return svg;
+}
+
+function toolButton(label, kind, value, lead) {
+  const button = el("button", { type: "button", "data-kind": kind, "data-value": String(value) });
+  if (lead) button.append(lead);
+  button.append(document.createTextNode(label));
+  button.addEventListener("click", () => {
+    app.tool = { kind, value };
+    if (kind !== "select") app.selected = -1;
+    renderAll();
+  });
+  return button;
+}
+
+function buildPalette() {
+  const root = $("#tools");
+  root.replaceChildren();
+  root.append(el("h2", { text: "Tools" }));
+  const basics = el("div", { class: "tgrid" });
+  basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0));
+  root.append(basics);
+  root.append(el("h2", { text: "Highlight" }));
+  const hls = el("div", { class: "tgrid" });
+  for (const h of HIGHLIGHTS) {
+    const swatch = el("span", { class: "swatch", style: h.color ? `background:${h.color}` : "background:transparent" });
+    hls.append(toolButton(h.value ? h.name.replace(" (solid rock)", "") : "Clear", "highlight", h.value, swatch));
+  }
+  root.append(hls);
+  for (const group of GROUPS) {
+    root.append(el("h2", { text: group }));
+    const grid = el("div", { class: "tgrid" });
+    for (const piece of CATALOG.filter((p) => p.group === group)) {
+      const button = toolButton(piece.name, "piece", piece.id, iconThumb(piece));
+      button.title = `${piece.name} (${piece.w}×${piece.h})`;
+      grid.append(button);
+    }
+    root.append(grid);
+  }
+}
+
+function markTools() {
+  for (const button of document.querySelectorAll("#tools button")) {
+    const active =
+      button.dataset.kind === app.tool.kind && Number(button.dataset.value) === app.tool.value;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  }
+  $("#board").style.cursor = app.tool.kind === "select" ? "default" : "crosshair";
+}
+
+// ---------------------------------------------------------------- quest fields
+function buildLegendEditor() {
+  const root = $("#legend-edit");
+  root.replaceChildren();
+  for (const h of HIGHLIGHTS.filter((x) => x.value)) {
+    const input = el("input", {
+      type: "text",
+      "data-color": String(h.value),
+      maxlength: String(LIMITS.legend),
+      placeholder: h.name,
+      "aria-label": `Legend label for ${h.name}`,
+      autocomplete: "off",
+    });
+    input.addEventListener("input", () => {
+      const cleaned = cleanText(input.value, { limit: LIMITS.legend }).text;
+      if (cleaned !== input.value) input.value = cleaned;
+      app.state.legend[h.value] = cleaned;
+      textChanged();
+    });
+    root.append(el("div", { class: "lg" }, el("span", { class: "swatch", style: `background:${h.color}` }), input));
+  }
+}
+
+function buildWandering() {
+  const select = $("#wm-select");
+  select.replaceChildren(el("option", { value: "0", text: "(none)" }));
+  for (const monster of MONSTERS) select.append(el("option", { value: String(monster.id), text: monster.name }));
+  select.addEventListener("change", () => {
+    app.state.wmId = Number(select.value);
+    textChanged();
+  });
+}
+
+function bindField(selector, key, options) {
+  const input = $(selector);
+  input.addEventListener("input", () => {
+    const start = input.selectionStart ?? input.value.length;
+    const { text } = cleanText(input.value, options);
+    if (text !== input.value) {
+      const delta = input.value.length - text.length;
+      input.value = text;
+      input.setSelectionRange(Math.max(0, start - delta), Math.max(0, start - delta));
+    }
+    app.state[key] = text;
+    textChanged();
+  });
+}
+
+function textChanged() {
+  renderPreviews();
+  renderLegend();
+  scheduleUrl(false, 300);
+  clearTimeout(textTimer);
+  textTimer = setTimeout(() => {
+    textTimer = 0;
+    commit();
+  }, 700);
+}
+
+function syncFields() {
+  $("#qnum").value = app.state.num;
+  $("#qtitle").value = app.state.title;
+  $("#qintro").value = app.state.intro;
+  $("#notes").value = app.state.notes;
+  $("#wm-select").value = BY_ID.has(app.state.wmId) ? String(app.state.wmId) : "0";
+  $("#wm-text").value = app.state.wmText;
+  for (const input of document.querySelectorAll("#legend-edit input")) {
+    input.value = app.state.legend[Number(input.dataset.color)] ?? "";
+  }
+}
+
+// ---------------------------------------------------------------- zoom
+function setZoom(value) {
+  app.zoom = Math.max(1, Math.min(4, value));
+  $("#board").style.width = `${app.zoom * 100}%`;
+}
+
+// ---------------------------------------------------------------- init
+function browserSupported() {
+  return typeof CompressionStream === "function" && typeof DecompressionStream === "function";
+}
+
+export function showUnsupported() {
+  app.editable = false;
+  const box = $("#unsupported");
+  box.hidden = false;
+  box.replaceChildren(
+    el("h2", { text: "This browser is too old" }),
+    el("p", {
+      text: `Quest Map Generator stores the whole map in the link and needs built-in compression. Please use a recent browser: ${MIN_BROWSERS}, or newer.`,
+    }),
+  );
+  $("#app").hidden = true;
+  $("#topbar").hidden = true;
+}
+
+export function initUi() {
+  if (!browserSupported()) {
+    showUnsupported();
+    return false;
+  }
+  const board = $("#board");
+  board.setAttribute("viewBox", boardViewBox());
+  board.innerHTML = boardSkeleton();
+  buildPalette();
+  buildLegendEditor();
+  buildWandering();
+  const themeSelect = $("#theme");
+  for (const theme of THEMES) themeSelect.append(el("option", { value: String(theme.id), text: theme.name }));
+  themeSelect.addEventListener("change", () => {
+    app.state.theme = Number(themeSelect.value);
+    applyTheme();
+    scheduleUrl(false);
+  });
+
+  board.addEventListener("pointerdown", onPointerDown);
+  board.addEventListener("pointermove", onPointerMove);
+  board.addEventListener("pointerup", onPointerUp);
+  board.addEventListener("pointercancel", onPointerUp);
+  board.addEventListener("pointerleave", onPointerLeave);
+  document.addEventListener("keydown", onKeyDown);
+
+  bindField("#qnum", "num", { limit: LIMITS.num });
+  bindField("#qtitle", "title", { limit: LIMITS.title });
+  bindField("#qintro", "intro", { multiline: true, limit: LIMITS.intro });
+  bindField("#notes", "notes", { multiline: true, limit: LIMITS.notes });
+  bindField("#wm-text", "wmText", { limit: LIMITS.wmText });
+
+  $("#undo").addEventListener("click", undo);
+  $("#redo").addEventListener("click", redo);
+  $("#zoom-in").addEventListener("click", () => setZoom(app.zoom * 1.25));
+  $("#zoom-out").addEventListener("click", () => setZoom(app.zoom / 1.25));
+  $("#zoom-fit").addEventListener("click", () => setZoom(1));
+  $("#print-btn").addEventListener("click", () => window.print());
+  $("#clear").addEventListener("click", () => {
+    if (!window.confirm("Start a new, empty map? You can get back with Undo or the browser's back button.")) return;
+    const theme = app.state.theme;
+    app.state = blankState();
+    app.state.theme = theme;
+    app.selected = -1;
+    app.pinned = null;
+    syncFields();
+    commit();
+  });
+  $("#copy").addEventListener("click", async () => {
+    await syncUrl();
+    const button = $("#copy");
+    try {
+      await navigator.clipboard.writeText(location.href);
+      button.textContent = "Copied!";
+    } catch {
+      window.prompt("Copy this link:", location.href);
+    }
+    setTimeout(() => {
+      button.textContent = "Copy link";
+    }, 1500);
+  });
+  window.addEventListener("beforeprint", () => {
+    app.inside = false;
+    renderOverlay();
+  });
+  window.addEventListener("popstate", loadFromHash);
+  window.addEventListener("hashchange", loadFromHash);
+
+  app.baseline = snapshot(app.state);
+  syncFields();
+  applyTheme();
+  renderAll();
+  return true;
+}
