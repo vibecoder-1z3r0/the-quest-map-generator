@@ -841,6 +841,16 @@ function buildPalette() {
   const basics = el("div", { class: "tgrid" });
   basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0));
   root.append(basics);
+  root.append(
+    el(
+      "p",
+      { class: "hint" },
+      el("kbd", { text: "R" }), " rotate \u00B7 ", el("kbd", { text: "Del" }), " remove \u00B7 arrows nudge \u00B7 ",
+      el("kbd", { text: "Esc" }), " deselect and back to Select \u00B7 ", el("kbd", { text: "Ctrl+Z" }), "/",
+      el("kbd", { text: "Ctrl+Y" }), " undo/redo.", el("br"),
+      "Anyone with the link can read the secret notes: they are stored in the link.",
+    ),
+  );
   root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
   const solid = el("div", { class: "tgrid" });
@@ -848,13 +858,12 @@ function buildPalette() {
     const swatch = el("span", { class: "swatch", style: h.color ? `background:${h.color}` : "background:transparent" });
     const button = toolButton(h.value ? h.name.replace(" (solid stone)", "") : "Clear", "highlight", h.value, swatch);
     // Grey (value 1) marks solid stone, so it has its own section; the other colors stay together.
+    if (h.value === 1) button.title = "Paint solid stone like a highlight; Clear erases it";
     (h.value === 1 ? solid : hls).append(button);
   }
   root.append(hls);
-  root.append(
-    el("h2", { text: "Solid stone areas" }, el("span", { class: "muted", text: " (paints like a color; Clear erases)" })),
-    solid,
-  );
+  solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
+  root.append(el("h2", { text: "Solid stone areas" }), solid);
   for (const group of GROUPS) {
     root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
