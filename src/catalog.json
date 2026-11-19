@@ -289,6 +289,18 @@
   "set": "base"
  },
  {
+  "id": 48,
+  "slug": "dread-warlock",
+  "name": "Dread Warlock",
+  "folder": "monsters",
+  "group": "Monsters",
+  "w": 1,
+  "h": 1,
+  "monster": true,
+  "bp": null,
+  "set": "base"
+ },
+ {
   "id": 60,
   "slug": "barbarian",
   "name": "Barbarian",
