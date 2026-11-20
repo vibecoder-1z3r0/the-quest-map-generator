@@ -45,8 +45,10 @@ map. It can be hosted anywhere static.
   (committed, generated in the CI container, small tolerance); full-page and mobile screenshots are
   CI artifacts only. Unit tests for the encoder, markdown parser and character filter.
 - **Session log**: `scripts/session_timing.py` (from many-game-show) writes `SESSION_LOG.md`, a
-  turn-by-turn timing and token report of the session. **Run `make session-log` as part of every
-  commit** so the log is current (the header note lives in `scripts/session_log_header.md`).
+  turn-by-turn timing and token report of the session. A **pre-commit hook** (`scripts/hooks/pre-commit`,
+  enabled by `make setup` via `core.hooksPath`) runs `make session-log` and stages the result, so every commit
+  carries a fresh log. If the hook is not active in a checkout, run `make session-log` before committing. The
+  header note lives in `scripts/session_log_header.md`.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
 - CI (GitHub Actions) runs `make build`, `make lint` and `make test` as separate steps, in that

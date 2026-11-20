@@ -39,6 +39,8 @@ exact recomputation.
 """
 
 import argparse
+import contextlib
+import io
 import json
 from datetime import datetime
 from pathlib import Path
@@ -371,17 +373,40 @@ def main() -> None:
         default=None,
         help="JSON file with the prior frozen log's totals (see module docstring).",
     )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Write the report here (only after it is fully built) instead of stdout.",
+    )
+    parser.add_argument(
+        "--header",
+        type=Path,
+        default=None,
+        help="Markdown file whose text replaces the report's '# Session Timing Report' title line.",
+    )
     args = parser.parse_args()
 
     path = find_transcript(args.session_id)
     turns = load_turns(path)
 
-    print_report(turns, path)
-
-    if args.skip_duplicate is not None and args.prior_summary is not None:
-        print_combined_summary(turns, args.skip_duplicate, args.prior_summary)
-    elif args.skip_duplicate is not None or args.prior_summary is not None:
+    if (args.skip_duplicate is None) != (args.prior_summary is None):
         raise SystemExit("--skip-duplicate and --prior-summary must be given together")
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        print_report(turns, path)
+        if args.skip_duplicate is not None and args.prior_summary is not None:
+            print_combined_summary(turns, args.skip_duplicate, args.prior_summary)
+
+    report = buffer.getvalue()
+    if args.header is not None:
+        # Swap the generated title line for the caller's own header text.
+        report = args.header.read_text() + report.split("\n", 1)[1]
+    if args.out is None:
+        print(report, end="")
+    else:
+        args.out.write_text(report)
 
 
 if __name__ == "__main__":

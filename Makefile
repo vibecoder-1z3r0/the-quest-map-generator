@@ -24,8 +24,8 @@ lint: dist/index.html ## deno lint (JS), HTML check, ruff (Python)
 test: dist/index.html ## run the Playwright suite against dist/index.html
 	$(PY) -m pytest
 
-session-log: ## regenerate SESSION_LOG.md from the session transcript (run before every commit)
-	{ cat scripts/session_log_header.md; $(PY) scripts/session_timing.py | tail -n +2; } > SESSION_LOG.md
+session-log: ## regenerate SESSION_LOG.md from the session transcript (the pre-commit hook runs this)
+	$(PY) scripts/session_timing.py --header scripts/session_log_header.md --out SESSION_LOG.md
 
 screenshots: dist/index.html ## regenerate README screenshots from the real editor
 	$(PY) scripts/screenshots.py
@@ -36,6 +36,7 @@ baselines: dist/index.html ## regenerate the visual baselines
 setup:            ## install the dev tooling (Python only) and the Playwright browser
 	python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 	.venv/bin/python -m playwright install chromium
+	git config core.hooksPath scripts/hooks
 
 clean:
 	rm -rf dist test-artifacts
