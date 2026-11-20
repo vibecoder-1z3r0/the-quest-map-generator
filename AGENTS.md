@@ -183,6 +183,7 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
 - Touch: pinch-zoom and pan.
+- **Single-column layout** (screens up to 1000px wide, no device sniffing): the map and its controls, then the palette right after the map, then the quest sheet, then the side panels.
 - **Header**: two rows. Row 1: app name and build, the quest line (`Series: Quest N - Title`, blank
   parts dropped, truncated with a tooltip), then Undo, Redo, Print and Theme on the right. Row 2:
   Copy map link, link length, the privacy note ("Anyone with the link can read Zargon's secret
