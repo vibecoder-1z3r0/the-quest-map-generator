@@ -1,0 +1,5 @@
+#!/bin/sh
+# Refresh SESSION_LOG.md and include it in every commit. Skipped quietly where there is no session
+# transcript (CI, someone else's checkout), so it never blocks a commit.
+make -s session-log >/dev/null 2>&1 && git add SESSION_LOG.md
+exit 0

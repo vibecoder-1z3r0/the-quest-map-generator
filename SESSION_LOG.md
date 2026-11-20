@@ -144,17 +144,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 133 | Make the pr (thanks autocorrect....) | 02:55:47 | 7s | 27s | 6 | 677 | 566 | 475,460 |
 | 134 | merged branch deleted | 02:56:22 | 4s | 34s | 5 | 245 | 346 | 476,949 |
 | 135 | Hey can you pull my "session scrips" from many-game-show and fire up a… | 02:57:01 | 46s | 3m 45s | 40 | 10,553 | 37,882 | 4,690,280 |
-| 136 | Yeah after every commit | 03:01:32 | 13s | — | 14 | 2,806 | 3,359 | 1,284,372 |
+| 136 | Yeah after every commit | 03:01:32 | 18s | 0s | 16 | 3,060 | 3,852 | 1,543,022 |
+| 137 | Err on every commit | 03:01:50 | 37s | — | 30 | 12,720 | 15,839 | 3,391,001 |
 
-**Total turns:** 136  
-**Total agent time spent (excl. flagged):** 2h 19m  
+**Total turns:** 137  
+**Total agent time spent (excl. flagged):** 2h 20m  
 **Total human think time (excl. outliers):** 2h 31m  
-**Average human think time (excl. outliers):** 1m 13s  
+**Average human think time (excl. outliers):** 1m 12s  
 **Think-time outliers (> 15 min):** 10  
-**Total input tokens:** 2,901  
-**Total output tokens:** 1,429,960  
-**Total cache-write tokens:** 11,278,566  
-**Total cache-read tokens:** 491,365,977  
+**Total input tokens:** 2,933  
+**Total output tokens:** 1,442,934  
+**Total cache-write tokens:** 11,294,898  
+**Total cache-read tokens:** 495,015,628  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129 had a 'human think time' over 15 min (total 21h 10m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
