@@ -127,7 +127,7 @@ map. It can be hosted anywhere static.
   dwarf, elf, wizard; plus the expansion heroes bard, warlock, druid, berzerker, explorer, commander
   of the guardian knights, rogue heir of elethorn and wandering monk. Those eight are **really
   expansion heroes but are tagged `base` for now** (owner's call); re-tag them when the real set
-  names are known. "Berzerker" is spelled as the owner wrote it. Editor extras: numbered markers 1–9. Chaos Warrior is out. More can be added
+  names are known. "Berzerker" is spelled as the owner wrote it. Editor extras: numbered markers 1–9 (ids 80-88) and lettered markers A–I (ids 89-97, teal). Chaos Warrior is out. More can be added
   later.
 
 ## Quest statistics (derived, never stored in the link)

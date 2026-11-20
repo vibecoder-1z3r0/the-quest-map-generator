@@ -540,5 +540,95 @@
   "w": 1,
   "h": 1,
   "set": "base"
+ },
+ {
+  "id": 89,
+  "slug": "marker-a",
+  "name": "Marker A",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 90,
+  "slug": "marker-b",
+  "name": "Marker B",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 91,
+  "slug": "marker-c",
+  "name": "Marker C",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 92,
+  "slug": "marker-d",
+  "name": "Marker D",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 93,
+  "slug": "marker-e",
+  "name": "Marker E",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 94,
+  "slug": "marker-f",
+  "name": "Marker F",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 95,
+  "slug": "marker-g",
+  "name": "Marker G",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 96,
+  "slug": "marker-h",
+  "name": "Marker H",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
+ },
+ {
+  "id": 97,
+  "slug": "marker-i",
+  "name": "Marker I",
+  "folder": "markers",
+  "group": "Markers",
+  "w": 1,
+  "h": 1,
+  "set": "base"
  }
 ]
