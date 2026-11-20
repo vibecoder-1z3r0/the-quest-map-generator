@@ -171,16 +171,20 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   .tgrid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
 }
 
-/* Single column: the map and its controls first, then the palette, then the quest sheet, then the
-   side panels. #stage dissolves so its children can be ordered among the app's own columns. */
+/* Single column: the map, its legend and the What's here panel first, then the palette, then the
+   quest sheet, then the other side cards. #stage and #side dissolve so their children can be ordered
+   among the app's own columns. Zoom buttons and the keyboard hint are hidden here (pinch-zoom and
+   touch cover them). */
 @media screen and (max-width: 1000px) {
   #app { display: flex; flex-direction: column; align-items: stretch; background: var(--stage); }
-  #stage { display: contents; }
+  #stage, #side { display: contents; }
+  #stage > .zoombar, #stage > .hint.keys { display: none; }
   #stage > * { margin-left: 6px; margin-right: 6px; }
-  #stage > .zoombar { margin-top: 6px; }
-  #app > #tools { order: 1; margin-top: 8px; }
-  #stage > .sheet { order: 2; }
-  #app > #side { order: 3; }
+  #viewport { margin-top: 6px; }
+  #side > .card { margin: 8px 6px 0; order: 4; }
+  #side > #inspector-card { order: 1; min-height: 110px; }
+  #app > #tools { order: 2; margin-top: 8px; }
+  #stage > .sheet { order: 3; }
 }
 
 @media print {
