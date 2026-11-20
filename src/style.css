@@ -173,12 +173,12 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 
 /* Single column: the map, its legend and the What's here panel first, then the palette, then the
    quest sheet, then the other side cards. #stage and #side dissolve so their children can be ordered
-   among the app's own columns. Zoom buttons and the keyboard hint are hidden here (pinch-zoom and
-   touch cover them). */
+   among the app's own columns. Zoom buttons, the keyboard hint and the header's privacy line are hidden here (pinch-zoom and
+   touch cover them; the Copy map link tooltip keeps the privacy note). */
 @media screen and (max-width: 1000px) {
   #app { display: flex; flex-direction: column; align-items: stretch; background: var(--stage); }
   #stage, #side { display: contents; }
-  #stage > .zoombar, #stage > .hint.keys { display: none; }
+  #stage > .zoombar, #stage > .hint.keys, #topbar .privacy { display: none; }
   #stage > * { margin-left: 6px; margin-right: 6px; }
   #viewport { margin-top: 6px; }
   #side > .card { margin: 8px 6px 0; order: 4; }

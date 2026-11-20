@@ -147,17 +147,22 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 136 | Yeah after every commit | 03:01:32 | 18s | 0s | 16 | 3,060 | 3,852 | 1,543,022 |
 | 137 | Err on every commit | 03:01:50 | 42s | 16m 60s ⏳ | 32 | 13,161 | 16,531 | 3,656,130 |
 | 138 | On single column I think fit and zoom and the helper text should away,… | 03:19:32 | 10s | 35s | 8 | 2,086 | 17,520 | 532,524 |
-| 139 | Hide zoom on narrow width for now | 03:20:18 | 51s | — | 12 | 3,738 | 1,963 | 1,105,741 |
+| 139 | Hide zoom on narrow width for now | 03:20:18 | 59s | 1m 26s | 14 | 4,021 | 2,658 | 1,383,756 |
+| 140 | Yes, so I can test from my phone | 03:22:43 | 9s | 11s | 5 | 882 | 769 | 558,000 |
+| 141 | Can you merge it as well or do I need to do that? | 03:23:03 | 13s | 18s | 18 | 1,707 | 3,439 | 1,962,426 |
+| 142 | LGTM ship it to prod (aka merge it now) | 03:23:34 | 26s | 27s | 24 | 2,156 | 24,261 | 2,636,353 |
+| 143 | Branch gone | 03:24:27 | 13s | 1m 30s | 20 | 2,241 | 2,427 | 2,146,481 |
+| 144 | This whole thing shouldn't be visible on solo column --  ...rotate · D… | 03:26:10 | 1m 36s | — | 26 | 8,607 | 10,421 | 3,709,884 |
 
-**Total turns:** 139  
-**Total agent time spent (excl. flagged):** 2h 21m  
-**Total human think time (excl. outliers):** 2h 32m  
-**Average human think time (excl. outliers):** 1m 12s  
+**Total turns:** 144  
+**Total agent time spent (excl. flagged):** 2h 24m  
+**Total human think time (excl. outliers):** 2h 36m  
+**Average human think time (excl. outliers):** 1m 11s  
 **Think-time outliers (> 15 min):** 11  
-**Total input tokens:** 2,955  
-**Total output tokens:** 1,449,199  
-**Total cache-write tokens:** 11,315,073  
-**Total cache-read tokens:** 496,919,022  
+**Total input tokens:** 3,050  
+**Total output tokens:** 1,465,075  
+**Total cache-write tokens:** 11,357,085  
+**Total cache-read tokens:** 508,210,181  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137 had a 'human think time' over 15 min (total 21h 27m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
