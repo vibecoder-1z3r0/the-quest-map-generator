@@ -166,10 +166,21 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 
 @media (max-width: 1000px) {
   #app { grid-template-columns: 1fr; }
-  #stage { order: -1; padding: 6px; }
   #tools { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); }
   #side { border-left: 0; border-top: 1px solid var(--border); }
   .tgrid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* Single column: the map and its controls first, then the palette, then the quest sheet, then the
+   side panels. #stage dissolves so its children can be ordered among the app's own columns. */
+@media screen and (max-width: 1000px) {
+  #app { display: flex; flex-direction: column; align-items: stretch; background: var(--stage); }
+  #stage { display: contents; }
+  #stage > * { margin-left: 6px; margin-right: 6px; }
+  #stage > .zoombar { margin-top: 6px; }
+  #app > #tools { order: 1; margin-top: 8px; }
+  #stage > .sheet { order: 2; }
+  #app > #side { order: 3; }
 }
 
 @media print {
