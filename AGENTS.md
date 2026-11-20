@@ -232,6 +232,13 @@ Repo is MIT. Footer and README carry a notice along these lines:
 ## Open items
 
 - Additional room tile styles, if wanted (only the plain "Room tile" exists).
+- **Renumber the catalog ids once, right before the first tagged release (owner's decision).** Ids
+  are cosmetic (palette and key order come from `catalog.json` file order), so this is optional
+  tidying, and it is only allowed in the window before the first `v*` tag, when the format may still
+  change freely. Plan: write a one-off script that decodes the owner's quest link, remaps old ids to
+  new ones and re-encodes it; then in one commit update `catalog.json`, `tests/catalog_ids.json`, the
+  golden links, `tests/reference.py`, `docs/FORMAT.md` examples, `docs/showcase/quest-1.txt` and the
+  README links. Save the old link first (it will stop decoding). After the first tag, ids are frozen.
 - Re-tag the eight expansion heroes once the real set names are known.
 - Verify piece footprints and names, minimum browser versions, and the 160-char wandering-monster limit.
 - Planned order: (1) `src/` restructure, `Makefile`, lint, CI; (2) new data format + golden links;
