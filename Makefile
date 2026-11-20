@@ -4,7 +4,7 @@ DENO ?= $(if $(wildcard .venv/bin/deno),.venv/bin/deno,deno)
 
 SOURCES := $(shell find src icons-custom -type f 2>/dev/null) scripts/build.py
 
-.PHONY: build lint test clean setup screenshots baselines
+.PHONY: build lint test clean setup screenshots baselines session-log
 
 # CI runs these three, in this order, as separate steps: make build, make lint, make test.
 # lint and test use the built page, so they only rebuild it if it is missing or out of date.
@@ -23,6 +23,9 @@ lint: dist/index.html ## deno lint (JS), HTML check, ruff (Python)
 
 test: dist/index.html ## run the Playwright suite against dist/index.html
 	$(PY) -m pytest
+
+session-log: ## regenerate SESSION_LOG.md from the session transcript (run before every commit)
+	{ cat scripts/session_log_header.md; $(PY) scripts/session_timing.py | tail -n +2; } > SESSION_LOG.md
 
 screenshots: dist/index.html ## regenerate README screenshots from the real editor
 	$(PY) scripts/screenshots.py
