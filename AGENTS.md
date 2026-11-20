@@ -44,6 +44,8 @@ map. It can be hosted anywhere static.
   a fixture (matches Pages). Prefer DOM/SVG assertions; a few board-only screenshot baselines
   (committed, generated in the CI container, small tolerance); full-page and mobile screenshots are
   CI artifacts only. Unit tests for the encoder, markdown parser and character filter.
+- **Session log**: `scripts/session_timing.py` (from many-game-show) writes `SESSION_LOG.md`, a
+  turn-by-turn timing and token report of the session. Regenerate it on request.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
 - CI (GitHub Actions) runs `make build`, `make lint` and `make test` as separate steps, in that
