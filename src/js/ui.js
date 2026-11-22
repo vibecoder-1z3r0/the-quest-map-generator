@@ -268,7 +268,7 @@ function renderOverlay() {
   let out = "";
   const view = app.pinned || app.hover;
   if (app.pinned) out += cellMarkup(app.pinned.x, app.pinned.y, "pinned");
-  if (app.hover && app.inside && !app.drag && !app.paint) {
+  if (app.hover && app.inside && !app.drag && !app.paint && app.pointerType !== "touch") {
     if (app.tool.kind !== "piece") out += cellMarkup(app.hover.x, app.hover.y, "hover");
     const ghost = ghostItem();
     if (ghost) {
@@ -577,6 +577,14 @@ function renderAll() {
 }
 
 // ---------------------------------------------------------------- actions on pieces
+// The What's here panel shows a square. When the selected piece or tile moves (panel buttons, arrow
+// keys, drag, or a rotation that re-anchors it), pin the panel to its new square so it keeps showing
+// the piece instead of the square it left.
+function followSelection() {
+  const target = app.state.items[app.selected] ?? app.state.tiles[app.selectedTile];
+  if (target) app.pinned = { x: target.x, y: target.y };
+}
+
 function selectItem(index) {
   app.selected = index;
   app.selectedTile = -1;
@@ -593,7 +601,10 @@ function selectTile(index) {
 
 function nudgeTile(index, dx, dy) {
   const tile = app.state.tiles[index];
-  if (moveTile(app.state, index, tile.x + dx, tile.y + dy)) commit();
+  if (moveTile(app.state, index, tile.x + dx, tile.y + dy)) {
+    if (app.selectedTile === index) followSelection();
+    commit();
+  }
 }
 
 function removeTileAt(index) {
@@ -615,12 +626,16 @@ function resizeTileTo(index, w, h) {
 
 function rotateAt(index) {
   rotateItem(app.state, index);
+  if (app.selected === index) followSelection();
   commit();
 }
 
 function nudgeAt(index, dx, dy) {
   const item = app.state.items[index];
-  if (moveItem(app.state, index, item.x + dx, item.y + dy)) commit();
+  if (moveItem(app.state, index, item.x + dx, item.y + dy)) {
+    if (app.selected === index) followSelection();
+    commit();
+  }
 }
 
 function removeAt(index) {
@@ -642,6 +657,7 @@ function onPointerDown(event) {
   const cell = cellAt(event);
   if (!cell) return;
   app.hover = { ...cell, edge: nearestEdge(cell) };
+  app.pointerType = event.pointerType;
   app.inside = true;
   const { kind, value } = app.tool;
   if (kind === "piece") {
@@ -700,6 +716,7 @@ function paintCell(cell) {
 
 function onPointerMove(event) {
   const cell = cellAt(event);
+  app.pointerType = event.pointerType;
   app.inside = cell !== null;
   if (cell) app.hover = { ...cell, edge: nearestEdge(cell) };
   if (app.paint && cell) paintCell(cell);
@@ -718,6 +735,7 @@ function onPointerMove(event) {
         : moveItem(app.state, index, cell.x - dx, cell.y - dy);
     if (moved) {
       app.drag.moved = true;
+      followSelection();
       renderMap();
     }
   }

@@ -181,6 +181,10 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 - "What's here" panel: hover shows, click/tap pins. Lists everything in the square top to bottom
   (pieces with footprint, anchor, rotation; the highlight) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
+  **The panel follows the selected piece**: moving it (panel buttons, arrow keys, drag) or rotating it re-pins
+  the panel to the piece's new square, so it never loses the piece. Placing a piece selects it and leaves the Place
+  tool active (bulk placing needs no trips to the palette). The hover preview and square highlight only show for
+  a mouse or pen, never for touch.
 - Place, select, **drag-to-move** (keeps rotation and stack position), panel move buttons and arrow
   keys, `R` rotate, `Del` remove, Highlight tool, Eraser. **`Esc` cancels any tool in progress (even a
   tile being dragged out) and returns to the Select tool with nothing selected or pinned.** Clicking a stacked square selects the top

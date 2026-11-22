@@ -661,3 +661,59 @@ def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
     solid_grid.get_by_role("button", name="Grey").click()
     click_cell(page, 3, 3)
     assert page.evaluate("QMG.app.state.hl[3 * 26 + 3]") == 1  # still the grey highlight, value 1
+
+
+def panel_square(page):
+    return page.locator("#inspector .square").inner_text()
+
+
+def test_the_panel_follows_the_selected_piece_when_it_moves(page):
+    place(page, "goblin", 5, 5)  # placing selects the new piece
+    assert panel_square(page) == "Square F6"
+    page.click('#inspector button[title="Move right"]')
+    assert panel_square(page) == "Square G6"  # the panel followed the piece
+    assert "Goblin" in page.locator("#inspector").inner_text()
+    page.keyboard.press("ArrowDown")
+    assert panel_square(page) == "Square G7"
+    assert "Goblin" in page.locator("#inspector").inner_text()
+
+
+def test_the_panel_follows_a_dragged_piece(page):
+    place(page, "goblin", 5, 5)
+    page.click('#tools button[data-kind="select"]')
+    cx, cy = cell_center(page, 5, 5)
+    nx, ny = cell_center(page, 8, 5)
+    page.mouse.move(cx, cy)
+    page.mouse.down()
+    page.mouse.move(nx, ny, steps=6)
+    page.mouse.up()
+    assert panel_square(page) == "Square I6"
+    assert "Goblin" in page.locator("#inspector").inner_text()
+
+
+def ghost_count(page):
+    return page.locator("#layer-overlay .ghost").count()
+
+
+def test_the_hover_preview_shows_for_a_mouse(page):
+    pick_piece(page, "goblin")
+    cx, cy = cell_center(page, 5, 5)
+    page.mouse.move(cx, cy)
+    assert ghost_count(page) == 1
+
+
+def test_touch_taps_leave_no_ghost_preview(browser, site):
+    context = browser.new_context(viewport={"width": 1000, "height": 900}, has_touch=True)
+    try:
+        pg = context.new_page()
+        pg.goto(site)
+        pg.wait_for_function("window.QMG !== undefined")
+        pick_piece(pg, "goblin")
+        cx, cy = cell_center(pg, 5, 5)
+        pg.touchscreen.tap(cx, cy)
+        settle(pg)
+        assert len(items(pg)) == 1  # the tap placed the goblin
+        assert ghost_count(pg) == 0  # and left no transparent copy behind
+        assert pg.locator("#layer-overlay .hover").count() == 0
+    finally:
+        context.close()
