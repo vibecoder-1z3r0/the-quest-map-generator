@@ -50,3 +50,16 @@ def test_readme_links_to_the_showcase_quest_on_pages():
     showcase = (ROOT / "docs/showcase/quest-1.txt").read_text().strip()
     readme = (ROOT / "README.md").read_text()
     assert f"https://vibecoder-1z3r0.github.io/the-quest-map-generator/#{showcase}" in readme
+
+
+def test_readme_extra_quest_links_decode_without_a_banner(page, site):
+    """Every live-editor link in the README must open cleanly (no 'could not read this link')."""
+    readme = (ROOT / "README.md").read_text()
+    links = re.findall(
+        r"https://vibecoder-1z3r0\.github\.io/the-quest-map-generator/(#[A-Za-z0-9_-]+)", readme
+    )
+    assert len(set(links)) >= 2
+    for fragment in set(links):
+        page.goto(site + fragment)
+        page.wait_for_selector("#board")
+        assert not page.locator("#banner").is_visible(), fragment[:30]

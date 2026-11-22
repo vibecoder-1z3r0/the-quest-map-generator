@@ -154,17 +154,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 143 | Branch gone | 03:24:27 | 13s | 1m 30s | 20 | 2,241 | 2,427 | 2,146,481 |
 | 144 | This whole thing shouldn't be visible on solo column --  ...rotate · D… | 03:26:10 | 1m 49s | 7m 6s | 30 | 9,121 | 11,548 | 4,334,569 |
 | 145 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#Aa1RT2_TMBS… | 03:35:06 | 57s | 47h 1m ⏳ | 14 | 2,885 | 21,244 | 1,598,515 |
-| 146 | New url - https://vibecoder-1z3r0.github.io/the-quest-map-generator/#A… | 02:37:49 | 60s | — | 8 | 3,912 | 537,264 | 773,348 |
+| 146 | New url - https://vibecoder-1z3r0.github.io/the-quest-map-generator/#A… | 02:37:49 | 1m 7s | 3m 21s | 11 | 4,251 | 538,378 | 1,430,892 |
+| 147 | I'm working from mobile and there are a few things -  When I get a pie… | 02:42:17 | 11s | 1h 26m ⏳ | 8 | 2,414 | 398 | 659,414 |
+| 148 | Here's quest 2 - https://vibecoder-1z3r0.github.io/the-quest-map-gener… | 04:08:59 | 32s | — | 22 | 6,727 | 550,938 | 2,448,061 |
 
-**Total turns:** 146  
-**Total agent time spent (excl. flagged):** 2h 26m  
-**Total human think time (excl. outliers):** 2h 43m  
-**Average human think time (excl. outliers):** 1m 14s  
-**Think-time outliers (> 15 min):** 12  
-**Total input tokens:** 3,076  
-**Total output tokens:** 1,472,386  
-**Total cache-write tokens:** 11,916,720  
-**Total cache-read tokens:** 511,206,729  
+**Total turns:** 148  
+**Total agent time spent (excl. flagged):** 2h 27m  
+**Total human think time (excl. outliers):** 2h 46m  
+**Average human think time (excl. outliers):** 1m 15s  
+**Think-time outliers (> 15 min):** 13  
+**Total input tokens:** 3,109  
+**Total output tokens:** 1,481,866  
+**Total cache-write tokens:** 12,469,170  
+**Total cache-read tokens:** 514,971,748  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145 had a 'human think time' over 15 min (total 68h 28m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147 had a 'human think time' over 15 min (total 69h 55m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
