@@ -665,6 +665,8 @@ function onPointerDown(event) {
     const placed = placeItem(app.state, ghost.id, ghost.x, ghost.y, ghost.r);
     if (placed >= 0) {
       app.selected = placed;
+      app.selectedTile = -1;
+      if (app.pinned) followSelection(); // a pinned square would otherwise hide the piece just placed
       commit();
     } else {
       // An identical piece is already there, so nothing is added. Select that one instead of
@@ -675,6 +677,7 @@ function onPointerDown(event) {
       });
       app.selected = same ?? -1;
       app.selectedTile = -1;
+      if (app.pinned) followSelection();
       renderOverlay();
       renderInspector();
     }
@@ -763,6 +766,7 @@ function onPointerUp() {
     app.tileDraw = null;
     app.selectedTile = addTile(app.state, id, x, y, w, h);
     app.selected = -1;
+    if (app.pinned) followSelection();
     commit();
   }
   if (app.paint) {
