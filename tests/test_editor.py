@@ -717,3 +717,15 @@ def test_touch_taps_leave_no_ghost_preview(browser, site):
         assert pg.locator("#layer-overlay .hover").count() == 0
     finally:
         context.close()
+
+
+def test_tapping_an_identical_piece_again_selects_it_instead_of_clearing(page):
+    place(page, "marker-a", 5, 5)
+    assert state(page, "items.length") == 1
+    click_cell(page, 5, 5)  # the same marker on the same square is refused as a duplicate
+    assert state(page, "items.length") == 1
+    assert (
+        page.evaluate("QMG.app.selected") == 0
+    )  # but the existing one is selected, not deselected
+    assert panel_square(page) == "Square F6"
+    assert "Marker A" in page.locator("#inspector").inner_text()
