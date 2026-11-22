@@ -662,8 +662,22 @@ function onPointerDown(event) {
   const { kind, value } = app.tool;
   if (kind === "piece") {
     const ghost = ghostItem();
-    app.selected = placeItem(app.state, ghost.id, ghost.x, ghost.y, ghost.r);
-    commit();
+    const placed = placeItem(app.state, ghost.id, ghost.x, ghost.y, ghost.r);
+    if (placed >= 0) {
+      app.selected = placed;
+      commit();
+    } else {
+      // An identical piece is already there, so nothing is added. Select that one instead of
+      // clearing the selection, so the panel still shows the square you tapped.
+      const same = itemsAt(app.state, cell.x, cell.y).find((i) => {
+        const o = app.state.items[i];
+        return o.id === ghost.id && o.r === ghost.r;
+      });
+      app.selected = same ?? -1;
+      app.selectedTile = -1;
+      renderOverlay();
+      renderInspector();
+    }
   } else if (kind === "tile") {
     event.preventDefault();
     $("#board").setPointerCapture(event.pointerId);

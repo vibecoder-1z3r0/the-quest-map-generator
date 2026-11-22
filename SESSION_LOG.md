@@ -159,17 +159,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 148 | Here's quest 2 - https://vibecoder-1z3r0.github.io/the-quest-map-gener… | 04:08:59 | 1m 14s | 22m 53s ⏳ | 24 | 7,128 | 551,542 | 2,782,752 |
 | 149 | On one hand if I need to place a bunch of goblins, I don't want to hav… | 04:33:06 | 10s | 19m 38s ⏳ | 8 | 2,170 | 78 | 671,392 |
 | 150 | I'm good with it.  Before you implement what's exactly changing? | 04:52:55 | 27s | 8h 40m ⏳ | 17 | 6,427 | 6,189 | 2,025,157 |
-| 151 | I think the rotation stuff is now fine considering we're going to have… | 13:33:55 | 1m 31s | — | 35 | 14,598 | 868,910 | 4,359,566 |
+| 151 | I think the rotation stuff is now fine considering we're going to have… | 13:33:55 | 1m 37s | 1m 54s | 37 | 15,082 | 869,636 | 4,712,382 |
+| 152 | PR | 13:37:25 | 9s | 47s | 6 | 866 | 675 | 708,056 |
+| 153 | Merged and deleted | 13:38:22 | 5s | 3m 15s | 6 | 321 | 292 | 709,909 |
+| 154 | When I placed a marker on main-37c it didn't select the square when on… | 13:41:42 | 1m 35s | — | 33 | 19,164 | 25,287 | 5,378,429 |
 
-**Total turns:** 151  
-**Total agent time spent (excl. flagged):** 2h 29m  
-**Total human think time (excl. outliers):** 2h 46m  
-**Average human think time (excl. outliers):** 1m 15s  
+**Total turns:** 154  
+**Total agent time spent (excl. flagged):** 2h 31m  
+**Total human think time (excl. outliers):** 2h 52m  
+**Average human think time (excl. outliers):** 1m 16s  
 **Think-time outliers (> 15 min):** 16  
-**Total input tokens:** 3,171  
-**Total output tokens:** 1,505,462  
-**Total cache-write tokens:** 13,344,951  
-**Total cache-read tokens:** 522,362,554  
+**Total input tokens:** 3,218  
+**Total output tokens:** 1,526,297  
+**Total cache-write tokens:** 13,371,931  
+**Total cache-read tokens:** 529,511,764  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150 had a 'human think time' over 15 min (total 79h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
