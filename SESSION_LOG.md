@@ -163,17 +163,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 152 | PR | 13:37:25 | 9s | 47s | 6 | 866 | 675 | 708,056 |
 | 153 | Merged and deleted | 13:38:22 | 5s | 3m 15s | 6 | 321 | 292 | 709,909 |
 | 154 | When I placed a marker on main-37c it didn't select the square when on… | 13:41:42 | 1m 42s | 3s | 35 | 19,696 | 25,818 | 5,743,518 |
-| 155 | Select a different square first, then do you test on a different squar… | 13:43:27 | 60s | — | 22 | 7,351 | 5,289 | 3,300,927 |
+| 155 | Select a different square first, then do you test on a different squar… | 13:43:27 | 1m 9s | 52s | 26 | 7,895 | 6,731 | 4,039,088 |
+| 156 | You added a test for this bug we just fixed into the main test suite? | 13:45:28 | 6s | 1m 9s | 8 | 1,490 | 44 | 740,586 |
+| 157 | Check it for reals, we should abide by true red green not "found the p… | 13:46:43 | 1m 26s | — | 45 | 13,839 | 15,507 | 7,823,712 |
 
-**Total turns:** 155  
-**Total agent time spent (excl. flagged):** 2h 33m  
-**Total human think time (excl. outliers):** 2h 52m  
+**Total turns:** 157  
+**Total agent time spent (excl. flagged):** 2h 34m  
+**Total human think time (excl. outliers):** 2h 54m  
 **Average human think time (excl. outliers):** 1m 15s  
 **Think-time outliers (> 15 min):** 16  
-**Total input tokens:** 3,242  
-**Total output tokens:** 1,534,180  
-**Total cache-write tokens:** 13,377,751  
-**Total cache-read tokens:** 533,177,780  
+**Total input tokens:** 3,299  
+**Total output tokens:** 1,550,053  
+**Total cache-write tokens:** 13,394,744  
+**Total cache-read tokens:** 542,480,239  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150 had a 'human think time' over 15 min (total 79h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).

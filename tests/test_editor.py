@@ -702,21 +702,21 @@ def test_the_hover_preview_shows_for_a_mouse(page):
     assert ghost_count(page) == 1
 
 
-def test_touch_taps_leave_no_ghost_preview(browser, site):
-    context = browser.new_context(viewport={"width": 1000, "height": 900}, has_touch=True)
-    try:
-        pg = context.new_page()
-        pg.goto(site)
-        pg.wait_for_function("window.QMG !== undefined")
-        pick_piece(pg, "goblin")
-        cx, cy = cell_center(pg, 5, 5)
-        pg.touchscreen.tap(cx, cy)
-        settle(pg)
-        assert len(items(pg)) == 1  # the tap placed the goblin
-        assert ghost_count(pg) == 0  # and left no transparent copy behind
-        assert pg.locator("#layer-overlay .hover").count() == 0
-    finally:
-        context.close()
+def test_a_touch_pointer_never_shows_the_hover_ghost(page):
+    """A touch pointer has no hover. A pointermove of type touch (with no pointerleave, as can
+    happen on a real phone) must not draw the transparent preview or the square highlight."""
+    pick_piece(page, "goblin")
+    cx, cy = cell_center(page, 5, 5)
+    page.evaluate(
+        """([x, y]) => document.querySelector('#board').dispatchEvent(
+            new PointerEvent('pointermove', {pointerType: 'touch', clientX: x, clientY: y, bubbles: true}))""",
+        [cx, cy],
+    )
+    assert ghost_count(page) == 0
+    assert page.locator("#layer-overlay .hover").count() == 0
+    # the same position as a mouse does show the preview, so the check above is not vacuous
+    page.mouse.move(cx, cy)
+    assert ghost_count(page) == 1
 
 
 def test_tapping_an_identical_piece_again_selects_it_instead_of_clearing(page):
