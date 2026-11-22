@@ -729,3 +729,24 @@ def test_tapping_an_identical_piece_again_selects_it_instead_of_clearing(page):
     )  # but the existing one is selected, not deselected
     assert panel_square(page) == "Square F6"
     assert "Marker A" in page.locator("#inspector").inner_text()
+
+
+def test_placing_moves_a_pinned_panel_to_the_new_piece(page):
+    page.click('#tools button[data-kind="select"]')
+    click_cell(page, 3, 3)  # pin a different square with the Select tool
+    assert panel_square(page) == "Square D4"
+    place(page, "marker-a", 8, 8)
+    assert panel_square(page) == "Square I9"  # the panel moved to the piece just placed
+    assert "Marker A" in page.locator("#inspector").inner_text()
+    pick_piece(page, "marker-b")
+    click_cell(page, 10, 8)
+    assert panel_square(page) == "Square K9"
+
+
+def test_drawing_a_tile_moves_a_pinned_panel_to_the_tile(page):
+    page.click('#tools button[data-kind="select"]')
+    click_cell(page, 3, 3)
+    assert panel_square(page) == "Square D4"
+    pick_tile(page)
+    drag_cells(page, 8, 8, 9, 9)
+    assert panel_square(page) == "Square I9"
