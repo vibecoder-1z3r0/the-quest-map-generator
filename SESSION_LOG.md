@@ -165,17 +165,22 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 154 | When I placed a marker on main-37c it didn't select the square when on… | 13:41:42 | 1m 42s | 3s | 35 | 19,696 | 25,818 | 5,743,518 |
 | 155 | Select a different square first, then do you test on a different squar… | 13:43:27 | 1m 9s | 52s | 26 | 7,895 | 6,731 | 4,039,088 |
 | 156 | You added a test for this bug we just fixed into the main test suite? | 13:45:28 | 6s | 1m 9s | 8 | 1,490 | 44 | 740,586 |
-| 157 | Check it for reals, we should abide by true red green not "found the p… | 13:46:43 | 1m 26s | — | 45 | 13,839 | 15,507 | 7,823,712 |
+| 157 | Check it for reals, we should abide by true red green not "found the p… | 13:46:43 | 2m 9s | 0s | 47 | 14,447 | 16,125 | 8,199,943 |
+| 158 | And again you have the tests to catch a regression for the bug we just… | 13:48:52 | 5s | 5h 17m ⏳ | 8 | 1,162 | 1,266 | 753,698 |
+| 159 | PR | 19:06:55 | 9s | 2h 27m ⏳ | 5 | 806 | 327,885 | 446,789 |
+| 160 | Merged and delelted | 21:34:27 | 7s | 11m 11s | 6 | 313 | 328,432 | 447,787 |
+| 161 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1UXYvjNhS… | 21:45:44 | 1m 17s | 5m 52s | 28 | 6,931 | 9,087 | 3,913,802 |
+| 162 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1VW4vbRhS… | 21:52:53 | 1m 5s | — | 11 | 5,576 | 10,377 | 1,975,399 |
 
-**Total turns:** 157  
-**Total agent time spent (excl. flagged):** 2h 34m  
-**Total human think time (excl. outliers):** 2h 54m  
-**Average human think time (excl. outliers):** 1m 15s  
-**Think-time outliers (> 15 min):** 16  
-**Total input tokens:** 3,299  
-**Total output tokens:** 1,550,053  
-**Total cache-write tokens:** 13,394,744  
-**Total cache-read tokens:** 542,480,239  
+**Total turns:** 162  
+**Total agent time spent (excl. flagged):** 2h 38m  
+**Total human think time (excl. outliers):** 3h 11m  
+**Average human think time (excl. outliers):** 1m 20s  
+**Think-time outliers (> 15 min):** 18  
+**Total input tokens:** 3,359  
+**Total output tokens:** 1,565,449  
+**Total cache-write tokens:** 14,072,409  
+**Total cache-read tokens:** 550,393,945  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150 had a 'human think time' over 15 min (total 79h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159 had a 'human think time' over 15 min (total 87h 3m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
