@@ -176,17 +176,21 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 165 | Do you have this link - https://vibecoder-1z3r0.github.io/the-quest-ma… | 22:07:22 | 1m 22s | 0s | 23 | 9,600 | 1,060,652 | 2,651,034 |
 | 166 | PR when ready please. | 22:08:44 | 8s | 55s | 6 | 608 | 705 | 829,279 |
 | 167 | Merged and deleted | 22:09:46 | 6s | 13m 33s | 6 | 364 | 354 | 830,843 |
-| 168 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AZVWbY8jRxG… | 22:23:25 | 29s | — | 14 | 7,324 | 12,201 | 2,085,997 |
+| 168 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AZVWbY8jRxG… | 22:23:25 | 1m 17s | 14s | 19 | 7,797 | 13,597 | 3,349,788 |
+| 169 | PR please | 22:24:56 | 7s | 52s | 6 | 558 | 459 | 844,525 |
+| 170 | Merged and deleted | 22:25:55 | 6s | 10s | 8 | 696 | 661 | 1,268,649 |
+| 171 | passing ships in the night... check again | 22:26:11 | 4s | 3m 22s | 6 | 248 | 231 | 846,948 |
+| 172 | Another set of updates...lol   https://vibecoder-1z3r0.github.io/the-q… | 22:29:37 | 23s | — | 12 | 6,444 | 9,394 | 1,699,444 |
 
-**Total turns:** 168  
-**Total agent time spent (excl. flagged):** 2h 43m  
-**Total human think time (excl. outliers):** 3h 26m  
+**Total turns:** 172  
+**Total agent time spent (excl. flagged):** 2h 44m  
+**Total human think time (excl. outliers):** 3h 30m  
 **Average human think time (excl. outliers):** 1m 24s  
 **Think-time outliers (> 15 min):** 20  
-**Total input tokens:** 3,455  
-**Total output tokens:** 1,593,962  
-**Total cache-write tokens:** 15,847,226  
-**Total cache-read tokens:** 563,774,957  
+**Total input tokens:** 3,492  
+**Total output tokens:** 1,602,381  
+**Total cache-write tokens:** 15,859,367  
+**Total cache-read tokens:** 569,698,314  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164 had a 'human think time' over 15 min (total 159h 14m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
