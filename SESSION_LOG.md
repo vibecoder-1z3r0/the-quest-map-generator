@@ -170,17 +170,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 159 | PR | 19:06:55 | 9s | 2h 27m ⏳ | 5 | 806 | 327,885 | 446,789 |
 | 160 | Merged and delelted | 21:34:27 | 7s | 11m 11s | 6 | 313 | 328,432 | 447,787 |
 | 161 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1UXYvjNhS… | 21:45:44 | 1m 17s | 5m 52s | 28 | 6,931 | 9,087 | 3,913,802 |
-| 162 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1VW4vbRhS… | 21:52:53 | 1m 5s | — | 11 | 5,576 | 10,377 | 1,975,399 |
+| 162 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1VW4vbRhS… | 21:52:53 | 1m 14s | 50h 49m ⏳ | 23 | 6,673 | 11,980 | 3,570,140 |
+| 163 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1V227bRhA… | 00:43:48 | 2m 40s | 2s | 29 | 9,120 | 698,631 | 4,573,436 |
+| 164 | Ok force with lease | 00:46:29 | 9s | 21h 20m ⏳ | 6 | 400 | 671 | 815,682 |
+| 165 | Do you have this link - https://vibecoder-1z3r0.github.io/the-quest-ma… | 22:07:22 | 1m 13s | — | 20 | 9,178 | 1,059,689 | 1,823,427 |
 
-**Total turns:** 162  
-**Total agent time spent (excl. flagged):** 2h 38m  
+**Total turns:** 165  
+**Total agent time spent (excl. flagged):** 2h 42m  
 **Total human think time (excl. outliers):** 3h 11m  
 **Average human think time (excl. outliers):** 1m 20s  
-**Think-time outliers (> 15 min):** 18  
-**Total input tokens:** 3,359  
-**Total output tokens:** 1,565,449  
-**Total cache-write tokens:** 14,072,409  
-**Total cache-read tokens:** 550,393,945  
-**Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
+**Think-time outliers (> 15 min):** 20  
+**Total input tokens:** 3,426  
+**Total output tokens:** 1,585,244  
+**Total cache-write tokens:** 15,833,003  
+**Total cache-read tokens:** 559,201,231  
+**Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159 had a 'human think time' over 15 min (total 87h 3m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164 had a 'human think time' over 15 min (total 159h 14m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
