@@ -180,17 +180,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 169 | PR please | 22:24:56 | 7s | 52s | 6 | 558 | 459 | 844,525 |
 | 170 | Merged and deleted | 22:25:55 | 6s | 10s | 8 | 696 | 661 | 1,268,649 |
 | 171 | passing ships in the night... check again | 22:26:11 | 4s | 3m 22s | 6 | 248 | 231 | 846,948 |
-| 172 | Another set of updates...lol   https://vibecoder-1z3r0.github.io/the-q… | 22:29:37 | 23s | — | 12 | 6,444 | 9,394 | 1,699,444 |
+| 172 | Another set of updates...lol   https://vibecoder-1z3r0.github.io/the-q… | 22:29:37 | 1m 12s | 24s | 17 | 6,909 | 10,735 | 2,986,854 |
+| 173 | PR please | 22:31:14 | 6s | 1m 27s | 6 | 545 | 459 | 860,049 |
+| 174 | Merged and deleted | 22:32:46 | 5s | 2m 34s | 6 | 285 | 285 | 861,261 |
+| 175 | sigh.... another update - however I do think I want the README to have… | 22:35:26 | 1m 22s | — | 31 | 15,128 | 22,771 | 4,765,777 |
 
-**Total turns:** 172  
-**Total agent time spent (excl. flagged):** 2h 44m  
-**Total human think time (excl. outliers):** 3h 30m  
+**Total turns:** 175  
+**Total agent time spent (excl. flagged):** 2h 47m  
+**Total human think time (excl. outliers):** 3h 35m  
 **Average human think time (excl. outliers):** 1m 24s  
 **Think-time outliers (> 15 min):** 20  
-**Total input tokens:** 3,492  
-**Total output tokens:** 1,602,381  
-**Total cache-write tokens:** 15,859,367  
-**Total cache-read tokens:** 569,698,314  
+**Total input tokens:** 3,540  
+**Total output tokens:** 1,618,804  
+**Total cache-write tokens:** 15,884,223  
+**Total cache-read tokens:** 577,472,811  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164 had a 'human think time' over 15 min (total 159h 14m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
