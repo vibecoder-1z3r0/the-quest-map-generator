@@ -173,17 +173,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 162 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1VW4vbRhS… | 21:52:53 | 1m 14s | 50h 49m ⏳ | 23 | 6,673 | 11,980 | 3,570,140 |
 | 163 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AY1V227bRhA… | 00:43:48 | 2m 40s | 2s | 29 | 9,120 | 698,631 | 4,573,436 |
 | 164 | Ok force with lease | 00:46:29 | 9s | 21h 20m ⏳ | 6 | 400 | 671 | 815,682 |
-| 165 | Do you have this link - https://vibecoder-1z3r0.github.io/the-quest-ma… | 22:07:22 | 1m 13s | — | 20 | 9,178 | 1,059,689 | 1,823,427 |
+| 165 | Do you have this link - https://vibecoder-1z3r0.github.io/the-quest-ma… | 22:07:22 | 1m 22s | 0s | 23 | 9,600 | 1,060,652 | 2,651,034 |
+| 166 | PR when ready please. | 22:08:44 | 8s | 55s | 6 | 608 | 705 | 829,279 |
+| 167 | Merged and deleted | 22:09:46 | 6s | 13m 33s | 6 | 364 | 354 | 830,843 |
+| 168 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AZVWbY8jRxG… | 22:23:25 | 29s | — | 14 | 7,324 | 12,201 | 2,085,997 |
 
-**Total turns:** 165  
-**Total agent time spent (excl. flagged):** 2h 42m  
-**Total human think time (excl. outliers):** 3h 11m  
-**Average human think time (excl. outliers):** 1m 20s  
+**Total turns:** 168  
+**Total agent time spent (excl. flagged):** 2h 43m  
+**Total human think time (excl. outliers):** 3h 26m  
+**Average human think time (excl. outliers):** 1m 24s  
 **Think-time outliers (> 15 min):** 20  
-**Total input tokens:** 3,426  
-**Total output tokens:** 1,585,244  
-**Total cache-write tokens:** 15,833,003  
-**Total cache-read tokens:** 559,201,231  
+**Total input tokens:** 3,455  
+**Total output tokens:** 1,593,962  
+**Total cache-write tokens:** 15,847,226  
+**Total cache-read tokens:** 563,774,957  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164 had a 'human think time' over 15 min (total 159h 14m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
