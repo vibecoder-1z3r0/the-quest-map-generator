@@ -217,19 +217,23 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 206 | Hero view:  When room S was revealed and I searched for secret doors n… | 16:25:00 | 3m 29s | 3s | 86 | 19,490 | 38,532 | 5,123,971 |
 | 207 | For hero view on mobile:  Public Quest info should be above the map, a… | 16:28:32 | 2m 18s | 2s | 42 | 8,676 | 23,184 | 2,668,099 |
 | 208 | Mutant killed???  What are you going on about? | 16:30:52 | 3s | 11s | 8 | 604 | 580 | 292,824 |
-| 209 | Also for treasure blank text have it say - shuffle the treasure deck a… | 16:31:06 | 1m 23s | — | 14 | 2,806 | 2,220 | 735,874 |
+| 209 | Also for treasure blank text have it say - shuffle the treasure deck a… | 16:31:06 | 1m 27s | 1h 8m ⏳ | 16 | 2,998 | 2,656 | 884,320 |
+| 210 | Make a PR | 17:41:20 | 8s | 2s | 6 | 655 | 89,713 | 209,034 |
+| 211 | Have you been updating session log? | 17:41:30 | 4s | 1m 15s | 6 | 363 | 1,171 | 299,467 |
+| 212 | MAD - merged and deleted | 17:42:50 | 5s | 1h 10m ⏳ | 6 | 229 | 276 | 302,152 |
+| 213 | Ah - you can not search for treasure in the hallway.... | 18:53:54 | 1m 35s | — | 20 | 3,479 | 187,062 | 1,033,897 |
 
-**Total turns:** 209  
-**Total agent time spent (excl. flagged):** 3h 37m  
-**Total human think time (excl. outliers):** 4h 14m  
-**Average human think time (excl. outliers):** 1m 25s  
-**Think-time outliers (> 15 min):** 28  
-**Total input tokens:** 4,881  
-**Total output tokens:** 2,458,152  
-**Total cache-write tokens:** 22,062,308  
-**Total cache-read tokens:** 903,661,935  
+**Total turns:** 213  
+**Total agent time spent (excl. flagged):** 3h 39m  
+**Total human think time (excl. outliers):** 4h 15m  
+**Average human think time (excl. outliers):** 1m 24s  
+**Think-time outliers (> 15 min):** 30  
+**Total input tokens:** 4,921  
+**Total output tokens:** 2,463,070  
+**Total cache-write tokens:** 22,340,966  
+**Total cache-read tokens:** 905,654,931  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205 had a 'human think time' over 15 min (total 173h 41m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212 had a 'human think time' over 15 min (total 176h 0m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
