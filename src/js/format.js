@@ -8,12 +8,15 @@ import {
   MAX_ITEMS,
   MAX_TILES,
   MAX_PAYLOAD_CHARS,
+  REGIONS,
   ROWS,
   SQUARES,
 } from "./constants.js";
 import { cleanText } from "./text.js";
 
 const HIGHLIGHT_BYTES = Math.ceil(SQUARES / 2);
+const MASK_BYTES = Math.ceil(REGIONS / 8);
+const PLAY_KEYS = ["rev", "t", "tr", "sd"]; // revealed, treasure, traps, secret doors searched
 
 function toBase64Url(bytes) {
   let bin = "";
@@ -92,12 +95,21 @@ export function blankState() {
     wmId: 0,
     wmText: "",
     series: "",
+    hero: false,
+    rooms: {}, // region -> { start, group, texts: [read aloud, treasure, traps, secret doors] }
+    play: null, // null (the start state), or { rev, t, tr, sd } Sets of regions
   };
+}
+
+function maskOf(set) {
+  const out = new Uint8Array(MASK_BYTES);
+  for (const r of set) out[r >> 3] |= 1 << (r & 7);
+  return out;
 }
 
 // Returns the link payload (without the leading #).
 export async function encodeState(st) {
-  const out = [st.theme & 0x0f];
+  const out = [(st.theme & 0x0f) | (st.hero ? 0x10 : 0)];
   const hl = new Uint8Array(HIGHLIGHT_BYTES);
   for (let i = 0; i < SQUARES; i++) hl[i >> 1] |= (st.hl[i] & 15) << ((i & 1) * 4);
   for (const b of hl) out.push(b);
@@ -120,6 +132,20 @@ export async function encodeState(st) {
   out.push(st.wmId);
   pushString(out, st.wmText);
   pushString(out, st.series);
+  // Optional trailing sections: left out entirely when there is nothing to say, so quests without
+  // hero view data keep exactly the links they always had.
+  const regions = Object.keys(st.rooms)
+    .map(Number)
+    .sort((a, b) => a - b);
+  if (regions.length || st.play) {
+    pushVarint(out, regions.length);
+    for (const region of regions) {
+      const rec = st.rooms[region];
+      out.push(region, rec.start ? 1 : 0, rec.group & 255);
+      for (let k = 0; k < 4; k++) pushString(out, rec.texts[k] ?? "");
+    }
+    if (st.play) for (const key of PLAY_KEYS) for (const b of maskOf(st.play[key])) out.push(b);
+  }
   const body = new Uint8Array(out);
   if (body.length > MAX_BODY) throw new Error("quest is too large to store in a link");
   const packed = await deflate(body);
@@ -182,7 +208,9 @@ export async function decodeHash(payload) {
   const warnings = [];
   let stripped = false;
 
-  st.theme = r.byte() & 0x0f;
+  const flags = r.byte();
+  st.theme = flags & 0x0f;
+  st.hero = (flags & 0x10) !== 0;
   r.need(HIGHLIGHT_BYTES);
   for (let i = 0; i < SQUARES; i++) st.hl[i] = (r.b[r.p + (i >> 1)] >> ((i & 1) * 4)) & 15;
   r.p += HIGHLIGHT_BYTES;
@@ -252,6 +280,42 @@ export async function decodeHash(payload) {
   }
   // The series is an optional trailing field: links made before it existed simply end here.
   if (r.remaining > 0) st.series = field("series", { limit: LIMITS.series });
+  // Optional hero view data (rooms and zones), then the optional play state.
+  if (r.remaining > 0) {
+    const roomCount = r.varint();
+    if (roomCount > REGIONS) throw new Error("link is corrupt");
+    let skippedRooms = 0;
+    for (let n = 0; n < roomCount; n++) {
+      const region = r.byte();
+      const rflags = r.byte();
+      const group = r.byte();
+      const texts = [];
+      for (let k = 0; k < 4; k++) {
+        const res = cleanText(r.string(), { multiline: true, limit: LIMITS.roomText });
+        stripped ||= res.removed;
+        if (res.truncated) warnings.push("A room text was too long and was shortened.");
+        texts.push(res.text);
+      }
+      if (region >= REGIONS) {
+        skippedRooms += 1;
+        continue;
+      }
+      st.rooms[region] = { start: (rflags & 1) !== 0, group, texts };
+    }
+    if (skippedRooms) warnings.push(`${skippedRooms} room record(s) in this link could not be shown and were skipped.`);
+  }
+  if (r.remaining > 0) {
+    r.need(PLAY_KEYS.length * MASK_BYTES);
+    st.play = {};
+    for (const key of PLAY_KEYS) {
+      const set = new Set();
+      for (let region = 0; region < REGIONS; region++) {
+        if ((r.b[r.p + (region >> 3)] >> (region & 7)) & 1) set.add(region);
+      }
+      r.p += MASK_BYTES;
+      st.play[key] = set;
+    }
+  }
   if (stripped) warnings.push("Some unsupported characters in this link were removed.");
   return { state: st, warnings };
 }

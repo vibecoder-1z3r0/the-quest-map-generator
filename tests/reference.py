@@ -12,6 +12,9 @@ import zlib
 COLS, ROWS = 26, 19
 SQUARES = COLS * ROWS
 VERSION = 1
+REGIONS = 36  # rooms A-Z are regions 0-25, zones 1-10 are regions 26-35 (highlight values 6-15)
+ROOM_TEXTS = 4  # read aloud, treasure, traps, secret doors
+PLAY_BYTES = 4 * ((REGIONS + 7) // 8)  # revealed, treasure, traps, secret-door masks
 
 
 def varint(n: int) -> bytes:
@@ -42,14 +45,28 @@ def blank() -> dict:
         "wm_id": 0,
         "wm_text": "",
         "series": "",
+        "hero": False,
+        "rooms": {},  # region -> {"start": bool, "group": int, "texts": [4 strings]}
+        "play": None,  # None, or {"rev": [regions], "t": [...], "tr": [...], "sd": [...]}
     }
+
+
+def mask(regions) -> bytes:
+    out = bytearray((REGIONS + 7) // 8)
+    for r in regions:
+        out[r >> 3] |= 1 << (r & 7)
+    return bytes(out)
+
+
+def unmask(data: bytes) -> list[int]:
+    return [r for r in range(REGIONS) if data[r >> 3] >> (r & 7) & 1]
 
 
 def encode_body(st: dict) -> bytes:
     hl = bytearray((SQUARES + 1) // 2)
     for i, v in enumerate(st["hl"]):
         hl[i >> 1] |= (v & 15) << ((i & 1) * 4)
-    out = bytearray([st["theme"] & 15]) + hl
+    out = bytearray([(st["theme"] & 15) | (0x10 if st.get("hero") else 0)]) + hl
     out += varint(len(st["items"]))
     for item_id, x, y, r in st["items"]:
         out += bytes([item_id, x | (r << 5), y])
@@ -64,6 +81,17 @@ def encode_body(st: dict) -> bytes:
         out += string(st[key])
     out += bytes([st["wm_id"]]) + string(st["wm_text"])
     out += string(st["series"])
+    rooms, play = st.get("rooms") or {}, st.get("play")
+    if rooms or play:  # optional trailing sections: omitted entirely when there is nothing to say
+        out += varint(len(rooms))
+        for region in sorted(rooms):
+            rec = rooms[region]
+            out += bytes([region, 1 if rec.get("start") else 0, rec.get("group", 0)])
+            for text in rec.get("texts", [""] * ROOM_TEXTS):
+                out += string(text)
+        if play:
+            for key in ("rev", "t", "tr", "sd"):
+                out += mask(play[key])
     return bytes(out)
 
 
@@ -107,7 +135,9 @@ def decode(payload: str) -> dict:
         return text
 
     st = blank()
-    st["theme"] = byte() & 15
+    flags = byte()
+    st["theme"] = flags & 15
+    st["hero"] = bool(flags & 0x10)
     hl_bytes = body[pos : pos + (SQUARES + 1) // 2]
     pos += len(hl_bytes)
     st["hl"] = [(hl_bytes[i >> 1] >> ((i & 1) * 4)) & 15 for i in range(SQUARES)]
@@ -125,4 +155,19 @@ def decode(payload: str) -> dict:
     st["wm_text"] = read_string()
     if pos < len(body):  # optional trailing field; older links end before it
         st["series"] = read_string()
+    if pos < len(body):  # optional hero view data
+        for _ in range(read_varint()):
+            region, flags, group = byte(), byte(), byte()
+            st["rooms"][region] = {
+                "start": bool(flags & 1),
+                "group": group,
+                "texts": [read_string() for _ in range(ROOM_TEXTS)],
+            }
+    if pos < len(body):  # optional play state
+        masks = [
+            body[pos + i * ((REGIONS + 7) // 8) : pos + (i + 1) * ((REGIONS + 7) // 8)]
+            for i in range(4)
+        ]
+        st["play"] = dict(zip(("rev", "t", "tr", "sd"), (unmask(m) for m in masks), strict=True))
+        pos += PLAY_BYTES
     return st

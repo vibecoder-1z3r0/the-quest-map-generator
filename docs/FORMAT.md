@@ -65,6 +65,8 @@ The body is these sections, in this order, with no padding between them.
 | 9 | Wandering monster id | 1 byte |
 | 10 | Wandering monster text | string |
 | 11 | Series (optional, trailing) | string |
+| 12 | Hero view rooms and zones (optional, trailing) | `varint count` + records |
+| 13 | Hero view play state (optional, trailing) | 20 bytes |
 
 ### 4.0 Flags
 
@@ -73,7 +75,8 @@ One byte of view settings.
 | Bits | Meaning |
 |---|---|
 | 0-3 | editor **theme** id, 0..15 |
-| 4-7 | reserved (`0`) |
+| 4 | **hero view**: `1` means the link opens in hero view (section 4.7), `0` the editor |
+| 5-7 | reserved (`0`) |
 
 | Theme id | Theme | Prints as |
 |---|---|---|
@@ -102,11 +105,13 @@ Opening a link applies its theme; changing the theme updates the link but is not
 | 3 | cyan |
 | 4 | yellow |
 | 5 | bright green |
-| 6-15 | reserved |
+| 6-15 | **zones 1-10** (hero view, section 4.7) |
 
-Values are permanent once assigned. A decoder that meets a reserved value keeps it in the map (so it
-survives re-encoding) and draws a neutral tint. A highlight is a translucent tint drawn over
-whatever is in the square; it never hides anything.
+Values are permanent once assigned. A highlight is a translucent tint drawn over whatever is in the
+square; it never hides anything. Values 6-15 paint **zones**: groups of corridor squares that heroes
+reveal like a room in hero view. In the editor a zone is tinted like any other highlight and its
+legend entry (section 4.4) is its name. A zone paint on a square inside a lettered room is ignored
+for hero view.
 
 ### 4.2 Items
 
@@ -206,9 +211,58 @@ nested lists, raw HTML, images or links. A single newline is a line break; each 
 the first adds one blank line of vertical space. The intro supports **only** bold and italics;
 everything else shows literally. Rendering uses DOM text nodes only, never `innerHTML`.
 
+### 4.7 Hero view rooms and zones
+
+Optional trailing section, written only when at least one room or zone has hero view data (or a play
+state is stored). Hero view is a second way to look at the same quest: the map starts hidden and the
+heroes reveal it room by room. See `docs/HERO_VIEW.md` for how it behaves.
+
+A **region** is a room or a zone. Rooms are the board's letters: A..Z are regions 0..25 (the standard
+board uses A..V). Zones 1..10 are regions 26..35, painted with highlight values 6..15 (section 4.1) on
+squares that are not inside a lettered room.
+
+`varint count` (0..36), then `count` records:
+
+```
+byte 0   region        0..35
+byte 1   bit 0         the region is revealed at the start of the game
+         bits 1-7      reserved (0)
+byte 2   group         0 = none; regions that share a non-zero group reveal together
+then four strings, in this order:
+         read aloud (shown when the region is revealed)
+         treasure   (shown by "search for treasure")
+         traps      (shown by "search for traps")
+         secret doors (shown by "search for secret doors")
+```
+
+- Each text is multi-line, bold/italics only like the intro, at most **600** characters, and is
+  filtered like the intro (section 6). A longer text is truncated with a warning.
+- A region at or above 36 is skipped with a warning. If a region appears twice the last record wins.
+  A count above 36 makes the link invalid.
+- Regions with no data have no record. Texts of the regions in a group are shown together, joined in
+  region order.
+- An encoder leaves the whole section out (and with it section 4.8) when there are no records and no
+  play state, so a quest without hero view data keeps exactly the link it always had.
+
+### 4.8 Hero view play state
+
+Optional, directly after the records of section 4.7 (even when there are none, `count` is then 0).
+Exactly **20 bytes**: four masks of 5 bytes each, in this order:
+
+1. revealed regions
+2. regions where the treasure search was done
+3. regions where the traps search was done
+4. regions where the secret-door search was done
+
+Bit `r & 7` of byte `r >> 3` is region `r`, low bit first; bits for regions 36 and up are ignored.
+If this section is absent the game is at its start: exactly the regions with the "revealed at the
+start" flag are revealed and no search was done. If it is present it replaces that start state
+completely, so an all-zero play state means that nothing is revealed, not even the start regions.
+Fewer than 20 bytes remaining is a truncated link.
+
 ## 5. Size limits (defensive decoding)
 
-- The inflated body must not exceed **65,536 bytes** (64 KiB). Decompression must stop and the link
+- The inflated body must not exceed **262,144 bytes** (256 KiB). Decompression must stop and the link
   be rejected as soon as the limit is passed; never inflate unbounded.
 - Every length, count, index and coordinate is bounds-checked. A truncated body is invalid.
 - On any invalid link the app shows a banner and starts with a blank map. It never throws to the
