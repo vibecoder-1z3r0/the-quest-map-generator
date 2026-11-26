@@ -189,19 +189,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 178 | Ok so let's talk about "hero mode" for a bit.  Basically it will be an… | 00:27:16 | 2m 15s | 8m 22s | 52 | 39,865 | 1,195,966 | 7,896,457 |
 | 179 | Let's work through the open items one at a time. | 00:37:54 | 33m 18s ⚠ | 2m 56s | 14 | 5,778 | 4,060 | 3,759,436 |
 | 180 | I hit enter too fast...   Then you get the are you sure?  Once the roo… | 01:14:07 | 5m 13s | 1m 14s | 34 | 16,648 | 14,792 | 6,631,993 |
-| 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 27s | — | 5 | 9,647 | 3,552 | 1,913,135 |
+| 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 35s | 47m 52s ⏳ | 7 | 10,289 | 4,520 | 2,394,586 |
+| 182 | 1) markers are hidden, secret door reveals hidden doors too, non gray … | 02:09:00 | 1m 50s | — | 49 | 40,228 | 75,375 | 9,967,927 |
 
-**Total turns:** 181  
-**Total agent time spent (excl. flagged):** 2h 55m  
+**Total turns:** 182  
+**Total agent time spent (excl. flagged):** 2h 57m  
 **Total human think time (excl. outliers):** 3h 48m  
 **Average human think time (excl. outliers):** 1m 26s  
-**Think-time outliers (> 15 min):** 21  
-**Total input tokens:** 3,661  
-**Total output tokens:** 1,692,365  
-**Total cache-write tokens:** 17,104,430  
-**Total cache-read tokens:** 600,316,333  
+**Think-time outliers (> 15 min):** 22  
+**Total input tokens:** 3,712  
+**Total output tokens:** 1,733,235  
+**Total cache-write tokens:** 17,180,773  
+**Total cache-read tokens:** 610,765,711  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179 had an 'agent time spent' over 30 min (total 33m 18s), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177 had a 'human think time' over 15 min (total 161h 3m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181 had a 'human think time' over 15 min (total 161h 51m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
