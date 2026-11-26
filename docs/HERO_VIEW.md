@@ -41,9 +41,14 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
    traps, secret doors. A room with an empty field simply has nothing to show for it.
 8. **Quest-level text in hero view:** series, number, title, intro and the wandering monster are
    shown. Zargon's secret notes are not.
-9. **No undo or back for play state.** Revealing and searching change the link in place (no new
-   browser history entries) and hero view has no Undo/Redo, so the back button does not step through
-   play. A mistaken reveal is prevented by the "are you sure?" and cleared only by "reset reveals".
+9. **No undo or back for play state, but it can be reset.** Revealing and searching change the link
+   in place (no new browser history entries) and hero view has no Undo/Redo, so the back button does
+   not step through play. A mistaken reveal is prevented by the "are you sure?". It is fixed by
+   **"Hide this room again"** on a revealed room's panel (which also clears that room's searches) or by a
+   header button that **resets the whole game**. Both ask "are you sure?". The heroes may already
+   have seen the room, so this only corrects what the screen shows.
+13. **"Copy hero link" in the editor** always copies a link with a clean play state (nothing
+    revealed), so a half-played link is never handed out by accident.
 10. **Print stays as it is.** The print page keeps Zargon's notes and the quest text; it does not
     include the room texts. Hero view is meant to be used on a device, not on paper.
 11. **Solid stone rooms are not revealable.** A room that is completely grey (solid stone) is not

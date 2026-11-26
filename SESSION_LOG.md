@@ -191,17 +191,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 180 | I hit enter too fast...   Then you get the are you sure?  Once the roo… | 01:14:07 | 5m 13s | 1m 14s | 34 | 16,648 | 14,792 | 6,631,993 |
 | 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 35s | 47m 52s ⏳ | 7 | 10,289 | 4,520 | 2,394,586 |
 | 182 | 1) markers are hidden, secret door reveals hidden doors too, non gray … | 02:09:00 | 1m 58s | 1h 26m ⏳ | 51 | 40,953 | 77,782 | 10,478,019 |
-| 183 | Authoring looks fine to me, can that section be collapsible?  I'm also… | 03:37:53 | 48m 51s ⚠ | — | 15 | 14,001 | 1,370,034 | 1,719,585 |
+| 183 | Authoring looks fine to me, can that section be collapsible?  I'm also… | 03:37:53 | 48m 58s ⚠ | 1m 19s | 17 | 14,586 | 1,371,982 | 2,236,081 |
+| 184 | Can play state be reset then, or rooms unrevealed? | 04:28:10 | 4m 23s | — | 14 | 4,493 | 1,355 | 2,076,137 |
 
-**Total turns:** 183  
-**Total agent time spent (excl. flagged):** 2h 57m  
-**Total human think time (excl. outliers):** 3h 48m  
+**Total turns:** 184  
+**Total agent time spent (excl. flagged):** 3h 1m  
+**Total human think time (excl. outliers):** 3h 49m  
 **Average human think time (excl. outliers):** 1m 26s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 3,729  
-**Total output tokens:** 1,747,961  
-**Total cache-write tokens:** 18,553,214  
-**Total cache-read tokens:** 612,995,388  
+**Total input tokens:** 3,745  
+**Total output tokens:** 1,753,039  
+**Total cache-write tokens:** 18,556,517  
+**Total cache-read tokens:** 615,588,021  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
