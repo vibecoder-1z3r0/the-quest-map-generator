@@ -65,9 +65,9 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     - **Hero view never shows a zone name.** A name could give something away, so a fogged hallway is
       just dark and a revealed zone's panel says "Hallway". Zone names exist only for the author (the
       editor card and the legend).
-    - **The fog is fully opaque,** so every hidden room and hallway looks identical and nothing can show
-      through it (not a tint, not a faint shape). **Solid stone is drawn above the fog at full
-      strength,** so it always shows and is clearly different from hidden areas.
+    - **The fog is one flat color,** fully opaque and the same everywhere (no tint, no faint shapes, no
+      grid lines or seams between squares), so nothing about a hidden area, including whether it is
+      stone, can be told from the fog. Room letters stay, since they are printed on the real board.
 15. **Play state is carried along when Zargon switches to the main view and edits the map.** It stays
     in the link untouched. "New map" clears it, and "Copy hero link" always writes a clean state.
 16. **Room texts stay capped at 600 characters each**, with a live counter in the editor for the total
@@ -75,10 +75,14 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     existing links, so it is only raised.
 10. **Print stays as it is.** The print page keeps Zargon's notes and the quest text; it does not
     include the room texts. Hero view is meant to be used on a device, not on paper.
-11. **Solid stone rooms are not revealable.** A room that is completely grey (solid stone) is not
-    part of the quest: in hero view it shows as stone from the start, cannot be clicked and has no
-    Reveal button. In a room that is only partly grey, the grey squares stay stone and the rest of the
-    room reveals normally.
+11. **Solid stone is hidden like everything else.** Anything not yet revealed looks exactly the same: a
+    plain, identical fog. A room that is completely solid stone looks like any other hidden room, so
+    heroes cannot tell which rooms are in the quest. Tapping it works like any room: it can be
+    revealed, and revealing it simply shows solid stone (it has no texts worth showing). In a room or
+    zone that is only partly stone, the stone squares are hidden with the rest and show as stone once
+    that room or zone is revealed. Stone that belongs to no room or zone has nothing that can hide it,
+    so it is always shown: an author who does not want heroes to see where stone is paints those
+    squares into a zone.
 12. **Authoring: a collapsible room card driven by the pinned square, plus a room chooser.** In the
     editor, pinning a square with the Select tool opens the card for that square's room under
     "What's here" (collapsed until it is needed; open or closed is a view setting, not stored in the

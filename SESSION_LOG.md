@@ -199,17 +199,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 188 | Or can we make "rooms" from corridors by highlighting squares in color… | 04:46:02 | 26s | 36s | 8 | 6,100 | 64 | 1,079,554 |
 | 189 | Mock zones up, I like this the best now though. | 04:47:04 | 1m 20s | 1m 3s | 27 | 29,398 | 35,819 | 5,498,193 |
 | 190 | I don't think we label the hallways.  That gives too much info away. | 04:49:27 | 36s | 16s | 20 | 8,531 | 4,315 | 3,955,596 |
-| 191 | Why does the fog of war zoning look like it's different shades? | 04:50:19 | 34s | — | 21 | 10,142 | 13,859 | 5,129,975 |
+| 191 | Why does the fog of war zoning look like it's different shades? | 04:50:19 | 39s | 8s | 23 | 10,413 | 14,982 | 5,704,727 |
+| 192 | That also gives too much away.... fog of war should be the same color … | 04:51:06 | 39s | — | 26 | 12,168 | 13,198 | 4,041,023 |
 
-**Total turns:** 191  
-**Total agent time spent (excl. flagged):** 3h 9m  
+**Total turns:** 192  
+**Total agent time spent (excl. flagged):** 3h 10m  
 **Total human think time (excl. outliers):** 4h 0m  
 **Average human think time (excl. outliers):** 1m 26s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 3,874  
-**Total output tokens:** 1,849,881  
-**Total cache-write tokens:** 18,652,140  
-**Total cache-read tokens:** 642,319,645  
+**Total input tokens:** 3,902  
+**Total output tokens:** 1,862,320  
+**Total cache-write tokens:** 18,666,461  
+**Total cache-read tokens:** 646,935,420  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
