@@ -152,6 +152,31 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 - Not counted by design: off-map or reinforcement monsters, and per-monster BP overrides.
 - A per-type breakdown ("2 Goblins, 1 Mummy").
 
+## Hero view
+
+A second view of the same link for playing a quest (`docs/HERO_VIEW.md` has the full rules and the
+decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is bit 4 of the flags byte.
+- **Regions** are the board's rooms (A-Z are regions 0-25) and ten **zones** (regions 26-35). Zones are
+  a separate per-square layer (not highlights), painted with the Hero view zones palette, so any square
+  can be in a zone; zone names are legend entries 6-15 and are never shown to heroes. `src/js/hero.js`
+  holds the pure rules (regions, groups, reveal/hide/search/reset, visibility, secret door ownership,
+  merged texts) and is exposed to tests as `QMG.hero`.
+- Per region (optional records): revealed at the start, a group (regions with the same group reveal
+  together), and four texts of up to 600 characters: read aloud, treasure, traps, secret doors.
+- **Play state** (revealed and searched regions) lives in the link, 20 bytes, and replaces the start
+  state once present. Play changes the link in place (`replaceState`): no history entries and no undo.
+  A quest without hero data keeps exactly the link it always had.
+- Hero view hides: markers, trap pieces, Zargon's highlight colors, secret and hidden doors until their
+  owner's secret-door search, and everything in a hidden room or zone. One flat opaque fog covers hidden
+  squares (solid stone included, shown only once its region is revealed); doors show if either side is
+  visible; squares in no region stay visible. Zargon's notes are never shown; the quest text, intro and
+  wandering monster are.
+- Hero controls: tap a region, **Reveal** / **Hide this room again** / **Reset game** each confirm in a
+  dialog; **Zargon view** confirms with a warning. Editor: a collapsible card follows the pinned square
+  (never the hover) with a region chooser, groups and counters; **Hero view** and **Copy hero link**
+  (always a clean play state) are in the header.
+- It is an honor system: everything in a link is readable by anyone who decodes it.
+
 ## Quest text
 
 - Series (optional, plain, max 160; shown above the title on the sheet, print page and tab title; an
@@ -195,10 +220,11 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 - **Single-column layout** (screens up to 1000px wide, no device sniffing): the map and its highlight legend, then
   the What's here panel, then the palette, then the quest sheet, then the other side cards. The zoom buttons and
   the keyboard shortcut line are hidden at these widths (pinch-zoom and touch cover them).
-- **Header**: two rows. Row 1: app name and build, the quest line (`Series: Quest N - Title`, blank
-  parts dropped, truncated with a tooltip), then Undo, Redo, Print and Theme on the right. Row 2:
-  Copy map link, link length, the privacy note ("Anyone with the link can read Zargon's secret
-  notes") and New map. The keyboard shortcut line sits under the zoom controls above the map.
+- **Header**: two rows. Row 1: app name and build (and a HERO VIEW badge in hero view), Theme, the quest
+  line (`Series: Quest N - Title`, blank parts dropped, truncated with a tooltip), Copy map link and Copy hero
+  link, then Hero view, Undo, Redo, Print and New map on the right (in hero view: Zargon view and Reset game
+  instead). Row 2: the link length and the privacy note ("Anyone with the link can read Zargon's secret
+  notes"). The keyboard shortcut line sits under the zoom controls above the map.
 - **Print view (portrait, one page for a typical quest), in the order of the official books:** the
   map (row/column markings hidden in print), then series and title, the introduction (no heading),
   Zargon's notes (only when there are any), the wandering monster, then a compact piece key and very
@@ -326,7 +352,3 @@ Repo is MIT. Footer and README carry a notice along these lines:
 
   (`highlights` is 19 rows of 26 characters like `board.txt`: `.` none, `g` grey, `o` orange,
   `c` cyan, `y` yellow, `l` bright green.)
-- **Hero view (designed, not built).** Supersedes the old "fog of war" idea. A second view of the same link where
-  heroes reveal rooms one at a time, with per-room texts and search buttons. The decisions made so far, the one
-  future decision (per-room Zargon-only notes) and the open details are in `docs/HERO_VIEW.md`. Do not build it
-  until the owner says so.

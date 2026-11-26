@@ -99,6 +99,37 @@ color is listed beside the map.
   include or leave it out; **Monsters only** trims the key to the monsters. These choices are not
   stored in the link.
 
+### Hero view
+
+Hero view is a second way to look at the same quest, for playing it. The map starts hidden under a flat
+fog and the heroes reveal it room by room. Everything is in the link: open a **hero link** and the page
+opens in hero view.
+
+![Hero view at the start](docs/screenshots/11-hero-start.png)
+
+- **Playing.** Tap a room or hallway and press **Reveal** (it asks first). A revealed place shows its
+  monsters, furniture and doors and its read-aloud text, and offers **Search for treasure**, **traps**
+  and **secret doors**. Each search shows the text the author wrote for it, and the result stays. A
+  secret-door search also reveals the secret doors that belong to that place. Traps are never drawn, and
+  the site never rolls dice or decides whether a trap is sprung; that stays at the table. **Hide this room
+  again** and **Reset game** (both ask first) fix a mistake. Your progress is kept in the link, so
+  reloading or bookmarking it keeps your place, and there is no undo.
+- **Zargon's view.** The **Zargon view** button in hero view asks first and warns that the secret notes
+  and everything hidden become visible. In the editor, **Hero view** opens the quest in hero view and
+  **Copy hero link** copies a link with nothing revealed.
+- **Authoring.** Pin a square with the Select tool and the **Hero view data** card opens for its room (or
+  pick a room or zone in the card). Give each room or zone a read-aloud text and treasure, trap and
+  secret-door texts (600 characters each), tick *revealed at the start* for the starting place, and link
+  rooms that should reveal together. Hallways are made with the **Hero view zones** palette: paint
+  corridor squares with a zone and give the zone a name in the legend (heroes never see zone names).
+  Any square, even solid stone or a trap highlight, can be in a zone.
+- **Rules.** Doors are shown when either side is visible; markers and Zargon's highlight colors are never
+  shown; hidden stone looks like any hidden area and shows once its room or zone is revealed.
+- **Honor system.** Anyone with a hero link can read everything in it, including the hidden texts, by
+  decoding it. Hero view hides things on screen; it does not protect them.
+
+![The authoring card](docs/screenshots/14-hero-authoring.png)
+
 ### Heads up
 
 - **Anyone with the link can read Zargon's secret notes**, because they are stored in the link.
@@ -116,6 +147,7 @@ the tool does. They show [quest #1 in the live editor](https://vibecoder-1z3r0.g
 |---|---|
 | ![Empty board](docs/screenshots/01-empty-board.png) **The empty board** | ![Dark mode](docs/screenshots/04-dark-mode.png) **Dark mode** (stored in the link) |
 | ![Quest text](docs/screenshots/03-quest-text.png) **Quest text, previews and legend** | ![Print view](docs/screenshots/05-print-view.png) **Print view** (always light) |
+| ![Hero view after revealing a room](docs/screenshots/12-hero-revealed.png) **Hero view**, a room revealed and searched | ![Hero view on a phone](docs/screenshots/13-hero-phone.png) **Hero view on a phone** |
 
 On a phone the map comes first:
 

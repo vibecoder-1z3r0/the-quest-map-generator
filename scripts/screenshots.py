@@ -96,6 +96,55 @@ def first_cell(link: str, piece_id: int) -> tuple[int, int]:
     return 12, 9
 
 
+# Hero view needs hero data, which the owner's quest does not have yet, so the screenshots add some:
+# zones along the corridors and a few invented room texts. Sample text only, not part of the quest.
+HERO_DEMO_JS = """
+async ([rows]) => {
+  const st = QMG.app.state;
+  const zoneOf = (x, y) => {
+    if (rows[y][x] !== '.') return 0;
+    if (y === 0 || ([12, 13].includes(x) && y >= 1 && y <= 5)) return 1;
+    if (y === 18 || ([12, 13].includes(x) && y >= 13 && y <= 17)) return 2;
+    if (y === 9) return 3;
+    if (x === 0) return 4;
+    if (x === 25) return 5;
+    return 6;
+  };
+  for (let y = 0; y < 19; y++) {
+    for (let x = 0; x < 26; x++) st.zones[y * 26 + x] = zoneOf(x, y);
+  }
+  st.legend[9] = 'West corridor';
+  const room = (start, a, b, c, d) => ({ start, group: 0, texts: [a, b, c, d] });
+  st.rooms = {
+    29: room(
+      true,
+      'A cold draught runs down the long corridor. Torches gutter in iron brackets.',
+      '', '', '',
+    ),
+    10: room(
+      false,
+      'The door grinds open. Dust hangs in the torchlight above an old stone tomb.',
+      'Beneath the tomb lid: 84 gold coins.',
+      'A pressure plate is set into the floor.',
+      'Nothing but cold stone.',
+    ),
+    18: room(
+      false,
+      'A fire crackles in a stone hearth. Goblins snarl and reach for their weapons!',
+      'A small chest holds a silver ring.',
+      'The flagstones look sound.',
+      'You find a hidden catch behind a loose brick.',
+    ),
+  };
+  const editor = await QMG.encodeState(st);
+  st.hero = true;
+  const hero = await QMG.encodeState(st);
+  st.hero = false;
+  return { editor, hero };
+}
+"""
+
+
 def center(box, x, y):
     scale = box["width"] / (26 * CELL + 2 * MARGIN)
     return (
@@ -160,6 +209,39 @@ def main() -> None:
             has_touch=True,
         )
         page.screenshot(path=str(OUT / "06-phone.png"))
+        ctx.close()
+
+        # Hero view: the same quest with hero data, as a hero link and in the editor.
+        rows = [
+            ln
+            for ln in (ROOT / "src/board.txt").read_text().splitlines()
+            if ln and not ln.startswith("//")
+        ]
+        ctx, page = open_page("#" + link)
+        demo = page.evaluate(HERO_DEMO_JS, [rows])
+        ctx.close()
+
+        ctx, page = open_page("#" + demo["hero"])
+        page.screenshot(path=str(OUT / "11-hero-start.png"))
+        page.mouse.click(*center(page.locator("#board").bounding_box(), 12, 9))  # room K
+        page.click("#hero-reveal")
+        page.click("#confirm-ok")
+        page.click("#hero-search-t")
+        page.wait_for_timeout(150)
+        page.screenshot(path=str(OUT / "12-hero-revealed.png"))
+        ctx.close()
+
+        ctx, page = open_page(
+            "#" + demo["hero"], viewport={"width": 390, "height": 760}, has_touch=True
+        )
+        page.screenshot(path=str(OUT / "13-hero-phone.png"))
+        ctx.close()
+
+        ctx, page = open_page("#" + demo["editor"])
+        page.click('#tools button[data-kind="select"]')
+        page.mouse.click(*center(page.locator("#board").bounding_box(), 12, 8))  # pins room K
+        page.wait_for_timeout(150)
+        page.locator("#side").screenshot(path=str(OUT / "14-hero-authoring.png"))
         ctx.close()
         browser.close()
     server.shutdown()

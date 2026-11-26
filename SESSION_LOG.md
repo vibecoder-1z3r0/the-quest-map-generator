@@ -201,19 +201,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 190 | I don't think we label the hallways.  That gives too much info away. | 04:49:27 | 36s | 16s | 20 | 8,531 | 4,315 | 3,955,596 |
 | 191 | Why does the fog of war zoning look like it's different shades? | 04:50:19 | 39s | 8s | 23 | 10,413 | 14,982 | 5,704,727 |
 | 192 | That also gives too much away.... fog of war should be the same color … | 04:51:06 | 48s | 23s | 29 | 12,902 | 15,289 | 5,207,180 |
-| 193 | Let's implement this full feature | 04:52:17 | 33m 34s ⚠ | — | 470 | 395,346 | 550,257 | 147,784,753 |
+| 193 | Let's implement this full feature | 04:52:17 | 36m 54s ⚠ | — | 522 | 416,735 | 587,826 | 164,502,575 |
 
 **Total turns:** 193  
 **Total agent time spent (excl. flagged):** 3h 10m  
 **Total human think time (excl. outliers):** 4h 0m  
 **Average human think time (excl. outliers):** 1m 25s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 4,375  
-**Total output tokens:** 2,258,400  
-**Total cache-write tokens:** 19,218,809  
-**Total cache-read tokens:** 795,886,330  
+**Total input tokens:** 4,427  
+**Total output tokens:** 2,279,789  
+**Total cache-write tokens:** 19,256,378  
+**Total cache-read tokens:** 812,604,152  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
-⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 55m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
+⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
 ⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182 had a 'human think time' over 15 min (total 163h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
