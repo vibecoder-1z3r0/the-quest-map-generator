@@ -190,19 +190,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 179 | Let's work through the open items one at a time. | 00:37:54 | 33m 18s ⚠ | 2m 56s | 14 | 5,778 | 4,060 | 3,759,436 |
 | 180 | I hit enter too fast...   Then you get the are you sure?  Once the roo… | 01:14:07 | 5m 13s | 1m 14s | 34 | 16,648 | 14,792 | 6,631,993 |
 | 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 35s | 47m 52s ⏳ | 7 | 10,289 | 4,520 | 2,394,586 |
-| 182 | 1) markers are hidden, secret door reveals hidden doors too, non gray … | 02:09:00 | 1m 50s | — | 49 | 40,228 | 75,375 | 9,967,927 |
+| 182 | 1) markers are hidden, secret door reveals hidden doors too, non gray … | 02:09:00 | 1m 58s | 1h 26m ⏳ | 51 | 40,953 | 77,782 | 10,478,019 |
+| 183 | Authoring looks fine to me, can that section be collapsible?  I'm also… | 03:37:53 | 48m 51s ⚠ | — | 15 | 14,001 | 1,370,034 | 1,719,585 |
 
-**Total turns:** 182  
+**Total turns:** 183  
 **Total agent time spent (excl. flagged):** 2h 57m  
 **Total human think time (excl. outliers):** 3h 48m  
 **Average human think time (excl. outliers):** 1m 26s  
-**Think-time outliers (> 15 min):** 22  
-**Total input tokens:** 3,712  
-**Total output tokens:** 1,733,235  
-**Total cache-write tokens:** 17,180,773  
-**Total cache-read tokens:** 610,765,711  
+**Think-time outliers (> 15 min):** 23  
+**Total input tokens:** 3,729  
+**Total output tokens:** 1,747,961  
+**Total cache-write tokens:** 18,553,214  
+**Total cache-read tokens:** 612,995,388  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
-⚠ Turn(s) 179 had an 'agent time spent' over 30 min (total 33m 18s), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
+⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181 had a 'human think time' over 15 min (total 161h 51m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182 had a 'human think time' over 15 min (total 163h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
