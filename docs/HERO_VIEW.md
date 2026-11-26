@@ -49,13 +49,22 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
    have seen the room, so this only corrects what the screen shows.
 13. **"Copy hero link" in the editor** always copies a link with a clean play state (nothing
     revealed), so a half-played link is never handed out by accident.
-14. **Corridors never reveal anything; things outside rooms follow the rooms they touch.** Corridors
-    cannot be revealed, so they are not an "either side is revealed" trigger. A **door** is shown when
-    a room on either side of it is revealed. A **piece standing in a corridor** (monster, chest, the
-    heroes' own token) is shown when any room touching its square is revealed. A door or piece that
-    touches no room at all stays visible, because nothing could ever reveal it. (Secret and hidden
-    doors are the exception: only the secret-door search shows them, see below.) This avoids showing
-    every corridor door and corridor monster at the start.
+14. **Corridors become "zones" that reveal like rooms.** Corridors cannot be revealed square by square
+    in any good way, so the author paints corridor squares with a **zone color** to make hallways.
+    A zone behaves exactly like a lettered room: a Reveal button (with "are you sure?"), "Hide this
+    zone again", the four texts and the search buttons, grouping with other rooms or zones, and one
+    bit of play state. Storage reuses the highlight values **6 to 15 as zones 1 to 10**, named by the
+    legend labels (an author-only name). More zones can be added later with a dedicated layer, without
+    breaking any link.
+    - **Visibility follows zones and rooms.** A piece is shown when the zone or room its square is in is
+      revealed. A **door is shown when a room or zone on either side of it is revealed.** Secret and
+      hidden doors are the exception: only the secret-door search shows them, and a secret door in a
+      zone belongs to that zone. Traps and markers are never shown.
+    - **Squares with no zone stay visible, and so do the pieces on them,** because nothing could ever
+      reveal them. An author who wants a hallway hidden paints it.
+    - **Hero view never shows a zone name.** A name could give something away, so a fogged hallway is
+      just dark and a revealed zone's panel says "Hallway". Zone names exist only for the author (the
+      editor card and the legend).
 15. **Play state is carried along when Zargon switches to the main view and edits the map.** It stays
     in the link untouched. "New map" clears it, and "Copy hero link" always writes a clean state.
 16. **Room texts stay capped at 600 characters each**, with a live counter in the editor for the total
@@ -96,8 +105,9 @@ What authors need to know, and what the help text and README should say:
   door should belong to one room only, the author places it on that room's side (inside the room)
   instead.
 - **A hidden door on the wall between two rooms:** either room's search reveals it.
-- **A secret door in a corridor that touches no room:** no room search can reveal it, so it **stays
-  hidden** in hero view. (A warning in the editor for this case is a possible later addition.)
+- **A secret door in a corridor that touches no room or zone:** nothing can reveal it, so it **stays
+  hidden** in hero view. Painting the corridor as a zone fixes this, because the zone's secret-door
+  search then reveals it. (A warning in the editor for this case is a possible later addition.)
 
 Real examples from quest 1: the secret door in the corridor between rooms H and N is revealed by
 either room's search; the one at the left edge touches room L; the one inside room K belongs to K; the
@@ -106,10 +116,10 @@ one at the bottom touches room S.
 ## Still open
 
 Nothing the owner has to decide. Details for the build:
-- The authoring card in detail: a "revealed at the start" checkbox, the group chooser (room chips),
-  the four texts with a 600 character counter each, a live total counter, a badge on grouped rooms
-  and a dot on rooms that have text. The owner is fine with this layout.
-- The exact byte layout for the room data, the play state and the view flag (goes into
+- The authoring screens: a "Hero view zones" palette section for painting zones (possibly with a fill
+  tool that stops at walls and at other zones), and the collapsible room and zone card (revealed at the
+  start, group chooser, four texts with a 600 character counter, a live total counter, a badge on
+  grouped rooms and a dot on rooms and zones that have text). Mockups were shown to the owner.
+- The exact byte layout for the room and zone data, the play state and the view flag (goes into
   `docs/FORMAT.md` when it is built), with golden links and a check that old links still decode.
-- A possible later addition: an editor warning for a secret door that touches no room (it can never
-  be revealed in hero view).
+- A possible later addition: an editor warning for a secret door that touches no room or zone.

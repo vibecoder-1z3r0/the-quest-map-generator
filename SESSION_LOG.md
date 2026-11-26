@@ -194,17 +194,21 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 183 | Authoring looks fine to me, can that section be collapsible?  I'm also… | 03:37:53 | 48m 58s ⚠ | 1m 19s | 17 | 14,586 | 1,371,982 | 2,236,081 |
 | 184 | Can play state be reset then, or rooms unrevealed? | 04:28:10 | 4m 28s | 27s | 16 | 4,766 | 2,269 | 2,596,479 |
 | 185 | What else is left to decide? | 04:33:05 | 20s | 4m 43s | 12 | 4,762 | 4,030 | 2,086,136 |
-| 186 | We don't have a good way to reveal corridors.  Doors are revealed when… | 04:38:09 | 3m 50s | — | 23 | 25,820 | 25,457 | 5,793,586 |
+| 186 | We don't have a good way to reveal corridors.  Doors are revealed when… | 04:38:09 | 3m 52s | 59s | 23 | 25,820 | 25,457 | 5,793,586 |
+| 187 | No - I'm not sure we can solve for it.... unless corridors can be reve… | 04:43:00 | 40s | 2m 21s | 16 | 11,816 | 11,165 | 2,668,242 |
+| 188 | Or can we make "rooms" from corridors by highlighting squares in color… | 04:46:02 | 26s | 36s | 8 | 6,100 | 64 | 1,079,554 |
+| 189 | Mock zones up, I like this the best now though. | 04:47:04 | 1m 20s | 1m 3s | 27 | 29,398 | 35,819 | 5,498,193 |
+| 190 | I don't think we label the hallways.  That gives too much info away. | 04:49:27 | 30s | — | 18 | 8,007 | 2,673 | 3,389,164 |
 
-**Total turns:** 186  
-**Total agent time spent (excl. flagged):** 3h 6m  
-**Total human think time (excl. outliers):** 3h 54m  
+**Total turns:** 190  
+**Total agent time spent (excl. flagged):** 3h 9m  
+**Total human think time (excl. outliers):** 3h 59m  
 **Average human think time (excl. outliers):** 1m 27s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 3,782  
-**Total output tokens:** 1,783,894  
-**Total cache-write tokens:** 18,586,918  
-**Total cache-read tokens:** 623,988,085  
+**Total input tokens:** 3,851  
+**Total output tokens:** 1,839,215  
+**Total cache-write tokens:** 18,636,639  
+**Total cache-read tokens:** 636,623,238  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
