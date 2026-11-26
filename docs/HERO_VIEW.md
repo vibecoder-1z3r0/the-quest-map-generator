@@ -49,6 +49,18 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
    have seen the room, so this only corrects what the screen shows.
 13. **"Copy hero link" in the editor** always copies a link with a clean play state (nothing
     revealed), so a half-played link is never handed out by accident.
+14. **Corridors never reveal anything; things outside rooms follow the rooms they touch.** Corridors
+    cannot be revealed, so they are not an "either side is revealed" trigger. A **door** is shown when
+    a room on either side of it is revealed. A **piece standing in a corridor** (monster, chest, the
+    heroes' own token) is shown when any room touching its square is revealed. A door or piece that
+    touches no room at all stays visible, because nothing could ever reveal it. (Secret and hidden
+    doors are the exception: only the secret-door search shows them, see below.) This avoids showing
+    every corridor door and corridor monster at the start.
+15. **Play state is carried along when Zargon switches to the main view and edits the map.** It stays
+    in the link untouched. "New map" clears it, and "Copy hero link" always writes a clean state.
+16. **Room texts stay capped at 600 characters each**, with a live counter in the editor for the total
+    room text and the link length. Raising a cap later is harmless; lowering it would cut off text in
+    existing links, so it is only raised.
 10. **Print stays as it is.** The print page keeps Zargon's notes and the quest text; it does not
     include the room texts. Hero view is meant to be used on a device, not on paper.
 11. **Solid stone rooms are not revealable.** A room that is completely grey (solid stone) is not
@@ -93,12 +105,11 @@ one at the bottom touches room S.
 
 ## Still open
 
+Nothing the owner has to decide. Details for the build:
 - The authoring card in detail: a "revealed at the start" checkbox, the group chooser (room chips),
-  the four texts with a 600 character counter each, a badge on grouped rooms and a dot on rooms that
-  have text. The owner is fine with this layout.
-- How play state is kept in the link when Zargon switches to the main view and edits the map (the
-  suggestion: it is carried along untouched, and New map clears it).
-- Link length: the worst case is 22 rooms x 4 texts x 600 characters, so the existing link-length
-  warning matters. A tighter limit is possible if real quests get long.
+  the four texts with a 600 character counter each, a live total counter, a badge on grouped rooms
+  and a dot on rooms that have text. The owner is fine with this layout.
 - The exact byte layout for the room data, the play state and the view flag (goes into
-  `docs/FORMAT.md` when it is built).
+  `docs/FORMAT.md` when it is built), with golden links and a check that old links still decode.
+- A possible later addition: an editor warning for a secret door that touches no room (it can never
+  be revealed in hero view).

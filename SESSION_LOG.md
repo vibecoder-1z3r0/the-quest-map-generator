@@ -192,17 +192,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 35s | 47m 52s ⏳ | 7 | 10,289 | 4,520 | 2,394,586 |
 | 182 | 1) markers are hidden, secret door reveals hidden doors too, non gray … | 02:09:00 | 1m 58s | 1h 26m ⏳ | 51 | 40,953 | 77,782 | 10,478,019 |
 | 183 | Authoring looks fine to me, can that section be collapsible?  I'm also… | 03:37:53 | 48m 58s ⚠ | 1m 19s | 17 | 14,586 | 1,371,982 | 2,236,081 |
-| 184 | Can play state be reset then, or rooms unrevealed? | 04:28:10 | 4m 23s | — | 14 | 4,493 | 1,355 | 2,076,137 |
+| 184 | Can play state be reset then, or rooms unrevealed? | 04:28:10 | 4m 28s | 27s | 16 | 4,766 | 2,269 | 2,596,479 |
+| 185 | What else is left to decide? | 04:33:05 | 20s | 4m 43s | 12 | 4,762 | 4,030 | 2,086,136 |
+| 186 | We don't have a good way to reveal corridors.  Doors are revealed when… | 04:38:09 | 3m 50s | — | 23 | 25,820 | 25,457 | 5,793,586 |
 
-**Total turns:** 184  
-**Total agent time spent (excl. flagged):** 3h 1m  
-**Total human think time (excl. outliers):** 3h 49m  
-**Average human think time (excl. outliers):** 1m 26s  
+**Total turns:** 186  
+**Total agent time spent (excl. flagged):** 3h 6m  
+**Total human think time (excl. outliers):** 3h 54m  
+**Average human think time (excl. outliers):** 1m 27s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 3,745  
-**Total output tokens:** 1,753,039  
-**Total cache-write tokens:** 18,556,517  
-**Total cache-read tokens:** 615,588,021  
+**Total input tokens:** 3,782  
+**Total output tokens:** 1,783,894  
+**Total cache-write tokens:** 18,586,918  
+**Total cache-read tokens:** 623,988,085  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
