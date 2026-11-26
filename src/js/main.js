@@ -1,6 +1,7 @@
 import { BY_ID, CATALOG } from "./catalog.js";
 import { computeStats } from "./stats.js";
 import { decodeHash, encodeState } from "./format.js";
+import { regionAt, regionName } from "./hero.js";
 import { renderIntro, renderNotes } from "./markdown.js";
 import { cleanText } from "./text.js";
 import { app, initUi, loadFromHash, syncUrl } from "./ui.js";
@@ -19,4 +20,5 @@ window.QMG = {
   renderIntro,
   syncUrl,
   computeStats,
+  hero: { regionAt, regionName },
 };

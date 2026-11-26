@@ -39,6 +39,23 @@ export const HIGHLIGHTS = [
   { value: 5, name: "Bright green", color: "#3fd24a" },
 ];
 
+// Values 6-15 are the ten hero view zones (docs/FORMAT.md 4.1, 4.7).
+export const ZONE_COLORS = [
+  "#8e5bd9",
+  "#e0457b",
+  "#2f9e8f",
+  "#a8602a",
+  "#5b7be0",
+  "#7a8f2f",
+  "#d94f4f",
+  "#4fb3e0",
+  "#c58be8",
+  "#c9a66b",
+];
+for (let n = 1; n <= ZONE_COLORS.length; n++) {
+  HIGHLIGHTS.push({ value: 5 + n, name: `Zone ${n}`, color: ZONE_COLORS[n - 1], zone: n, defaultLabel: `Zone ${n}` });
+}
+
 // Theme ids are permanent. printSafe themes print as themselves; others print as theme 0.
 export const THEMES = [
   { id: 0, slug: "light", name: "Light", printSafe: true },

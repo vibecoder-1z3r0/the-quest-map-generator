@@ -395,7 +395,8 @@ function renderInspector() {
     return;
   }
   const hl = highlightAt(app.state, cell.x, cell.y);
-  const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
+  const hlDef = HIGHLIGHTS.find((h) => h.value === hl);
+  const hlName = hlDef?.zone ? legendLabel(hlDef) : (hlDef?.name ?? `Highlight ${hl}`);
   box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
   box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
   const hits = itemsAt(app.state, cell.x, cell.y);
@@ -885,16 +886,22 @@ function buildPalette() {
   root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
   const solid = el("div", { class: "tgrid" });
+  const zones = el("div", { class: "tgrid" });
   for (const h of HIGHLIGHTS) {
     const swatch = el("span", { class: "swatch", style: h.color ? `background:${h.color}` : "background:transparent" });
     const button = toolButton(h.value ? h.name.replace(" (solid stone)", "") : "Clear", "highlight", h.value, swatch);
     // Grey (value 1) marks solid stone, so it has its own section; the other colors stay together.
     if (h.value === 1) button.title = "Paint solid stone like a highlight; Clear erases it";
-    (h.value === 1 ? solid : hls).append(button);
+    (h.zone ? zones : h.value === 1 ? solid : hls).append(button);
   }
   root.append(hls);
   solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
   root.append(el("h2", { text: "Solid stone areas" }), solid);
+  zones.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
+  root.append(el("h2", { text: "Hero view zones" }), zones);
+  root.append(
+    el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
+  );
   for (const group of GROUPS) {
     root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
@@ -965,9 +972,19 @@ function bindField(selector, key, options) {
   });
 }
 
+// A zone's palette button shows its name once the author has typed one in the legend.
+function refreshZoneButtons() {
+  for (const h of HIGHLIGHTS) {
+    if (!h.zone) continue;
+    const button = document.querySelector(`#tools button[data-kind="highlight"][data-value="${h.value}"]`);
+    if (button) button.lastChild.textContent = legendLabel(h);
+  }
+}
+
 function textChanged() {
   renderPreviews();
   renderLegend();
+  refreshZoneButtons();
   renderStats();
   scheduleUrl(false, 300);
   clearTimeout(textTimer);
@@ -988,6 +1005,7 @@ function syncFields() {
   for (const input of document.querySelectorAll("#legend-edit input")) {
     input.value = app.state.legend[Number(input.dataset.color)] ?? "";
   }
+  refreshZoneButtons();
 }
 
 // ---------------------------------------------------------------- zoom
