@@ -203,17 +203,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 192 | That also gives too much away.... fog of war should be the same color … | 04:51:06 | 48s | 23s | 29 | 12,902 | 15,289 | 5,207,180 |
 | 193 | Let's implement this full feature | 04:52:17 | 37m 5s ⚠ | 39m 50s ⏳ | 524 | 417,557 | 589,568 | 165,307,334 |
 | 194 | Make the PR | 06:09:13 | 32s | 27s | 18 | 3,926 | 25,207 | 6,521,430 |
-| 195 | Hero view shouldn't have a print.  The desire is to have that on a dev… | 06:10:11 | 1m 34s | — | 30 | 10,328 | 8,819 | 9,865,778 |
+| 195 | Hero view shouldn't have a print.  The desire is to have that on a dev… | 06:10:11 | 1m 40s | 1m 22s | 32 | 10,660 | 9,259 | 10,690,682 |
+| 196 | Merged, deleted the branch | 06:13:13 | 6s | 9m 28s | 6 | 421 | 335 | 1,651,364 |
+| 197 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AbVXa28bRRT… | 06:22:47 | 32s | 2s | 16 | 10,428 | 41,928 | 4,154,508 |
+| 198 | New link for quest 1 with zoning hallways | 06:23:21 | 1m 52s | — | 42 | 14,929 | 24,084 | 11,818,564 |
 
-**Total turns:** 195  
-**Total agent time spent (excl. flagged):** 3h 12m  
-**Total human think time (excl. outliers):** 4h 1m  
-**Average human think time (excl. outliers):** 1m 25s  
+**Total turns:** 198  
+**Total agent time spent (excl. flagged):** 3h 15m  
+**Total human think time (excl. outliers):** 4h 11m  
+**Average human think time (excl. outliers):** 1m 27s  
 **Think-time outliers (> 15 min):** 24  
-**Total input tokens:** 4,477  
-**Total output tokens:** 2,294,865  
-**Total cache-write tokens:** 19,292,146  
-**Total cache-read tokens:** 829,796,119  
+**Total input tokens:** 4,543  
+**Total output tokens:** 2,320,975  
+**Total cache-write tokens:** 19,358,933  
+**Total cache-read tokens:** 848,245,459  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
