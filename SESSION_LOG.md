@@ -210,17 +210,17 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 199 | There's a bug... Non zoned halls are shown in hero view in plain sight… | 06:25:22 | 37s | 6h 7m ⏳ | 22 | 12,167 | 11,449 | 6,825,090 |
 | 200 | Is zargon's info the same? | 12:33:21 | 15s | 29m 52s ⏳ | 14 | 2,545 | 2,394,617 | 1,037,153 |
 | 201 | ok here's the correct updated link:  https://vibecoder-1z3r0.github.io… | 13:03:28 | 1m 46s | 1m 24s | 16 | 28,292 | 24,725 | 6,895,779 |
-| 202 | there is a bug when clicking a corridor zone, it shows the zone highli… | 13:06:38 | 7m 36s | — | 76 | 57,033 | 69,452 | 28,510,698 |
+| 202 | there is a bug when clicking a corridor zone, it shows the zone highli… | 13:06:38 | 10m 58s | — | 90 | 58,881 | 150,708 | 29,131,358 |
 
 **Total turns:** 202  
-**Total agent time spent (excl. flagged):** 3h 25m  
+**Total agent time spent (excl. flagged):** 3h 29m  
 **Total human think time (excl. outliers):** 4h 13m  
 **Average human think time (excl. outliers):** 1m 27s  
 **Think-time outliers (> 15 min):** 26  
-**Total input tokens:** 4,673  
-**Total output tokens:** 2,421,553  
-**Total cache-write tokens:** 21,861,006  
-**Total cache-read tokens:** 892,364,263  
+**Total input tokens:** 4,687  
+**Total output tokens:** 2,423,401  
+**Total cache-write tokens:** 21,942,262  
+**Total cache-read tokens:** 892,984,923  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
