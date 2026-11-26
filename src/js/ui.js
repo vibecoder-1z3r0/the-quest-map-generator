@@ -103,6 +103,7 @@ export const app = {
   future: [],
   editable: true,
   heroRegion: null, // the region whose panel hero view shows
+  heroCell: null, // the square the heroes tapped (only that square is highlighted for a hallway)
   editRegion: null, // the region whose hero view data card the editor shows
   shownRegion: null,
 };
@@ -196,6 +197,7 @@ export async function loadFromHash() {
   app.selectedTile = -1;
   app.pinned = null;
   app.heroRegion = null;
+  app.heroCell = null;
   app.editRegion = null;
   app.past = [];
   app.future = [];
@@ -298,10 +300,18 @@ function renderMap() {
 
 function renderOverlay() {
   if (app.state.hero) {
+    // A room is highlighted whole (its shape is printed on the board). A hallway is never highlighted
+    // beyond the tapped square, because the extent of a zone would give the map away.
     let marks = "";
-    if (app.heroRegion !== null) {
-      for (let y = 0; y < ROWS; y++) {
-        for (let x = 0; x < COLS; x++) if (regionAt(app.state, x, y) === app.heroRegion) marks += cellMarkup(x, y, "hero-sel");
+    if (app.heroCell) {
+      if (app.heroRegion !== null && app.heroRegion < ROOM_REGIONS) {
+        for (let y = 0; y < ROWS; y++) {
+          for (let x = 0; x < COLS; x++) {
+            if (regionAt(app.state, x, y) === app.heroRegion) marks += cellMarkup(x, y, "hero-sel");
+          }
+        }
+      } else {
+        marks = cellMarkup(app.heroCell.x, app.heroCell.y, "hero-sel");
       }
     }
     $("#layer-overlay").innerHTML = marks;
@@ -744,12 +754,13 @@ function applyMode() {
 
 // A yes/no question in a dialog; resolves true only when the person confirms. The answer is taken
 // from the button click itself, so whatever follows runs before the dialog is gone.
-function askConfirm(message, okLabel) {
+function askConfirm(message, okLabel, { info = false } = {}) {
   const dialog = $("#confirm-dialog");
   const ok = $("#confirm-ok");
   const cancel = $("#confirm-cancel");
   $("#confirm-message").textContent = message;
   ok.textContent = okLabel;
+  cancel.hidden = info; // a plain message has nothing to cancel
   return new Promise((resolve) => {
     let settled = false;
     const finish = (answer) => {
@@ -777,6 +788,11 @@ function askConfirm(message, okLabel) {
   });
 }
 
+// A message with a single OK button.
+function tellUser(message) {
+  return askConfirm(message, "OK", { info: true });
+}
+
 // Play changes the link in place: no history entries and no undo (docs/HERO_VIEW.md).
 function heroChanged() {
   renderAll();
@@ -787,6 +803,7 @@ function heroTap(event) {
   const cell = cellAt(event);
   if (!cell) return;
   app.heroRegion = regionAt(app.state, cell.x, cell.y);
+  app.heroCell = { x: cell.x, y: cell.y };
   renderOverlay();
   renderHero();
 }
@@ -825,7 +842,15 @@ function heroRegionCard() {
   const region = app.heroRegion;
   const card = el("section", { class: "card" });
   if (region === null) {
-    card.append(el("p", { class: "muted", text: "Tap a room or a hallway on the map." }));
+    if (!app.heroCell) {
+      card.append(el("p", { class: "muted", text: "Tap a room or a hallway on the map." }));
+      return card;
+    }
+    // A square in no room or zone: it looks and behaves like any hidden hallway until Reveal is pressed.
+    card.append(el("h2", { class: "hero-title", text: "Hallway" }));
+    const reveal = el("button", { id: "hero-reveal", type: "button", class: "primary", text: "Reveal this hallway" });
+    reveal.addEventListener("click", () => tellUser("Nothing to reveal. This is solid stone."));
+    card.append(reveal);
     return card;
   }
   const noun = region >= ROOM_REGIONS ? "hallway" : "room";
@@ -876,6 +901,7 @@ function bindHeroControls() {
     flushTextCommit();
     app.state.hero = true;
     app.heroRegion = null;
+    app.heroCell = null;
     heroChanged();
   });
   $("#to-zargon").addEventListener("click", async () => {
@@ -886,6 +912,7 @@ function bindHeroControls() {
     if (!ok) return;
     app.state.hero = false;
     app.heroRegion = null;
+    app.heroCell = null;
     heroChanged();
   });
   $("#reset-game").addEventListener("click", async () => {
@@ -893,6 +920,7 @@ function bindHeroControls() {
     if (!ok) return;
     resetGame(app.state);
     app.heroRegion = null;
+    app.heroCell = null;
     heroChanged();
   });
 }
@@ -1127,8 +1155,9 @@ function onPointerLeave() {
 function onKeyDown(event) {
   if (app.state.hero) {
     // Hero view has no undo and no editing keys; Esc just closes the room panel.
-    if (event.key === "Escape" && app.heroRegion !== null) {
+    if (event.key === "Escape" && app.heroCell) {
       app.heroRegion = null;
+      app.heroCell = null;
       renderOverlay();
       renderHero();
     }

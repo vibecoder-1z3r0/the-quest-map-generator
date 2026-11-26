@@ -124,7 +124,10 @@ opens in hero view.
   corridor squares with a zone and give the zone a name in the legend (heroes never see zone names).
   Any square, even solid stone or a trap highlight, can be in a zone.
 - **Rules.** Doors are shown when either side is visible; markers and Zargon's highlight colors are never
-  shown; hidden stone looks like any hidden area and shows once its room or zone is revealed.
+  shown; hidden stone looks like any hidden area and shows once its room or zone is revealed. A hallway that
+  is in no zone is treated as solid stone: it stays fogged, and tapping it and pressing Reveal says "Nothing
+  to reveal. This is solid stone." So paint every hallway the heroes can walk into a zone. Tapping a
+  hallway highlights only that square, so the shape of a zone never shows.
 - **No printing.** Hero view is for a device, so it does not print (print from Zargon's view instead).
 - **Honor system.** Anyone with a hero link can read everything in it, including the hidden texts, by
   decoding it. Hero view hides things on screen; it does not protect them.

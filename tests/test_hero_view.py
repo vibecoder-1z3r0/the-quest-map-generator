@@ -60,6 +60,15 @@ def open_hero(page, site, st=None):
     page.wait_for_selector("body.hero")
 
 
+def fogged(page, x, y):
+    """Whether the fog covers the middle of square (x, y), asked of the browser's own geometry."""
+    return page.evaluate(
+        "([x, y]) => { const p = document.querySelector('#layer-fog path');"
+        " return p ? p.isPointInFill(new DOMPoint(x * 32 + 16, y * 32 + 16)) : false; }",
+        [x, y],
+    )
+
+
 def visible_pieces(page):
     return page.locator("#layer-items use").count()
 
@@ -105,24 +114,29 @@ def test_the_hero_view_shows_the_quest_text_the_wandering_monster_but_never_the_
     assert "TOP SECRET NOTES" not in text
 
 
-def test_hidden_regions_are_covered_by_one_flat_fog_and_plain_corridor_is_not(page, site):
+def test_hidden_regions_and_plain_corridor_are_covered_by_one_flat_fog(page, site):
     open_hero(page, site)
-    fog = page.locator("#layer-fog path").get_attribute("d")
-    assert "M32 32" in fog  # room A's first square is fogged
-    assert "M0 0" not in fog  # plain corridor is not
+    assert fogged(page, 1, 1)  # room A is fogged
+    assert fogged(
+        page, 0, 0
+    )  # and so is plain corridor: a square in no room or zone is solid stone
+    assert fogged(page, 3, 0)  # and a zone
+    assert not fogged(page, 22, 2)  # room F is revealed at the start, so it is not covered
     assert page.locator("#layer-fog path").count() == 1  # a single shape, so there are no seams
     assert page.locator("#layer-fog path").get_attribute("fill") == "#2b2118"
 
 
 def test_only_what_the_heroes_can_see_is_drawn(page, site):
     open_hero(page, site)
-    # visible at the start: the goblin in plain corridor and the door (its corridor side is visible)
-    assert visible_pieces(page) == 2
+    # nothing is visible at the start: the goblin in plain corridor is solid stone and the door's
+    # corridor side is too, so only revealing a room can show things
+    assert visible_pieces(page) == 0
     tap(page, 2, 2)
     page.click("#hero-reveal")
     confirm(page)
-    # room A revealed: its goblin and chest, but never the marker, the trap or the unsearched secret door
-    assert visible_pieces(page) == 4
+    # room A revealed: its goblin, chest and the door in its wall, but never the marker, the trap or the
+    # unsearched secret door, and still not the goblin in the plain corridor
+    assert visible_pieces(page) == 3
 
 
 def test_tapping_a_hidden_room_offers_reveal_and_cancel_keeps_it_hidden(page, site):
@@ -316,3 +330,65 @@ def test_the_editor_still_prints_normally(page, site):
     page.emulate_media(media="print")
     assert "TOP SECRET NOTES" in page.inner_text("body")
     assert "meant for a screen" not in page.inner_text("body")
+
+
+def selected_squares(page):
+    return page.locator("#layer-overlay .hero-sel").evaluate_all(
+        "els => els.map(e => [Number(e.getAttribute('x')) / 32, Number(e.getAttribute('y')) / 32])"
+    )
+
+
+def test_tapping_a_zone_highlights_only_the_tapped_square(page, site):
+    open_hero(page, site)
+    tap(page, 3, 0)  # zone 1 covers (3, 0) and (4, 0)
+    assert selected_squares(page) == [[3, 0]]  # not the whole zone, which would give its shape away
+
+
+def test_tapping_a_room_highlights_the_room_and_plain_corridor_one_square(page, site):
+    open_hero(page, site)
+    tap(page, 2, 2)  # room A is 4 x 3 squares
+    assert len(selected_squares(page)) == 12
+    tap(page, 10, 0)  # plain corridor
+    assert selected_squares(page) == [[10, 0]]
+
+
+def test_a_hallway_in_no_zone_offers_reveal_and_then_says_it_is_solid_stone(page, site):
+    open_hero(page, site)
+    tap(page, 10, 0)  # plain corridor, in no zone
+    assert "hallway" in panel(page).lower()
+    page.click("#hero-reveal")
+    page.wait_for_selector("#confirm-dialog[open]")
+    assert "Nothing to reveal. This is solid stone." in page.inner_text("#confirm-message")
+    assert not page.locator("#confirm-cancel").is_visible()  # it is a message, not a question
+    page.click("#confirm-ok")
+    page.wait_for_selector("#confirm-dialog:not([open])", state="attached")
+    assert played(page) is None  # nothing changed
+    assert fogged(page, 10, 0)  # and it stays fogged
+
+
+def test_the_message_dialog_does_not_hide_the_cancel_button_of_later_questions(page, site):
+    open_hero(page, site)
+    tap(page, 10, 0)
+    page.click("#hero-reveal")
+    page.click("#confirm-ok")
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    page.wait_for_selector("#confirm-dialog[open]")
+    assert page.locator("#confirm-cancel").is_visible()
+    page.click("#confirm-cancel")
+
+
+def test_a_found_secret_door_in_the_fog_shows_on_its_own_square(page, site):
+    st = hero_state()
+    st["items"] = [(SECRET_DOOR, 7, 9, 0)]  # corridor square between rooms H (7) and N (13)
+    st["rooms"] = {7: {"start": False, "group": 0, "texts": ["", "", "", "found"]}}
+    open_hero(page, site, st)
+    assert visible_pieces(page) == 0
+    tap(page, 6, 6)  # room H
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-sd")
+    assert visible_pieces(page) == 1
+    assert "M224 288" not in page.locator("#layer-fog path").get_attribute(
+        "d"
+    )  # (7, 9) is not covered
