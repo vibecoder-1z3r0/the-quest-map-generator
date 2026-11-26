@@ -175,6 +175,8 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
   dialog; **Zargon view** confirms with a warning. Editor: a collapsible card follows the pinned square
   (never the hover) with a region chooser, groups and counters; **Hero view** and **Copy hero link**
   (always a clean play state) are in the header.
+- Hero view **never prints** (it is for a device): in print media it shows only a short note, because the
+  print layout holds Zargon's notes and the whole map. Print from Zargon's view.
 - It is an honor system: everything in a link is readable by anyone who decodes it.
 
 ## Quest text

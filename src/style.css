@@ -159,7 +159,7 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 #legend-edit .lg { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
 #legend-edit input { flex: 1; }
 
-#printsheet, #printhead { display: none; }
+#printsheet, #printhead, #hero-noprint { display: none; }
 .pcheck { float: right; margin-left: 8px; font: 400 12px system-ui, sans-serif; text-transform: none; letter-spacing: 0; color: var(--muted); cursor: pointer; }
 #footer { text-align: center; padding: 12px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); }
 #footer p { margin: 0 auto; max-width: 1000px; }
@@ -253,5 +253,8 @@ body.hero #copy-hero { display: none; }
   body.np-notes #print-notes-section, body.np-legend #stage .legend { display: none !important; }
   body.po-monsters #print-key .keygroup:not([data-group="Monsters"]) { display: none; }
   #stage .legend { margin-top: 6px; }
+  /* Hero view never prints: the print layout holds Zargon's notes and the whole map. */
+  body.hero #app, body.hero #printhead, body.hero #printsheet, body.hero #topbar, body.hero #footer { display: none !important; }
+  body.hero #hero-noprint { display: block; font: 14pt Georgia, serif; margin: 20mm 0; }
   @page { margin: 10mm; }
 }

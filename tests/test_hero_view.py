@@ -296,3 +296,23 @@ def test_stone_in_a_zone_is_hidden_until_the_zone_is_revealed(page, site):
     page.click("#hero-reveal")
     confirm(page)
     assert page.locator("#layer-hl rect").count() == 1  # now it shows as stone
+
+
+def test_hero_view_does_not_print_and_never_prints_zargons_notes(page, site):
+    open_hero(page, site)
+    page.emulate_media(media="print")
+    text = page.inner_text("body")
+    assert (
+        "TOP SECRET NOTES" not in text
+    )  # the print layout holds Zargon's notes; hero view must not print it
+    assert "meant for a screen" in text  # a short note says where to print from
+    assert not page.locator("#board").is_visible()
+    assert not page.locator("#printsheet").is_visible()
+
+
+def test_the_editor_still_prints_normally(page, site):
+    st = hero_state(hero=False)
+    open_link(page, site, ref.encode(st))
+    page.emulate_media(media="print")
+    assert "TOP SECRET NOTES" in page.inner_text("body")
+    assert "meant for a screen" not in page.inner_text("body")
