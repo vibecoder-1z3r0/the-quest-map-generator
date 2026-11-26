@@ -13,13 +13,16 @@
 
 <header id="topbar">
   <div class="toprow">
-    <h1>Quest Map Generator <span class="ver">@VERSION@</span></h1>
+    <h1>Quest Map Generator <span class="ver">@VERSION@</span> <span id="hero-badge" class="hero-badge" hidden>HERO VIEW</span></h1>
     <label class="themepick">Theme
       <select id="theme"></select>
     </label>
     <span id="head-title" class="head-title"></span>
     <button id="copy" type="button" class="primary" title="Anyone with the link can read Zargon's secret notes">Copy map link</button>
     <div class="actions">
+      <button id="to-zargon" type="button" hidden>Zargon view</button>
+      <button id="reset-game" type="button" hidden>Reset game</button>
+      <button id="to-hero" type="button" title="Open this quest in hero view">Hero view</button>
       <button id="undo" type="button" title="Undo (Ctrl+Z)">&#8630; Undo</button>
       <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo &#8631;</button>
       <button id="print-btn" type="button">Print</button>
@@ -29,6 +32,7 @@
   <div class="toprow subrow">
     <span id="linkinfo" class="linkinfo">The whole quest is in the link.</span>
     <span class="linkinfo privacy">Anyone with the link can read Zargon's secret notes.</span>
+    <span id="hero-hint" class="linkinfo" hidden>Heroes: tap a room or a hallway on the map to reveal it.</span>
   </div>
 </header>
 
@@ -73,6 +77,7 @@
   </section>
 
   <aside id="side" aria-label="Details and quest text">
+    <div id="hero-panel" hidden></div>
     <section class="card" id="inspector-card">
       <h2>What's here <span id="inspector-hint" class="muted"></span></h2>
       <div id="inspector"></div>
@@ -114,6 +119,16 @@
     </section>
   </aside>
 </main>
+
+<dialog id="confirm-dialog" aria-labelledby="confirm-message">
+  <form method="dialog">
+    <p id="confirm-message"></p>
+    <div class="actions">
+      <button id="confirm-cancel" type="submit" value="cancel">Cancel</button>
+      <button id="confirm-ok" type="submit" value="ok" class="primary">OK</button>
+    </div>
+  </form>
+</dialog>
 
 <div id="unsupported" role="alert" hidden></div>
 

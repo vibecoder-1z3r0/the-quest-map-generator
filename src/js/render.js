@@ -2,6 +2,7 @@
 import { roomSquares } from "./board.js";
 import { BY_ID, footprint } from "./catalog.js";
 import { CELL, COLS, HIGHLIGHTS, ROWS } from "./constants.js";
+import { itemVisibility, squareVisible, stoneVisible } from "./hero.js";
 
 export const MARGIN = 22;
 const BOARD_W = COLS * CELL;
@@ -33,6 +34,7 @@ export function boardSkeleton() {
     <g id="layer-tiles"></g>
     <g id="layer-hl"></g>
     <g id="layer-items"></g>
+    <g id="layer-fog"></g>
     <g id="layer-overlay" pointer-events="none"></g>
     <g id="layer-labels" class="coords">${labels.join("")}</g>`;
 }
@@ -109,4 +111,64 @@ export function tilesMarkup(tiles) {
 
 export function rectOutlineMarkup(x, y, w, h, cls) {
   return `<rect class="${cls}" x="${x * CELL + 1}" y="${y * CELL + 1}" width="${w * CELL - 2}" height="${h * CELL - 2}" rx="3"/>`;
+}
+
+// ---------------------------------------------------------------- hero view
+// Everything hidden from the heroes is covered by one flat, opaque shape (a single path, so there are
+// no seams), with the printed room letters repeated on top.
+export function fogMarkup(st) {
+  const parts = [];
+  for (let y = 0; y < ROWS; y++) {
+    let x = 0;
+    while (x < COLS) {
+      if (squareVisible(st, x, y)) {
+        x += 1;
+        continue;
+      }
+      let run = 1;
+      while (x + run < COLS && !squareVisible(st, x + run, y)) run += 1;
+      parts.push(`M${x * CELL} ${y * CELL}h${run * CELL}v${CELL}h${-run * CELL}z`);
+      x += run;
+    }
+  }
+  if (!parts.length) return "";
+  const letters = [...roomSquares()]
+    .filter(([, squares]) => !squareVisible(st, squares[0].x, squares[0].y))
+    .map(([letter, squares]) => `<text x="${squares[0].x * CELL + 5}" y="${squares[0].y * CELL + 13}">${letter}</text>`);
+  return `<path d="${parts.join("")}" fill="#2b2118"/>${letters.join("")}`;
+}
+
+// Room tiles, solid stone and pieces, limited to what the heroes can see.
+export function heroTilesMarkup(st) {
+  const out = [];
+  for (const tile of st.tiles) {
+    const piece = BY_ID.get(tile.id);
+    for (let dy = 0; dy < tile.h; dy++) {
+      for (let dx = 0; dx < tile.w; dx++) {
+        const x = tile.x + dx;
+        const y = tile.y + dy;
+        if (squareVisible(st, x, y)) {
+          out.push(`<use href="#icon-${piece.slug}" x="${x * CELL}" y="${y * CELL}" width="${CELL}" height="${CELL}"/>`);
+        }
+      }
+    }
+  }
+  return out.join("");
+}
+
+export function heroHighlightMarkup(st) {
+  const out = [];
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      if (stoneVisible(st, x, y)) {
+        out.push(`<rect x="${x * CELL}" y="${y * CELL}" width="${CELL}" height="${CELL}" fill="url(#hatch)"/>`);
+      }
+    }
+  }
+  return out.join("");
+}
+
+export function heroItemsMarkup(st) {
+  const visible = itemVisibility(st);
+  return st.items.map((item, i) => (visible[i] ? itemMarkup(item, i) : "")).join("");
 }
