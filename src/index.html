@@ -19,6 +19,7 @@
     </label>
     <span id="head-title" class="head-title"></span>
     <button id="copy" type="button" class="primary" title="Anyone with the link can read Zargon's secret notes">Copy map link</button>
+    <button id="copy-hero" type="button" title="Copy a link that opens in hero view with nothing revealed">Copy hero link</button>
     <div class="actions">
       <button id="to-zargon" type="button" hidden>Zargon view</button>
       <button id="reset-game" type="button" hidden>Reset game</button>
@@ -81,6 +82,27 @@
     <section class="card" id="inspector-card">
       <h2>What's here <span id="inspector-hint" class="muted"></span></h2>
       <div id="inspector"></div>
+    </section>
+
+    <section class="card" id="hero-card">
+      <details>
+        <summary id="hero-card-title">Hero view data</summary>
+        <div id="hero-chooser" class="chips" aria-label="Choose a room or zone"></div>
+        <p id="hero-none" class="muted">Pin a square in a room or zone, or choose one above.</p>
+        <div id="hero-fields" hidden>
+          <label class="check"><input type="checkbox" id="hero-start"> Revealed at the start</label>
+          <div class="field"><label>Reveals together with</label><div id="hero-group" class="chips"></div></div>
+          <div class="field"><label for="hero-text-0">Read aloud when revealed <span class="hero-count muted"></span></label>
+            <textarea id="hero-text-0" rows="3" autocomplete="off"></textarea></div>
+          <div class="field"><label for="hero-text-1">Search for treasure <span class="hero-count muted"></span></label>
+            <textarea id="hero-text-1" rows="2" autocomplete="off"></textarea></div>
+          <div class="field"><label for="hero-text-2">Search for traps <span class="hero-count muted"></span></label>
+            <textarea id="hero-text-2" rows="2" autocomplete="off"></textarea></div>
+          <div class="field"><label for="hero-text-3">Search for secret doors <span class="hero-count muted"></span></label>
+            <textarea id="hero-text-3" rows="2" autocomplete="off"></textarea></div>
+        </div>
+        <p id="hero-total" class="muted"></p>
+      </details>
     </section>
 
     <section class="card">

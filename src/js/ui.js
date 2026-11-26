@@ -14,6 +14,8 @@ import {
 } from "./constants.js";
 import { blankState, decodeHash, encodeState } from "./format.js";
 import {
+  chooserRegions,
+  editRoom,
   hideRegion,
   isRevealed,
   isSearched,
@@ -23,6 +25,8 @@ import {
   resetGame,
   revealRegion,
   searchRegion,
+  setGroupMember,
+  totalRoomText,
 } from "./hero.js";
 import { renderIntro, renderNotes } from "./markdown.js";
 import { computeStats } from "./stats.js";
@@ -31,6 +35,7 @@ import {
   boardViewBox,
   cellMarkup,
   fogMarkup,
+  heroBadgesMarkup,
   heroHighlightMarkup,
   heroItemsMarkup,
   heroTilesMarkup,
@@ -98,6 +103,8 @@ export const app = {
   future: [],
   editable: true,
   heroRegion: null, // the region whose panel hero view shows
+  editRegion: null, // the region whose hero view data card the editor shows
+  shownRegion: null,
 };
 
 // ---------------------------------------------------------------- theme
@@ -189,6 +196,7 @@ export async function loadFromHash() {
   app.selectedTile = -1;
   app.pinned = null;
   app.heroRegion = null;
+  app.editRegion = null;
   app.past = [];
   app.future = [];
   app.baseline = snapshot(app.state);
@@ -299,7 +307,7 @@ function renderOverlay() {
     $("#layer-overlay").innerHTML = marks;
     return;
   }
-  let out = "";
+  let out = heroBadgesMarkup(app.state, app.editRegion);
   const view = app.pinned || app.hover;
   if (app.pinned) out += cellMarkup(app.pinned.x, app.pinned.y, "pinned");
   if (app.hover && app.inside && !app.drag && !app.paint && app.pointerType !== "touch") {
@@ -612,6 +620,7 @@ function renderAll() {
   renderMap();
   renderOverlay();
   renderInspector();
+  renderHeroCard();
   renderLegend();
   renderStats();
   renderPieceKeys();
@@ -619,6 +628,111 @@ function renderAll() {
   renderPreviews();
   markTools();
   renderHero();
+}
+
+// ---------------------------------------------------------------- hero view data card (editor)
+function chipButton(label, region, pressed, onClick) {
+  const button = el("button", { type: "button", "data-region": String(region), "aria-pressed": String(pressed), text: label });
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function chipLabel(region) {
+  return region < ROOM_REGIONS ? String.fromCharCode(65 + region) : regionName(app.state, region);
+}
+
+// Shows the card for app.editRegion. It is updated, never rebuilt, so typing in it keeps its focus.
+function renderHeroCard() {
+  const st = app.state;
+  const region = app.editRegion;
+  const details = $("#hero-card details");
+  $("#hero-card-title").textContent = region === null ? "Hero view data" : `Hero view data \u00B7 ${regionName(st, region)}`;
+  if (region !== app.shownRegion) {
+    app.shownRegion = region;
+    if (region !== null) details.open = true;
+  }
+  const regions = chooserRegions(st);
+  $("#hero-chooser").replaceChildren(
+    ...regions.map((r) =>
+      chipButton(chipLabel(r), r, r === region, () => {
+        app.editRegion = r;
+        renderHeroCard();
+        renderOverlay();
+      }),
+    ),
+  );
+  $("#hero-none").hidden = region !== null;
+  $("#hero-fields").hidden = region === null;
+  if (region !== null) {
+    const rec = st.rooms[region] ?? { start: false, group: 0, texts: ["", "", "", ""] };
+    const start = $("#hero-start");
+    if (document.activeElement !== start) start.checked = rec.start;
+    $("#hero-group").replaceChildren(
+      ...regions
+        .filter((r) => r !== region)
+        .map((r) =>
+          chipButton(chipLabel(r), r, rec.group !== 0 && st.rooms[r]?.group === rec.group, () => {
+            const on = !(rec.group !== 0 && st.rooms[r]?.group === rec.group);
+            setGroupMember(st, region, r, on);
+            heroDataChanged();
+          }),
+        ),
+    );
+    for (let i = 0; i < 4; i++) {
+      const box = $(`#hero-text-${i}`);
+      if (document.activeElement !== box) box.value = rec.texts[i];
+      box.closest(".field").querySelector(".hero-count").textContent = `${Array.from(rec.texts[i]).length}/${LIMITS.roomText}`;
+    }
+  }
+  const { chars, regions: withText } = totalRoomText(st);
+  $("#hero-total").textContent = chars
+    ? `${chars} characters of room text in ${withText} room${withText === 1 ? "" : "s"} or zone${withText === 1 ? "" : "s"}.`
+    : "No room text yet.";
+}
+
+// A change to hero view data: the link follows at once, and undo gets one step per pause in typing.
+function heroDataChanged() {
+  renderOverlay();
+  renderHeroCard();
+  scheduleUrl(false, 300);
+  clearTimeout(textTimer);
+  textTimer = setTimeout(() => {
+    textTimer = 0;
+    commit();
+  }, 700);
+}
+
+function bindHeroCard() {
+  $("#hero-start").addEventListener("change", (event) => {
+    if (app.editRegion === null) return;
+    editRoom(app.state, app.editRegion, (rec) => (rec.start = event.target.checked));
+    heroDataChanged();
+  });
+  for (let i = 0; i < 4; i++) {
+    const box = $(`#hero-text-${i}`);
+    box.addEventListener("input", () => {
+      if (app.editRegion === null) return;
+      const { text } = cleanText(box.value, { multiline: true, limit: LIMITS.roomText });
+      if (text !== box.value) box.value = text;
+      editRoom(app.state, app.editRegion, (rec) => (rec.texts[i] = text));
+      heroDataChanged();
+    });
+  }
+  $("#copy-hero").addEventListener("click", async () => {
+    const button = $("#copy-hero");
+    const label = button.textContent;
+    const payload = await encodeState({ ...app.state, hero: true, play: null });
+    const link = `${location.href.split("#")[0]}#${payload}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      button.textContent = "Copied!";
+    } catch {
+      window.prompt("Copy this hero link:", link);
+    }
+    setTimeout(() => {
+      button.textContent = label;
+    }, 1500);
+  });
 }
 
 // ---------------------------------------------------------------- hero view
@@ -909,6 +1023,8 @@ function onPointerDown(event) {
     paintCell(cell);
   } else {
     app.pinned = { x: cell.x, y: cell.y };
+    app.editRegion = regionAt(app.state, cell.x, cell.y);
+    renderHeroCard();
     const hits = itemsAt(app.state, cell.x, cell.y);
     const already = hits.includes(app.selected);
     const tileHits = tilesAt(app.state, cell.x, cell.y);
@@ -1055,6 +1171,7 @@ function onKeyDown(event) {
     app.selected = -1;
     app.selectedTile = -1;
     app.pinned = null;
+    app.editRegion = null;
     renderAll();
   } else if ((app.selected >= 0 || app.selectedTile >= 0) && key.startsWith("Arrow")) {
     event.preventDefault();
@@ -1301,6 +1418,7 @@ export function initUi() {
   $("#zoom-fit").addEventListener("click", () => setZoom(1));
   $("#print-btn").addEventListener("click", () => window.print());
   bindHeroControls();
+  bindHeroCard();
   for (const [id, cls] of [["intro", "np-intro"], ["key", "np-key"], ["stats", "np-stats"], ["notes", "np-notes"], ["legend", "np-legend"]]) {
     $(`#po-${id}`).addEventListener("change", (e) => document.body.classList.toggle(cls, !e.target.checked));
   }
@@ -1319,6 +1437,7 @@ export function initUi() {
   $("#copy").addEventListener("click", async () => {
     await syncUrl();
     const button = $("#copy");
+    const label = button.textContent;
     try {
       await navigator.clipboard.writeText(location.href);
       button.textContent = "Copied!";
@@ -1326,7 +1445,7 @@ export function initUi() {
       window.prompt("Copy this link:", location.href);
     }
     setTimeout(() => {
-      button.textContent = "Copy link";
+      button.textContent = label;
     }, 1500);
   });
   window.addEventListener("beforeprint", () => {

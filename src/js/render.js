@@ -2,7 +2,7 @@
 import { roomSquares } from "./board.js";
 import { BY_ID, footprint } from "./catalog.js";
 import { CELL, COLS, HIGHLIGHTS, ROWS, ZONES } from "./constants.js";
-import { itemVisibility, squareVisible, stoneVisible } from "./hero.js";
+import { itemVisibility, regionAnchor, regionSquares, squareVisible, stoneVisible } from "./hero.js";
 
 export const MARGIN = 22;
 const BOARD_W = COLS * CELL;
@@ -185,4 +185,27 @@ export function heroHighlightMarkup(st) {
 export function heroItemsMarkup(st) {
   const visible = itemVisibility(st);
   return st.items.map((item, i) => (visible[i] ? itemMarkup(item, i) : "")).join("");
+}
+
+// Editor badges for hero view: a dot on regions that have text, a tag on grouped ones, and the tint
+// of the region whose card is open.
+export function heroBadgesMarkup(st, activeRegion) {
+  const out = [];
+  if (activeRegion !== null) {
+    for (const { x, y } of regionSquares(st, activeRegion)) out.push(cellMarkup(x, y, "hero-sel"));
+  }
+  for (const [key, rec] of Object.entries(st.rooms)) {
+    const region = Number(key);
+    const anchor = regionAnchor(st, region);
+    if (!anchor) continue;
+    const left = anchor.x * CELL;
+    const top = anchor.y * CELL;
+    if (rec.texts.some(Boolean)) {
+      out.push(`<circle class="hero-dot" data-region="${region}" cx="${left + CELL - 7}" cy="${top + 7}" r="4.5"/>`);
+    }
+    if (rec.group) {
+      out.push(`<text class="hero-group" data-region="${region}" x="${left + 3}" y="${top + CELL - 4}">G${rec.group}</text>`);
+    }
+  }
+  return out.join("");
 }
