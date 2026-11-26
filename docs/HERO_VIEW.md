@@ -65,6 +65,9 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     - **Hero view never shows a zone name.** A name could give something away, so a fogged hallway is
       just dark and a revealed zone's panel says "Hallway". Zone names exist only for the author (the
       editor card and the legend).
+    - **The fog is fully opaque,** so every hidden room and hallway looks identical and nothing can show
+      through it (not a tint, not a faint shape). **Solid stone is drawn above the fog at full
+      strength,** so it always shows and is clearly different from hidden areas.
 15. **Play state is carried along when Zargon switches to the main view and edits the map.** It stays
     in the link untouched. "New map" clears it, and "Copy hero link" always writes a clean state.
 16. **Room texts stay capped at 600 characters each**, with a live counter in the editor for the total
