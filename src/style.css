@@ -41,6 +41,7 @@ body {
 .toprow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .head-title { flex: 1 1 120px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .ver { font: 400 11px system-ui, sans-serif; color: var(--muted); }
+body.hero .head-title { overflow: visible; text-overflow: clip; white-space: normal; flex-basis: 200px; }
 #topbar h1 { margin: 0; font: 700 17px Georgia, serif; color: var(--accent); }
 .linkinfo { color: var(--muted); font-size: 12px; }
 .linkinfo.privacy::before { content: "\00B7"; margin-right: 10px; }

@@ -132,6 +132,11 @@ one at the bottom touches room S.
 
 ## Notes since it was built
 
+- The hero header carries the quest line (series, number and title, wrapped rather than cut off) and a
+  short how-to: tap a room or hallway, press Reveal, then use the search buttons. The quest card
+  under the map no longer repeats the series and title; it holds the introduction and the wandering
+  monster.
+
 - A hallway (zone) has no "Search for treasure" button, because treasure is never searched for in a
   hallway, unless a treasure chest stands on one of its squares (a makeshift room). Its traps and
   secret-door searches always stay. The treasure text field is still in the authoring

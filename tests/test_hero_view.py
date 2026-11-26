@@ -114,6 +114,29 @@ def test_the_hero_view_shows_the_quest_text_the_wandering_monster_but_never_the_
     assert "TOP SECRET NOTES" not in text
 
 
+def test_the_hero_header_explains_how_to_play(page, site):
+    open_hero(page, site)
+    hint = page.locator("#hero-hint").inner_text()
+    for word in ("Tap", "Reveal", "search"):
+        assert word.lower() in hint.lower(), word
+
+
+def test_the_whole_quest_line_is_in_the_hero_header_on_a_phone_and_not_cut_off(page, site):
+    page.set_viewport_size({"width": 390, "height": 844})
+    st = hero_state(title="The Stone Tablets of Uganoth and the Long Road Home")
+    open_hero(page, site, st)
+    line = page.locator("#head-title")
+    assert line.inner_text() == "The Order: Quest 1 - " + st["title"]
+    assert line.evaluate("e => e.scrollWidth <= e.clientWidth + 1")
+
+
+def test_the_hero_quest_card_leaves_out_the_title_the_header_already_shows(page, site):
+    open_hero(page, site)
+    card = page.locator("#hero-quest").inner_text()
+    assert "Test quest" not in card and "The Order" not in card
+    assert "Long ago a wizard lived here." in card and "Wandering monster: Goblin" in card
+
+
 def test_hidden_regions_and_plain_corridor_are_covered_by_one_flat_fog(page, site):
     open_hero(page, site)
     assert fogged(page, 1, 1)  # room A is fogged
