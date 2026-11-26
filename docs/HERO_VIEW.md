@@ -46,6 +46,17 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
    play. A mistaken reveal is prevented by the "are you sure?" and cleared only by "reset reveals".
 10. **Print stays as it is.** The print page keeps Zargon's notes and the quest text; it does not
     include the room texts. Hero view is meant to be used on a device, not on paper.
+11. **Solid stone rooms are not revealable.** A room that is completely grey (solid stone) is not
+    part of the quest: in hero view it shows as stone from the start, cannot be clicked and has no
+    Reveal button. In a room that is only partly grey, the grey squares stay stone and the rest of the
+    room reveals normally.
+12. **Authoring: a collapsible room card driven by the pinned square, plus a room chooser.** In the
+    editor, pinning a square with the Select tool opens the card for that square's room under
+    "What's here" (collapsed until it is needed; open or closed is a view setting, not stored in the
+    link). A row of room letters at the top of the card lets you jump to any room without pinning one
+    of its squares. The card follows the pinned square and never the hover, so moving the mouse never
+    swaps it out while you are typing. There is no separate Room data tool. A corridor square has no
+    room card.
 
 ## Future decision, not yet made
 
@@ -56,28 +67,33 @@ text cannot be read on the hero view anyway, it would duplicate the quest notes,
 longer. Adding it later is an additive trailing field, so no existing link would break. Revisit if the
 quest-level notes become unwieldy.
 
-## Door ownership: the rule proposed (needs the owner's OK)
+## Door ownership: how secret doors are revealed (decided, to be documented for authors)
 
 A secret door or hidden door is revealed by the secret-door search of **every room it touches**:
 - a piece on a room square belongs to that room;
 - a piece on a corridor square belongs to each room that shares a wall with that square;
 - a hidden door (an edge piece) belongs to the rooms on both sides of its edge.
 
-Real examples from quest 1: the secret door at H10-ish sits in the corridor between rooms H and N, so
-a search in either room reveals it; the one at the left edge touches room L; the one inside room K
-belongs to K; the one at the bottom touches room S.
+What authors need to know, and what the help text and README should say:
+- **A corridor square that touches two rooms:** a search in **either** room reveals the door. If the
+  door should belong to one room only, the author places it on that room's side (inside the room)
+  instead.
+- **A hidden door on the wall between two rooms:** either room's search reveals it.
+- **A secret door in a corridor that touches no room:** no room search can reveal it, so it **stays
+  hidden** in hero view. (A warning in the editor for this case is a possible later addition.)
 
-**Open question:** a secret door in a corridor that touches no room (diagram C in the mockup) cannot be
-revealed by any room search. Either it stays hidden in hero view, or it is always shown.
+Real examples from quest 1: the secret door in the corridor between rooms H and N is revealed by
+either room's search; the one at the left edge touches room L; the one inside room K belongs to K; the
+one at the bottom touches room S.
 
 ## Still open
 
-- The door ownership rule above, and what happens to a secret door that touches no room.
-- The authoring screens: a "Room data" tool that opens a room card (revealed at the start, a
-  "reveals together with" group chooser, and the four texts, each with a 600 character counter), a
-  badge on grouped rooms and a dot on rooms that have text. A mockup was shown to the owner; it needs
-  feedback.
+- The authoring card in detail: a "revealed at the start" checkbox, the group chooser (room chips),
+  the four texts with a 600 character counter each, a badge on grouped rooms and a dot on rooms that
+  have text. The owner is fine with this layout.
 - How play state is kept in the link when Zargon switches to the main view and edits the map (the
   suggestion: it is carried along untouched, and New map clears it).
 - Link length: the worst case is 22 rooms x 4 texts x 600 characters, so the existing link-length
   warning matters. A tighter limit is possible if real quests get long.
+- The exact byte layout for the room data, the play state and the view flag (goes into
+  `docs/FORMAT.md` when it is built).
