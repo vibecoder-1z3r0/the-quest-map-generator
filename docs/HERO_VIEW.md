@@ -132,6 +132,10 @@ one at the bottom touches room S.
 
 ## Notes since it was built
 
+- On a phone (single column) the public quest info sits above the map and the room card (Reveal, the
+  searches, Hide again) sits below it, so the map stays next to the buttons that act on it. On a wide
+  screen both cards stay in the side column.
+
 - A secret door on a zoned corridor square first belonged to the zone only, so the search of the room
   next to it found nothing (seen on quest 1, bottom corridor beside room S). It now belongs to the zone
   and to each touching room.
