@@ -392,3 +392,49 @@ def test_a_found_secret_door_in_the_fog_shows_on_its_own_square(page, site):
     assert "M224 288" not in page.locator("#layer-fog path").get_attribute(
         "d"
     )  # (7, 9) is not covered
+
+
+def search_secret_doors_in_a(page, site, secret_text):
+    st = hero_state()
+    st["rooms"][A]["texts"][3] = secret_text
+    open_hero(page, site, st)
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-sd")
+
+
+def test_a_found_secret_door_is_announced_when_the_secret_door_text_is_blank(page, site):
+    search_secret_doors_in_a(page, site, "")
+    assert "You find a secret door." in panel(page)
+    assert "You find nothing." not in panel(page)
+
+
+def test_the_secret_door_text_replaces_the_announcement_when_there_is_one(page, site):
+    search_secret_doors_in_a(page, site, "Hollow wall.")
+    assert "Hollow wall." in panel(page)
+    assert "You find a secret door." not in panel(page)
+
+
+def test_a_secret_door_search_that_finds_nothing_still_says_nothing_found(page, site):
+    st = hero_state()
+    st["items"] = [it for it in st["items"] if it[0] != SECRET_DOOR]
+    st["rooms"][A]["texts"][3] = ""
+    open_hero(page, site, st)
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-sd")
+    assert "You find nothing." in panel(page)
+
+
+def test_several_found_secret_doors_are_counted_in_the_announcement(page, site):
+    st = hero_state()
+    st["rooms"][A]["texts"][3] = ""
+    st["items"].append((SECRET_DOOR, 2, 1, 0))
+    open_hero(page, site, st)
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-sd")
+    assert "You find 2 secret doors." in panel(page)

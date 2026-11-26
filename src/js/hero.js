@@ -149,11 +149,21 @@ export function secretOwners(st, item) {
   const piece = BY_ID.get(item.id);
   const squares = piece.edge ? edgeSides(item) : [[item.x, item.y]];
   let regions = squares.map(([x, y]) => regionAt(st, x, y)).filter((r) => r !== null);
-  if (!piece.edge && regions.length === 0) {
-    // A tile on a corridor square with no zone belongs to every region that shares a wall with it.
-    regions = EDGE_STEP.map(([dx, dy]) => regionAt(st, item.x + dx, item.y + dy)).filter((r) => r !== null);
+  const inRoom = regions.some((r) => r < ROOM_REGIONS);
+  if (!piece.edge && !inRoom) {
+    // A tile on a corridor square (zoned or not) also belongs to every room that shares a wall with it.
+    const touching = EDGE_STEP.map(([dx, dy]) => regionAt(st, item.x + dx, item.y + dy)).filter((r) => r !== null && r < ROOM_REGIONS);
+    regions = [...regions, ...touching];
   }
   return [...new Set(regions)].sort((a, b) => a - b);
+}
+
+// How many secret doors and hidden doors the secret-door search of this region (and its group) has found.
+export function secretDoorsFound(st, region) {
+  const members = new Set(groupMembers(st, region));
+  return st.items.filter(
+    (item) => (item.id === 2 || item.id === 4) && secretOwners(st, item).some((r) => members.has(r)),
+  ).length;
 }
 
 // For each piece (same order as st.items): whether the heroes can see it right now.

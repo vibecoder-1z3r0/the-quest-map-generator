@@ -204,14 +204,33 @@ def test_a_secret_door_in_an_unzoned_corridor_belongs_to_each_room_it_touches(pa
     assert piece_visibility(page, [tile], "H.revealRegion(st, 7);") == [False]
 
 
-def test_a_secret_door_on_a_zone_square_belongs_only_to_the_zone(page):
-    tile = [SECRET_DOOR, 7, 9, 0]
+def test_a_secret_door_on_a_zone_square_belongs_to_the_zone_and_to_each_room_it_touches(page):
+    tile = [SECRET_DOOR, 7, 9, 0]  # between room H (above) and room N (below), painted as zone 1
     zoned = "st.zones[9 * 26 + 7] = 1;"
-    assert run(page, zoned + "return H.secretOwners(st, { id: 4, x: 7, y: 9, r: 0 });") == [Z1]
-    room_search = zoned + f"H.revealRegion(st, {H}); H.searchRegion(st, {H}, 'sd');"
-    assert piece_visibility(page, [tile], room_search) == [False]
-    zone_search = zoned + "H.revealRegion(st, 26); H.searchRegion(st, 26, 'sd');"
-    assert piece_visibility(page, [tile], zone_search) == [True]
+    owners = run(page, zoned + "return H.secretOwners(st, { id: 4, x: 7, y: 9, r: 0 });")
+    assert owners == [H, N, Z1]
+    for region in (H, N, Z1):
+        found = zoned + f"H.revealRegion(st, {region}); H.searchRegion(st, {region}, 'sd');"
+        assert piece_visibility(page, [tile], found) == [True]
+    assert piece_visibility(page, [tile], zoned + "H.revealRegion(st, 26);") == [False]
+
+
+def test_a_secret_door_in_a_zone_far_from_any_room_belongs_to_the_zone_only(page):
+    owners = run(page, "st.zones[0] = 1; return H.secretOwners(st, { id: 4, x: 0, y: 0, r: 0 });")
+    assert owners == [Z1]
+
+
+def test_the_secret_doors_a_search_finds_are_counted_over_the_whole_group(page):
+    body = (
+        "st.items = [{ id: 4, x: 2, y: 2, r: 0 }, { id: 4, x: 7, y: 9, r: 0 },"
+        " { id: 2, x: 7, y: 8, r: 2 }, { id: 4, x: 20, y: 0, r: 0 }];"
+        " st.rooms[0] = { start: false, group: 1, texts: ['', '', '', ''] };"
+        " st.rooms[7] = { start: false, group: 1, texts: ['', '', '', ''] };"
+        " st.rooms[10] = { start: false, group: 0, texts: ['', '', '', ''] };"
+        " return [0, 7, 10, 13].map((r) => H.secretDoorsFound(st, r));"
+    )
+    # group {A, H}: A's tile, the corridor tile and H's hidden door; K owns none; N owns the corridor tile
+    assert run(page, body) == [3, 3, 0, 1]
 
 
 def test_a_hidden_door_on_a_wall_belongs_to_the_regions_on_both_sides(page):

@@ -210,19 +210,23 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 199 | There's a bug... Non zoned halls are shown in hero view in plain sight… | 06:25:22 | 37s | 6h 7m ⏳ | 22 | 12,167 | 11,449 | 6,825,090 |
 | 200 | Is zargon's info the same? | 12:33:21 | 15s | 29m 52s ⏳ | 14 | 2,545 | 2,394,617 | 1,037,153 |
 | 201 | ok here's the correct updated link:  https://vibecoder-1z3r0.github.io… | 13:03:28 | 1m 46s | 1m 24s | 16 | 28,292 | 24,725 | 6,895,779 |
-| 202 | there is a bug when clicking a corridor zone, it shows the zone highli… | 13:06:38 | 10m 58s | — | 90 | 58,881 | 150,708 | 29,131,358 |
+| 202 | there is a bug when clicking a corridor zone, it shows the zone highli… | 13:06:38 | 11m 8s | 2h 49m ⏳ | 94 | 59,590 | 151,845 | 29,334,736 |
+| 203 | PR? | 16:06:54 | 7s | 20s | 6 | 544 | 43,899 | 162,887 |
+| 204 | LGTM ship it! | 16:07:22 | 54s | 9s | 30 | 1,667 | 9,785 | 1,268,515 |
+| 205 | I did and deleted the branch | 16:08:24 | 6s | 16m 30s ⏳ | 4 | 255 | 709 | 221,464 |
+| 206 | Hero view:  When room S was revealed and I searched for secret doors n… | 16:25:00 | 3m 21s | — | 84 | 19,058 | 37,893 | 4,989,180 |
 
-**Total turns:** 202  
-**Total agent time spent (excl. flagged):** 3h 29m  
+**Total turns:** 206  
+**Total agent time spent (excl. flagged):** 3h 33m  
 **Total human think time (excl. outliers):** 4h 13m  
-**Average human think time (excl. outliers):** 1m 27s  
-**Think-time outliers (> 15 min):** 26  
-**Total input tokens:** 4,687  
-**Total output tokens:** 2,423,401  
-**Total cache-write tokens:** 21,942,262  
-**Total cache-read tokens:** 892,984,923  
+**Average human think time (excl. outliers):** 1m 26s  
+**Think-time outliers (> 15 min):** 28  
+**Total input tokens:** 4,815  
+**Total output tokens:** 2,445,634  
+**Total cache-write tokens:** 22,035,685  
+**Total cache-read tokens:** 899,830,347  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200 had a 'human think time' over 15 min (total 170h 35m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205 had a 'human think time' over 15 min (total 173h 41m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
