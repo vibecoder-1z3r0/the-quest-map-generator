@@ -132,6 +132,10 @@ one at the bottom touches room S.
 
 ## Notes since it was built
 
+- A hallway (zone) has no "Search for treasure" button, because treasure is never searched for in a
+  hallway. Its traps and secret-door searches stay. The treasure text field is still in the authoring
+  card for a zone (it is simply never shown to the heroes there).
+
 - A blank treasure text says "Shuffle the treasure deck and draw the top card.", since the real game
   decides the treasure. A blank traps text still says "You find nothing."
 

@@ -234,6 +234,25 @@ def test_a_hallway_is_called_hallway_and_its_zone_name_never_appears(page, site)
     assert "SECRET ZONE NAME" not in page.inner_text("body")
 
 
+def test_a_revealed_hallway_has_no_treasure_search_but_keeps_the_others(page, site):
+    open_hero(page, site)
+    tap(page, 3, 0)  # a zone square
+    page.click("#hero-reveal")
+    confirm(page)
+    assert page.locator("#hero-search-t").count() == 0
+    assert page.locator("#hero-search-tr").is_visible()
+    assert page.locator("#hero-search-sd").is_visible()
+    assert "Search for treasure" not in panel(page)
+
+
+def test_a_revealed_room_still_has_the_treasure_search(page, site):
+    open_hero(page, site)
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    confirm(page)
+    assert page.locator("#hero-search-t").is_visible()
+
+
 def test_hide_again_and_reset_game_each_ask_first(page, site):
     open_hero(page, site)
     tap(page, 2, 2)
