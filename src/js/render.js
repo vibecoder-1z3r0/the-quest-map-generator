@@ -1,7 +1,7 @@
 // SVG rendering of the map: board, highlights, pieces, coordinate labels and overlays.
 import { roomSquares } from "./board.js";
 import { BY_ID, footprint } from "./catalog.js";
-import { CELL, COLS, HIGHLIGHTS, ROWS } from "./constants.js";
+import { CELL, COLS, HIGHLIGHTS, ROWS, ZONES } from "./constants.js";
 import { itemVisibility, squareVisible, stoneVisible } from "./hero.js";
 
 export const MARGIN = 22;
@@ -32,6 +32,7 @@ export function boardSkeleton() {
     <use href="#board-art" x="0" y="0" width="${BOARD_W}" height="${BOARD_H}"/>
     <g id="layer-rooms" class="room-labels">${roomLabels.join("")}</g>
     <g id="layer-tiles"></g>
+    <g id="layer-zones"></g>
     <g id="layer-hl"></g>
     <g id="layer-items"></g>
     <g id="layer-fog"></g>
@@ -41,6 +42,19 @@ export function boardSkeleton() {
 
 export function boardViewBox() {
   return `${-MARGIN} ${-MARGIN} ${BOARD_W + MARGIN * 2} ${BOARD_H + MARGIN * 2}`;
+}
+
+// The zone layer: a translucent tint in the zone's color under the highlights.
+export function zonesMarkup(zones) {
+  const out = [];
+  for (let i = 0; i < zones.length; i++) {
+    const zone = ZONES[zones[i] - 1];
+    if (!zone) continue;
+    const x = (i % COLS) * CELL;
+    const y = Math.floor(i / COLS) * CELL;
+    out.push(`<rect x="${x + 1}" y="${y + 1}" width="${CELL - 2}" height="${CELL - 2}" rx="4" fill="${zone.color}" fill-opacity="0.5"/>`);
+  }
+  return out.join("");
 }
 
 export function highlightMarkup(hl) {

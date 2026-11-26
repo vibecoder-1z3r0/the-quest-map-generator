@@ -27,7 +27,9 @@ def hero_state(**changes) -> dict:
     st["wm_id"] = GOBLIN
     st["legend"] = {6: "SECRET ZONE NAME"}
     for x in (3, 4):
-        st["hl"][x] = 6  # zone 1 on (3, 0) and (4, 0)
+        st["zones"][x] = 1  # zone 1 on (3, 0) and (4, 0)
+    st["hl"][5] = 1  # (5, 0) is solid stone in a zone-less corridor ...
+    st["zones"][5] = 1  # ... but it belongs to zone 1, so it stays hidden with the zone
     st["rooms"] = {
         A: {
             "start": False,
@@ -285,3 +287,12 @@ def test_the_hero_panel_sits_right_after_the_map_in_the_single_column_layout(pag
     hero_panel = page.locator("#hero-panel").bounding_box()
     assert hero_panel["y"] >= board["y"] + board["height"] - 2
     assert hero_panel["y"] < board["y"] + board["height"] + 120
+
+
+def test_stone_in_a_zone_is_hidden_until_the_zone_is_revealed(page, site):
+    open_hero(page, site)
+    assert page.locator("#layer-hl rect").count() == 0  # the stone at (5, 0) is not drawn yet
+    tap(page, 3, 0)
+    page.click("#hero-reveal")
+    confirm(page)
+    assert page.locator("#layer-hl rect").count() == 1  # now it shows as stone

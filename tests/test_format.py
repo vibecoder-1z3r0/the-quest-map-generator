@@ -23,7 +23,7 @@ async (payload) => {
     tiles: state.tiles.map((t) => [t.id, t.x, t.y, t.w, t.h]),
     legend: state.legend, num: state.num, title: state.title, intro: state.intro, notes: state.notes,
     wm_id: state.wmId, wm_text: state.wmText, series: state.series, warnings,
-    hero: state.hero,
+    hero: state.hero, zones: Array.from(state.zones),
     rooms: Object.fromEntries(Object.entries(state.rooms).map(([r, v]) => [r, { start: v.start, group: v.group, texts: v.texts }])),
     play: state.play && Object.fromEntries(Object.entries(state.play).map(([k, v]) => [k, [...v].sort((a, b) => a - b)])),
   };
@@ -47,6 +47,7 @@ def normalized(st: dict) -> dict:
     st["tiles"] = [tuple(t) for t in st["tiles"]]
     st.setdefault("series", "")  # links made before the series field existed have none
     st.setdefault("hero", False)  # ... and before hero view existed
+    st.setdefault("zones", [0] * ref.SQUARES)
     st.setdefault("rooms", {})
     st.setdefault("play", None)
     st["rooms"] = {int(k): v for k, v in st["rooms"].items()}
@@ -305,6 +306,9 @@ def hero_state() -> dict:
     return st
 
 
+ZONE_LAYER = bytes((ref.SQUARES + 1) // 2)  # an empty zone layer, which starts the hero section
+
+
 def body_of(payload: str) -> bytes:
     data = base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))
     return zlib.decompress(data[1:], -15)
@@ -358,21 +362,17 @@ def test_a_truncated_play_state_is_refused(page):
 
 def test_too_many_room_records_are_refused(page):
     st = ref.blank()
-    body = ref.encode_body(st) + ref.varint(37)
+    body = ref.encode_body(st) + ZONE_LAYER + ref.varint(37)
     with pytest.raises(Exception, match="corrupt"):
         page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(body))
 
 
 def test_room_records_for_unknown_regions_are_skipped_with_a_warning(page):
-    st = ref.blank()
-    st["rooms"] = {5: {"start": True, "group": 0, "texts": ["ok", "", "", ""]}}
-    body = bytearray(ref.encode_body(st))
-    # add a second record for region 40 (there are only 36 regions): bump the count, append a record
-    body[len(ref.encode_body(ref.blank())) :] = ref.varint(2) + bytes(
-        body[len(ref.encode_body(ref.blank())) + 1 :]
-    )
-    body += bytes([40, 1, 0]) + b"".join(ref.string("") for _ in range(4))
-    js = page.evaluate(DECODE_JS, ref.raw_payload(bytes(body)))
+    empty = b"".join(ref.string("") for _ in range(4))
+    good = bytes([5, 1, 0]) + ref.string("ok") + b"".join(ref.string("") for _ in range(3))
+    bad = bytes([40, 1, 0]) + empty  # there are only 36 regions
+    body = ref.encode_body(ref.blank()) + ZONE_LAYER + ref.varint(2) + good + bad
+    js = page.evaluate(DECODE_JS, ref.raw_payload(body))
     assert list(js["rooms"]) == ["5"]
     assert any("room" in w and "skipped" in w for w in js["warnings"])
 
@@ -394,7 +394,7 @@ def test_a_duplicate_room_record_keeps_the_last_one(page):
     st = ref.blank()
     one = bytes([4, 0, 0]) + ref.string("first") + b"".join(ref.string("") for _ in range(3))
     two = bytes([4, 1, 0]) + ref.string("second") + b"".join(ref.string("") for _ in range(3))
-    body = ref.encode_body(st) + ref.varint(2) + one + two
+    body = ref.encode_body(st) + ZONE_LAYER + ref.varint(2) + one + two
     js = page.evaluate(DECODE_JS, ref.raw_payload(body))
     assert js["rooms"]["4"]["texts"][0] == "second" and js["rooms"]["4"]["start"] is True
 
@@ -423,3 +423,33 @@ def test_a_full_set_of_room_texts_fits_in_a_link(page):
         payload,
     )
     assert ref.decode(again)["rooms"] == st["rooms"]
+
+
+def test_a_zone_layer_alone_is_enough_to_write_the_hero_section_and_roundtrips(page):
+    st = ref.blank()
+    st["zones"][100] = 4
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert body_of(payload) == ref.encode_body(st)
+    assert ref.decode(payload)["zones"][100] == 4
+
+
+def test_zones_can_share_a_square_with_stone_and_other_highlights(page):
+    st = ref.blank()
+    st["hl"][7] = 1  # solid stone
+    st["hl"][8] = 2  # a trap highlight
+    st["zones"][7] = 2
+    st["zones"][8] = 3
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert js["hl"][7] == 1 and js["hl"][8] == 2
+    assert js["zones"][7] == 2 and js["zones"][8] == 3
+
+
+def test_a_truncated_zone_layer_is_refused(page):
+    st = ref.blank()
+    st["zones"][5] = 1
+    body = ref.encode_body(st)
+    with pytest.raises(Exception, match="truncated"):
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(body[:-100]))

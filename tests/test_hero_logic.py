@@ -12,7 +12,7 @@ def run(page, body, arg=None):
     """Runs JS with `st` (the app state, reset to a blank quest first) and `H` (QMG.hero) in scope."""
     return page.evaluate(
         "([body, arg]) => { const H = QMG.hero; const st = QMG.app.state;"
-        " st.rooms = {}; st.play = null; st.items = []; st.hl.fill(0);"
+        " st.rooms = {}; st.play = null; st.items = []; st.hl.fill(0); st.zones.fill(0);"
         " return (new Function('H', 'st', 'arg', body))(H, st, arg); }",
         [body, arg],
     )
@@ -127,7 +127,7 @@ def test_squares_are_visible_when_unzoned_corridor_or_in_a_revealed_region(page)
     r = run(
         page,
         """
-        st.hl[0 * 26 + 5] = 6; // zone 1 on a corridor square in row 0
+        st.zones[0 * 26 + 5] = 1; // zone 1 on a corridor square in row 0
         const out = [H.squareVisible(st, 3, 0), H.squareVisible(st, 5, 0), H.squareVisible(st, 2, 2)];
         H.revealRegion(st, 26); H.revealRegion(st, 0);
         return out.concat([H.squareVisible(st, 5, 0), H.squareVisible(st, 2, 2)]);
@@ -158,7 +158,7 @@ def test_ordinary_pieces_follow_their_room_but_markers_and_traps_are_never_shown
 def test_pieces_in_unzoned_corridor_are_always_shown_and_zoned_ones_follow_the_zone(page):
     items = [[GOBLIN, 3, 0, 0]]
     assert piece_visibility(page, items) == [True]
-    zoned = "st.hl[3] = 6;"  # zone 1 on (3, 0)
+    zoned = "st.zones[3] = 1;"  # zone 1 on (3, 0)
     assert piece_visibility(page, items, zoned) == [False]
     assert piece_visibility(page, items, zoned + "H.revealRegion(st, 26);") == [True]
 
@@ -166,7 +166,7 @@ def test_pieces_in_unzoned_corridor_are_always_shown_and_zoned_ones_follow_the_z
 def test_a_door_shows_when_either_side_is_visible(page):
     west_door = [DOOR, 1, 2, 3]  # west edge of room A: between corridor (0, 2) and room A (1, 2)
     assert piece_visibility(page, [west_door]) == [True]  # unzoned corridor side is visible
-    hidden_both = "st.hl[2 * 26 + 0] = 6;"  # make the corridor square a hidden zone
+    hidden_both = "st.zones[2 * 26 + 0] = 1;"  # make the corridor square a hidden zone
     assert piece_visibility(page, [west_door], hidden_both) == [False]
     assert piece_visibility(page, [west_door], hidden_both + "H.revealRegion(st, 0);") == [True]
     assert piece_visibility(page, [west_door], hidden_both + "H.revealRegion(st, 26);") == [True]
@@ -195,7 +195,7 @@ def test_a_secret_door_in_an_unzoned_corridor_belongs_to_each_room_it_touches(pa
 
 def test_a_secret_door_on_a_zone_square_belongs_only_to_the_zone(page):
     tile = [SECRET_DOOR, 7, 9, 0]
-    zoned = "st.hl[9 * 26 + 7] = 6;"
+    zoned = "st.zones[9 * 26 + 7] = 1;"
     assert run(page, zoned + "return H.secretOwners(st, { id: 4, x: 7, y: 9, r: 0 });") == [Z1]
     room_search = zoned + f"H.revealRegion(st, {H}); H.searchRegion(st, {H}, 'sd');"
     assert piece_visibility(page, [tile], room_search) == [False]
@@ -208,7 +208,7 @@ def test_a_hidden_door_on_a_wall_belongs_to_the_regions_on_both_sides(page):
     owners = run(page, "return H.secretOwners(st, { id: 2, x: 7, y: 8, r: 2 });")
     assert owners == [H]  # the corridor side is unzoned, so only the room owns it
     both = run(
-        page, "st.hl[9 * 26 + 7] = 6; return H.secretOwners(st, { id: 2, x: 7, y: 8, r: 2 });"
+        page, "st.zones[9 * 26 + 7] = 1; return H.secretOwners(st, { id: 2, x: 7, y: 8, r: 2 });"
     )
     assert both == [H, Z1]
 
@@ -229,3 +229,19 @@ def test_stone_shows_only_where_its_square_is_visible(page):
         False,
         True,
     ]  # room stone hidden until revealed; unzoned corridor stone shows
+
+
+def test_stone_and_a_trap_highlight_can_sit_in_a_zone_and_stay_hidden_with_it(page):
+    r = run(
+        page,
+        """
+        st.hl[0 * 26 + 5] = 1;      // corridor stone ...
+        st.zones[0 * 26 + 5] = 1;   // ... that belongs to zone 1
+        st.hl[0 * 26 + 6] = 2;      // a trap highlight on a zoned corridor square
+        st.zones[0 * 26 + 6] = 1;
+        const before = [H.stoneVisible(st, 5, 0), H.squareVisible(st, 6, 0)];
+        H.revealRegion(st, 26);
+        return before.concat([H.stoneVisible(st, 5, 0), H.squareVisible(st, 6, 0)]);
+        """,
+    )
+    assert r == [False, False, True, True]

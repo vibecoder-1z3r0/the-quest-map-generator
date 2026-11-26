@@ -91,7 +91,8 @@ CASES = [
     case("hero-view-flag", hero=True, title="Opens in hero view"),
     case(
         "hero-rooms-groups-and-zones",
-        hl=hl_cells({26 * 3 + 0: 6, 26 * 3 + 1: 6, 26 * 4 + 0: 15, 26 * 5 + 5: 1}),
+        hl=hl_cells({26 * 3 + 0: 1, 26 * 5 + 5: 2}),  # stone and a trap highlight can be zoned too
+        zones=hl_cells({26 * 3 + 0: 1, 26 * 3 + 1: 1, 26 * 4 + 0: 10, 26 * 5 + 5: 3}),
         legend={6: "North hallway", 15: "Last zone"},
         rooms={
             0: {
