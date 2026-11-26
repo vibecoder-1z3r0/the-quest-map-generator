@@ -125,6 +125,7 @@ opens in hero view.
   Any square, even solid stone or a trap highlight, can be in a zone.
 - **Rules.** Doors are shown when either side is visible; markers and Zargon's highlight colors are never
   shown; hidden stone looks like any hidden area and shows once its room or zone is revealed.
+- **No printing.** Hero view is for a device, so it does not print (print from Zargon's view instead).
 - **Honor system.** Anyone with a hero link can read everything in it, including the hidden texts, by
   decoding it. Hero view hides things on screen; it does not protect them.
 

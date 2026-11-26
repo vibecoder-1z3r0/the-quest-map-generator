@@ -201,19 +201,21 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 190 | I don't think we label the hallways.  That gives too much info away. | 04:49:27 | 36s | 16s | 20 | 8,531 | 4,315 | 3,955,596 |
 | 191 | Why does the fog of war zoning look like it's different shades? | 04:50:19 | 39s | 8s | 23 | 10,413 | 14,982 | 5,704,727 |
 | 192 | That also gives too much away.... fog of war should be the same color … | 04:51:06 | 48s | 23s | 29 | 12,902 | 15,289 | 5,207,180 |
-| 193 | Let's implement this full feature | 04:52:17 | 36m 54s ⚠ | — | 522 | 416,735 | 587,826 | 164,502,575 |
+| 193 | Let's implement this full feature | 04:52:17 | 37m 5s ⚠ | 39m 50s ⏳ | 524 | 417,557 | 589,568 | 165,307,334 |
+| 194 | Make the PR | 06:09:13 | 32s | 27s | 18 | 3,926 | 25,207 | 6,521,430 |
+| 195 | Hero view shouldn't have a print.  The desire is to have that on a dev… | 06:10:11 | 1m 34s | — | 30 | 10,328 | 8,819 | 9,865,778 |
 
-**Total turns:** 193  
-**Total agent time spent (excl. flagged):** 3h 10m  
-**Total human think time (excl. outliers):** 4h 0m  
+**Total turns:** 195  
+**Total agent time spent (excl. flagged):** 3h 12m  
+**Total human think time (excl. outliers):** 4h 1m  
 **Average human think time (excl. outliers):** 1m 25s  
-**Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 4,427  
-**Total output tokens:** 2,279,789  
-**Total cache-write tokens:** 19,256,378  
-**Total cache-read tokens:** 812,604,152  
+**Think-time outliers (> 15 min):** 24  
+**Total input tokens:** 4,477  
+**Total output tokens:** 2,294,865  
+**Total cache-write tokens:** 19,292,146  
+**Total cache-read tokens:** 829,796,119  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182 had a 'human think time' over 15 min (total 163h 18m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193 had a 'human think time' over 15 min (total 163h 58m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
