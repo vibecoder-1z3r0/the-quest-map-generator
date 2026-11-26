@@ -1,5 +1,5 @@
 // Hero view: regions, groups, visibility and the play actions. See docs/HERO_VIEW.md.
-import { roomAt, isRoom } from "./board.js";
+import { roomAt, isRoom, roomSquares } from "./board.js";
 import { BY_ID } from "./catalog.js";
 import { COLS, ROOM_REGIONS, ROWS, ZONES } from "./constants.js";
 
@@ -151,4 +151,80 @@ export function itemVisibility(st) {
     if (piece.edge) return edgeSides(item).some(([x, y]) => squareVisible(st, x, y));
     return squareVisible(st, item.x, item.y);
   });
+}
+
+// ---------------------------------------------------------------- authoring
+const blankRoom = () => ({ start: false, group: 0, texts: ["", "", "", ""] });
+
+// Changes a region's record and drops it again when nothing is left to say (so the link stays short).
+export function editRoom(st, region, change) {
+  const rec = st.rooms[region] ?? blankRoom();
+  change(rec);
+  if (!rec.start && !rec.group && rec.texts.every((t) => !t)) delete st.rooms[region];
+  else st.rooms[region] = rec;
+}
+
+// A group of one is no group.
+function tidyGroups(st) {
+  const members = new Map();
+  for (const [region, rec] of Object.entries(st.rooms)) {
+    if (rec.group) members.set(rec.group, [...(members.get(rec.group) ?? []), Number(region)]);
+  }
+  for (const regions of members.values()) {
+    if (regions.length === 1) editRoom(st, regions[0], (rec) => (rec.group = 0));
+  }
+}
+
+// Puts `other` into (on) or takes it out of (off) the group of `region`, starting a group if needed.
+export function setGroupMember(st, region, other, on) {
+  if (region === other) return;
+  if (on) {
+    let group = st.rooms[region]?.group ?? 0;
+    if (!group) {
+      const used = new Set(Object.values(st.rooms).map((rec) => rec.group));
+      group = 1;
+      while (used.has(group)) group += 1;
+      editRoom(st, region, (rec) => (rec.group = group));
+    }
+    editRoom(st, other, (rec) => (rec.group = group));
+  } else {
+    editRoom(st, other, (rec) => (rec.group = 0));
+  }
+  tidyGroups(st);
+}
+
+// How many characters of room text the quest holds, and in how many regions.
+export function totalRoomText(st) {
+  let chars = 0;
+  let regions = 0;
+  for (const rec of Object.values(st.rooms)) {
+    const n = rec.texts.reduce((sum, t) => sum + Array.from(t).length, 0);
+    chars += n;
+    if (n) regions += 1;
+  }
+  return { chars, regions };
+}
+
+// The regions an author can pick: every room of the board, then the zones that are painted or have data.
+export function chooserRegions(st) {
+  const regions = [...roomSquares().keys()].map((letter) => letter.charCodeAt(0) - 65);
+  for (const zone of ZONES) {
+    const region = ROOM_REGIONS + zone.n - 1;
+    if (st.zones.includes(zone.n) || st.rooms[region]) regions.push(region);
+  }
+  return regions;
+}
+
+// A region's first square, where the editor puts its badges.
+export function regionAnchor(st, region) {
+  if (region < ROOM_REGIONS) return roomSquares().get(String.fromCharCode(65 + region))?.[0] ?? null;
+  const i = st.zones.indexOf(region - ROOM_REGIONS + 1);
+  return i < 0 ? null : { x: i % COLS, y: Math.floor(i / COLS) };
+}
+
+// The squares of a region.
+export function regionSquares(st, region) {
+  const out = [];
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (regionAt(st, x, y) === region) out.push({ x, y });
+  return out;
 }

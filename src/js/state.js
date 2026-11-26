@@ -18,6 +18,7 @@ export function snapshot(st) {
   return {
     hl: Uint8Array.from(st.hl),
     zones: Uint8Array.from(st.zones),
+    rooms: JSON.parse(JSON.stringify(st.rooms)),
     items: cloneItems(st.items),
     tiles: cloneItems(st.tiles),
     legend: { ...st.legend },
@@ -34,6 +35,7 @@ export function snapshot(st) {
 export function restore(st, snap) {
   st.hl = Uint8Array.from(snap.hl);
   st.zones = Uint8Array.from(snap.zones);
+  st.rooms = JSON.parse(JSON.stringify(snap.rooms));
   st.items = cloneItems(snap.items);
   st.tiles = cloneItems(snap.tiles);
   st.legend = { ...snap.legend };
@@ -47,7 +49,7 @@ export function restore(st, snap) {
 }
 
 const snapshotKey = (a) =>
-  JSON.stringify([Array.from(a.hl), Array.from(a.zones), a.items, a.tiles, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText, a.series]);
+  JSON.stringify([Array.from(a.hl), Array.from(a.zones), a.rooms, a.items, a.tiles, a.legend, a.num, a.title, a.intro, a.notes, a.wmId, a.wmText, a.series]);
 
 export function sameSnapshot(a, b) {
   return snapshotKey(a) === snapshotKey(b);
