@@ -336,19 +336,19 @@ def test_the_zargon_view_can_switch_to_hero_view_keeping_the_play_state(page, si
     assert not page.locator("#tools").is_visible()
 
 
-def test_in_the_single_column_layout_the_quest_info_is_above_the_map_and_reveal_below_it(
+def test_in_the_single_column_layout_reveal_is_above_the_map_and_the_quest_info_below_it(
     page, site
 ):
     page.set_viewport_size({"width": 390, "height": 844})
     open_hero(page, site)
     tap(page, 2, 2)  # a hidden room, so the card with the Reveal button shows
     board = page.locator("#board").bounding_box()
-    quest = page.locator("#hero-quest").bounding_box()
     region = page.locator("#hero-region").bounding_box()
-    assert quest["y"] + quest["height"] <= board["y"] + 2
-    assert region["y"] >= board["y"] + board["height"] - 2
-    assert region["y"] < board["y"] + board["height"] + 120
-    assert page.locator("#hero-reveal").bounding_box()["y"] >= board["y"] + board["height"]
+    quest = page.locator("#hero-quest").bounding_box()
+    assert region["y"] + region["height"] <= board["y"] + 2
+    assert board["y"] - (region["y"] + region["height"]) < 120
+    assert quest["y"] >= board["y"] + board["height"] - 2
+    assert page.locator("#hero-reveal").bounding_box()["y"] < board["y"]
 
 
 def test_on_a_wide_screen_both_hero_cards_stay_in_the_side_column(page, site):
