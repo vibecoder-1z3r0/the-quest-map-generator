@@ -61,8 +61,8 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     link.
     - **Visibility follows zones and rooms.** A piece is shown when the zone or room its square is in is
       revealed. A **door is shown when a room or zone on either side of it is revealed.** Secret and
-      hidden doors are the exception: only the secret-door search shows them, and a secret door in a
-      zone belongs to that zone. Traps and markers are never shown.
+      hidden doors are the exception: only the secret-door search shows them, and a secret door tile on a
+      zone square belongs to that zone and to every room that shares a wall with the square. Traps and markers are never shown.
     - **A square in no room and no zone is solid stone to the heroes.** It is fogged like everything
       hidden, for good, and so is anything standing on it, because nothing can reveal it. Tapping one
       looks like tapping any hidden hallway: the panel says "Hallway" and offers **Reveal**, and pressing
@@ -113,7 +113,8 @@ quest-level notes become unwieldy.
 
 A secret door or hidden door is revealed by the secret-door search of **every room it touches**:
 - a piece on a room square belongs to that room;
-- a piece on a corridor square belongs to each room that shares a wall with that square;
+- a piece on a corridor square belongs to each room that shares a wall with that square, and also to
+  the zone the square is painted with, if any;
 - a hidden door (an edge piece) belongs to the rooms on both sides of its edge.
 
 What authors need to know, and what the help text and README should say:
@@ -130,6 +131,13 @@ either room's search; the one at the left edge touches room L; the one inside ro
 one at the bottom touches room S.
 
 ## Notes since it was built
+
+- A secret door on a zoned corridor square first belonged to the zone only, so the search of the room
+  next to it found nothing (seen on quest 1, bottom corridor beside room S). It now belongs to the zone
+  and to each touching room.
+- The secret-door search never leaves a blank result: with no text written it says "You find a secret
+  door." (or "You find N secret doors.") when doors were found, and "You find nothing." otherwise. The
+  count covers the whole group. Treasure and trap searches still say "You find nothing." when blank.
 
 - Zones started out as highlight values 6 to 15. Trying it on the owner's quest showed that stone and
   trap-highlighted corridor squares then could not be in a zone and gave the map away, so zones became

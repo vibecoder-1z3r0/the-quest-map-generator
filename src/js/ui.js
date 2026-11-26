@@ -22,6 +22,7 @@ import {
   regionAt,
   regionName,
   regionTexts,
+  secretDoorsFound,
   resetGame,
   revealRegion,
   searchRegion,
@@ -871,7 +872,9 @@ function heroRegionCard() {
   for (const { kind, label, key } of HERO_SEARCHES) {
     if (isSearched(st, region, kind)) {
       const result = el("div", { class: "hero-result" }, el("b", { text: label }));
-      result.append(texts[key] ? heroText("", texts[key]) : el("div", { class: "muted", text: "You find nothing." }));
+      const found = kind === "sd" ? secretDoorsFound(st, region) : 0;
+      const none = found === 0 ? "You find nothing." : found === 1 ? "You find a secret door." : `You find ${found} secret doors.`;
+      result.append(texts[key] ? heroText("", texts[key]) : el("div", { class: "muted", text: none }));
       actions.append(result);
     } else {
       const button = el("button", { id: `hero-search-${kind}`, type: "button", text: label });
