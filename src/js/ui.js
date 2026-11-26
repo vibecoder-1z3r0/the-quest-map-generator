@@ -6,17 +6,33 @@ import {
   HIGHLIGHTS,
   LIMITS,
   MIN_BROWSERS,
+  ROOM_REGIONS,
   ROWS,
   SOFT_LINK_LIMIT,
   THEMES,
 } from "./constants.js";
 import { blankState, decodeHash, encodeState } from "./format.js";
+import {
+  hideRegion,
+  isRevealed,
+  isSearched,
+  regionAt,
+  regionName,
+  regionTexts,
+  resetGame,
+  revealRegion,
+  searchRegion,
+} from "./hero.js";
 import { renderIntro, renderNotes } from "./markdown.js";
 import { computeStats } from "./stats.js";
 import {
   boardSkeleton,
   boardViewBox,
   cellMarkup,
+  fogMarkup,
+  heroHighlightMarkup,
+  heroItemsMarkup,
+  heroTilesMarkup,
   highlightMarkup,
   itemMarkup,
   itemsMarkup,
@@ -78,6 +94,7 @@ export const app = {
   past: [],
   future: [],
   editable: true,
+  heroRegion: null, // the region whose panel hero view shows
 };
 
 // ---------------------------------------------------------------- theme
@@ -168,6 +185,7 @@ export async function loadFromHash() {
   app.selected = -1;
   app.selectedTile = -1;
   app.pinned = null;
+  app.heroRegion = null;
   app.past = [];
   app.future = [];
   app.baseline = snapshot(app.state);
@@ -259,12 +277,24 @@ function ghostItem() {
 
 // ---------------------------------------------------------------- rendering
 function renderMap() {
-  $("#layer-tiles").innerHTML = tilesMarkup(app.state.tiles);
-  $("#layer-hl").innerHTML = highlightMarkup(app.state.hl);
-  $("#layer-items").innerHTML = itemsMarkup(app.state.items);
+  const hero = app.state.hero;
+  $("#layer-tiles").innerHTML = hero ? heroTilesMarkup(app.state) : tilesMarkup(app.state.tiles);
+  $("#layer-hl").innerHTML = hero ? heroHighlightMarkup(app.state) : highlightMarkup(app.state.hl);
+  $("#layer-items").innerHTML = hero ? heroItemsMarkup(app.state) : itemsMarkup(app.state.items);
+  $("#layer-fog").innerHTML = hero ? fogMarkup(app.state) : "";
 }
 
 function renderOverlay() {
+  if (app.state.hero) {
+    let marks = "";
+    if (app.heroRegion !== null) {
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) if (regionAt(app.state, x, y) === app.heroRegion) marks += cellMarkup(x, y, "hero-sel");
+      }
+    }
+    $("#layer-overlay").innerHTML = marks;
+    return;
+  }
   let out = "";
   const view = app.pinned || app.hover;
   if (app.pinned) out += cellMarkup(app.pinned.x, app.pinned.y, "pinned");
@@ -566,6 +596,7 @@ function renderPreviews() {
 }
 
 function renderAll() {
+  applyMode();
   renderMap();
   renderOverlay();
   renderInspector();
@@ -575,6 +606,169 @@ function renderAll() {
   renderUndoRedo();
   renderPreviews();
   markTools();
+  renderHero();
+}
+
+// ---------------------------------------------------------------- hero view
+function applyMode() {
+  const hero = app.state.hero;
+  document.body.classList.toggle("hero", hero);
+  for (const id of ["#hero-badge", "#to-zargon", "#reset-game", "#hero-hint", "#hero-panel"]) $(id).hidden = !hero;
+}
+
+// A yes/no question in a dialog; resolves true only when the person confirms. The answer is taken
+// from the button click itself, so whatever follows runs before the dialog is gone.
+function askConfirm(message, okLabel) {
+  const dialog = $("#confirm-dialog");
+  const ok = $("#confirm-ok");
+  const cancel = $("#confirm-cancel");
+  $("#confirm-message").textContent = message;
+  ok.textContent = okLabel;
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (answer) => {
+      if (settled) return;
+      settled = true;
+      ok.removeEventListener("click", onOk);
+      cancel.removeEventListener("click", onCancel);
+      dialog.removeEventListener("close", onClose);
+      if (dialog.open) dialog.close();
+      resolve(answer);
+    };
+    const onOk = (event) => {
+      event.preventDefault();
+      finish(true);
+    };
+    const onCancel = (event) => {
+      event.preventDefault();
+      finish(false);
+    };
+    const onClose = () => finish(false); // Esc
+    ok.addEventListener("click", onOk);
+    cancel.addEventListener("click", onCancel);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+  });
+}
+
+// Play changes the link in place: no history entries and no undo (docs/HERO_VIEW.md).
+function heroChanged() {
+  renderAll();
+  scheduleUrl(false);
+}
+
+function heroTap(event) {
+  const cell = cellAt(event);
+  if (!cell) return;
+  app.heroRegion = regionAt(app.state, cell.x, cell.y);
+  renderOverlay();
+  renderHero();
+}
+
+function heroRegionTitle(region) {
+  return region >= ROOM_REGIONS ? "Hallway" : regionName(app.state, region);
+}
+
+function heroText(className, text) {
+  const box = el("div", { class: className });
+  renderIntro(box, text);
+  return box;
+}
+
+const HERO_SEARCHES = [
+  { kind: "t", label: "Search for treasure", key: "treasure" },
+  { kind: "tr", label: "Search for traps", key: "traps" },
+  { kind: "sd", label: "Search for secret doors", key: "secretDoors" },
+];
+
+function heroQuestCard() {
+  const st = app.state;
+  const card = el("section", { class: "card" });
+  if (st.series) card.append(el("div", { class: "muted", text: st.series }));
+  const title = [st.num ? `Quest ${st.num}` : "", st.title].filter(Boolean).join(": ");
+  if (title) card.append(el("h2", { text: title }));
+  if (st.intro.trim()) card.append(heroText("hero-quote", st.intro));
+  const monster = BY_ID.get(st.wmId);
+  const wm = [monster?.name, st.wmText].filter(Boolean).join(" \u2013 ");
+  if (wm) card.append(el("p", { class: "muted", text: `Wandering monster: ${wm}` }));
+  return card;
+}
+
+function heroRegionCard() {
+  const st = app.state;
+  const region = app.heroRegion;
+  const card = el("section", { class: "card" });
+  if (region === null) {
+    card.append(el("p", { class: "muted", text: "Tap a room or a hallway on the map." }));
+    return card;
+  }
+  const noun = region >= ROOM_REGIONS ? "hallway" : "room";
+  if (!isRevealed(st, region)) {
+    card.append(el("h2", { class: "hero-title", text: heroRegionTitle(region) }));
+    const reveal = el("button", { id: "hero-reveal", type: "button", class: "primary", text: `Reveal this ${noun}` });
+    reveal.addEventListener("click", async () => {
+      const ok = await askConfirm(`Reveal this ${noun}? Everything in it will show for everyone looking at the screen.`, "Reveal");
+      if (ok && revealRegion(st, region)) heroChanged();
+    });
+    card.append(reveal);
+    return card;
+  }
+  card.append(el("h2", { class: "hero-title" }, heroRegionTitle(region), el("small", { text: " \u00B7 revealed" })));
+  const texts = regionTexts(st, region);
+  if (texts.readAloud) card.append(heroText("hero-quote", texts.readAloud));
+  const actions = el("div", { class: "hero-actions" });
+  for (const { kind, label, key } of HERO_SEARCHES) {
+    if (isSearched(st, region, kind)) {
+      const result = el("div", { class: "hero-result" }, el("b", { text: label }));
+      result.append(texts[key] ? heroText("", texts[key]) : el("div", { class: "muted", text: "You find nothing." }));
+      actions.append(result);
+    } else {
+      const button = el("button", { id: `hero-search-${kind}`, type: "button", text: label });
+      button.addEventListener("click", () => {
+        if (searchRegion(st, region, kind)) heroChanged();
+      });
+      actions.append(button);
+    }
+  }
+  const hide = el("button", { id: "hero-hide", type: "button", text: `Hide this ${noun} again` });
+  hide.addEventListener("click", async () => {
+    const ok = await askConfirm(`Hide this ${noun} again? Its searches are forgotten too.`, "Hide again");
+    if (ok && hideRegion(st, region)) heroChanged();
+  });
+  actions.append(hide);
+  card.append(actions);
+  return card;
+}
+
+function renderHero() {
+  if (!app.state.hero) return;
+  $("#hero-panel").replaceChildren(heroQuestCard(), heroRegionCard());
+}
+
+function bindHeroControls() {
+  $("#to-hero").addEventListener("click", () => {
+    flushTextCommit();
+    app.state.hero = true;
+    app.heroRegion = null;
+    heroChanged();
+  });
+  $("#to-zargon").addEventListener("click", async () => {
+    const ok = await askConfirm(
+      "Switch to Zargon's view? Zargon's secret notes and every hidden room, trap and secret door will be visible. Only continue if the heroes are not looking.",
+      "Switch to Zargon's view",
+    );
+    if (!ok) return;
+    app.state.hero = false;
+    app.heroRegion = null;
+    heroChanged();
+  });
+  $("#reset-game").addEventListener("click", async () => {
+    const ok = await askConfirm("Reset the game? Every room and hallway is hidden again and all searches are forgotten.", "Reset game");
+    if (!ok) return;
+    resetGame(app.state);
+    app.heroRegion = null;
+    heroChanged();
+  });
 }
 
 // ---------------------------------------------------------------- actions on pieces
@@ -655,6 +849,10 @@ function reorderTo(index, targetIndex) {
 // ---------------------------------------------------------------- pointer handling
 function onPointerDown(event) {
   if (!app.editable || (event.pointerType === "mouse" && event.button !== 0)) return;
+  if (app.state.hero) {
+    heroTap(event);
+    return;
+  }
   const cell = cellAt(event);
   if (!cell) return;
   app.hover = { ...cell, edge: nearestEdge(cell) };
@@ -733,6 +931,7 @@ function paintCell(cell) {
 }
 
 function onPointerMove(event) {
+  if (app.state.hero) return;
   const cell = cellAt(event);
   app.pointerType = event.pointerType;
   app.inside = cell !== null;
@@ -797,6 +996,15 @@ function onPointerLeave() {
 
 // ---------------------------------------------------------------- keyboard
 function onKeyDown(event) {
+  if (app.state.hero) {
+    // Hero view has no undo and no editing keys; Esc just closes the room panel.
+    if (event.key === "Escape" && app.heroRegion !== null) {
+      app.heroRegion = null;
+      renderOverlay();
+      renderHero();
+    }
+    return;
+  }
   const target = event.target;
   const typing = target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName);
   if ((event.ctrlKey || event.metaKey) && !event.altKey) {
@@ -1072,6 +1280,7 @@ export function initUi() {
   $("#zoom-out").addEventListener("click", () => setZoom(app.zoom / 1.25));
   $("#zoom-fit").addEventListener("click", () => setZoom(1));
   $("#print-btn").addEventListener("click", () => window.print());
+  bindHeroControls();
   for (const [id, cls] of [["intro", "np-intro"], ["key", "np-key"], ["stats", "np-stats"], ["notes", "np-notes"], ["legend", "np-legend"]]) {
     $(`#po-${id}`).addEventListener("change", (e) => document.body.classList.toggle(cls, !e.target.checked));
   }

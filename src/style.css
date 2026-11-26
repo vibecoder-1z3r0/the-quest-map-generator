@@ -164,6 +164,26 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 #footer { text-align: center; padding: 12px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); }
 #footer p { margin: 0 auto; max-width: 1000px; }
 
+/* ---- hero view (docs/HERO_VIEW.md) */
+.hero-badge { background: #7a3b1f; color: #fff; font: 700 11px system-ui, sans-serif; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; vertical-align: middle; }
+body.hero #tools, body.hero #stage > .sheet, body.hero #legend, body.hero .hint.keys, body.hero #undo, body.hero #redo,
+body.hero #print-btn, body.hero #clear, body.hero #to-hero, body.hero .privacy, body.hero #linkinfo, body.hero .themepick { display: none; }
+body.hero #side > :not(#hero-panel) { display: none; }
+body.hero #app { grid-template-columns: minmax(0, 1fr) 380px; }
+#hero-panel .card { margin-bottom: 10px; }
+.hero-quote { border-left: 4px solid var(--accent); background: rgba(184, 132, 42, 0.12); padding: 8px 10px; margin: 6px 0; font-family: Georgia, serif; }
+.hero-quote p { margin: 0 0 6px; }
+.hero-result { margin: 8px 0; }
+.hero-result b { display: block; }
+.hero-actions button { display: block; width: 100%; text-align: left; padding: 8px 10px; margin: 5px 0; }
+.hero-title small { font-weight: 400; text-transform: none; letter-spacing: 0; }
+#layer-fog text { font: 700 12px system-ui, sans-serif; fill: #e8d9b5; opacity: 0.85; pointer-events: none; }
+#board .hero-sel { fill: rgba(255, 255, 255, 0.14); stroke: #fff; stroke-width: 1.5; pointer-events: none; }
+#confirm-dialog { border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--ink); padding: 16px; max-width: 420px; }
+#confirm-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+#confirm-dialog p { margin: 0; }
+#confirm-dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
 @media (max-width: 1000px) {
   #app { grid-template-columns: 1fr; }
   #tools { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); }
@@ -184,6 +204,7 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
   #side > .card { margin: 8px 6px 0; order: 4; }
   #side > #inspector-card { order: 1; min-height: 110px; }
   #app > #tools { order: 2; margin-top: 8px; }
+  #hero-panel { order: 1; margin: 8px 6px 0; }
   #stage > .sheet { order: 3; }
 }
 
