@@ -53,15 +53,19 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     in any good way, so the author paints corridor squares with a **zone color** to make hallways.
     A zone behaves exactly like a lettered room: a Reveal button (with "are you sure?"), "Hide this
     zone again", the four texts and the search buttons, grouping with other rooms or zones, and one
-    bit of play state. Storage reuses the highlight values **6 to 15 as zones 1 to 10**, named by the
-    legend labels (an author-only name). More zones can be added later with a dedicated layer, without
-    breaking any link.
+    bit of play state. Storage is a **separate zone layer** (10 zones, a 247-byte layer at the start of the
+    hero section of the link), not the highlight colors: a square holds only one highlight, so a zone
+    stored as a highlight could not also be solid stone or a trap highlight, and stone in a hallway would
+    have stayed visible from the start. With its own layer any square can be in a zone. Zones are named by
+    the legend entries 6 to 15 (an author-only name). More zones can be added later without breaking any
+    link.
     - **Visibility follows zones and rooms.** A piece is shown when the zone or room its square is in is
       revealed. A **door is shown when a room or zone on either side of it is revealed.** Secret and
       hidden doors are the exception: only the secret-door search shows them, and a secret door in a
       zone belongs to that zone. Traps and markers are never shown.
     - **Squares with no zone stay visible, and so do the pieces on them,** because nothing could ever
-      reveal them. An author who wants a hallway hidden paints it.
+      reveal them. An author who wants a hallway hidden paints it (stone and highlighted squares can be
+      painted too).
     - **Hero view never shows a zone name.** A name could give something away, so a fogged hallway is
       just dark and a revealed zone's panel says "Hallway". Zone names exist only for the author (the
       editor card and the legend).
@@ -82,7 +86,7 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     zone that is only partly stone, the stone squares are hidden with the rest and show as stone once
     that room or zone is revealed. Stone that belongs to no room or zone has nothing that can hide it,
     so it is always shown: an author who does not want heroes to see where stone is paints those
-    squares into a zone.
+    squares into a zone (a zone can be painted over stone).
 12. **Authoring: a collapsible room card driven by the pinned square, plus a room chooser.** In the
     editor, pinning a square with the Select tool opens the card for that square's room under
     "What's here" (collapsed until it is needed; open or closed is a view setting, not stored in the

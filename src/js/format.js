@@ -96,6 +96,7 @@ export function blankState() {
     wmText: "",
     series: "",
     hero: false,
+    zones: new Uint8Array(SQUARES), // per square: 0 none, 1-10 zone n (11-15 reserved)
     rooms: {}, // region -> { start, group, texts: [read aloud, treasure, traps, secret doors] }
     play: null, // null (the start state), or { rev, t, tr, sd } Sets of regions
   };
@@ -137,7 +138,10 @@ export async function encodeState(st) {
   const regions = Object.keys(st.rooms)
     .map(Number)
     .sort((a, b) => a - b);
-  if (regions.length || st.play) {
+  if (regions.length || st.play || st.zones.some(Boolean)) {
+    const zoneBytes = new Uint8Array(HIGHLIGHT_BYTES);
+    for (let i = 0; i < SQUARES; i++) zoneBytes[i >> 1] |= (st.zones[i] & 15) << ((i & 1) * 4);
+    for (const b of zoneBytes) out.push(b);
     pushVarint(out, regions.length);
     for (const region of regions) {
       const rec = st.rooms[region];
@@ -282,6 +286,9 @@ export async function decodeHash(payload) {
   if (r.remaining > 0) st.series = field("series", { limit: LIMITS.series });
   // Optional hero view data (rooms and zones), then the optional play state.
   if (r.remaining > 0) {
+    r.need(HIGHLIGHT_BYTES);
+    for (let i = 0; i < SQUARES; i++) st.zones[i] = (r.b[r.p + (i >> 1)] >> ((i & 1) * 4)) & 15;
+    r.p += HIGHLIGHT_BYTES;
     const roomCount = r.varint();
     if (roomCount > REGIONS) throw new Error("link is corrupt");
     let skippedRooms = 0;

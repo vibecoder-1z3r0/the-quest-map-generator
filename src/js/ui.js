@@ -10,6 +10,7 @@ import {
   ROWS,
   SOFT_LINK_LIMIT,
   THEMES,
+  ZONES,
 } from "./constants.js";
 import { blankState, decodeHash, encodeState } from "./format.js";
 import {
@@ -40,6 +41,7 @@ import {
   rectOutlineMarkup,
   tileMarkup,
   tilesMarkup,
+  zonesMarkup,
 } from "./render.js";
 import {
   EDGE_NAMES,
@@ -58,6 +60,7 @@ import {
   rotateItem,
   sameSnapshot,
   setHighlight,
+  setZone,
   snapshot,
   squareLabel,
   tilesAt,
@@ -279,6 +282,7 @@ function ghostItem() {
 function renderMap() {
   const hero = app.state.hero;
   $("#layer-tiles").innerHTML = hero ? heroTilesMarkup(app.state) : tilesMarkup(app.state.tiles);
+  $("#layer-zones").innerHTML = hero ? "" : zonesMarkup(app.state.zones);
   $("#layer-hl").innerHTML = hero ? heroHighlightMarkup(app.state) : highlightMarkup(app.state.hl);
   $("#layer-items").innerHTML = hero ? heroItemsMarkup(app.state) : itemsMarkup(app.state.items);
   $("#layer-fog").innerHTML = hero ? fogMarkup(app.state) : "";
@@ -425,10 +429,11 @@ function renderInspector() {
     return;
   }
   const hl = highlightAt(app.state, cell.x, cell.y);
-  const hlDef = HIGHLIGHTS.find((h) => h.value === hl);
-  const hlName = hlDef?.zone ? legendLabel(hlDef) : (hlDef?.name ?? `Highlight ${hl}`);
+  const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
   box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
   box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
+  const zone = ZONES[app.state.zones[cell.y * COLS + cell.x] - 1];
+  if (zone) box.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));
   const hits = itemsAt(app.state, cell.x, cell.y);
   if (hits.length) box.append(pieceStack(hits));
   else box.append(el("p", { class: "none", text: "No pieces here." }));
@@ -453,6 +458,13 @@ function renderLegend() {
     if (label) {
       items.push(el("li", {}, el("span", { class: "swatch", style: `background:${h.color}` }), label));
     }
+  }
+  const usedZones = new Set(app.state.zones);
+  for (const zone of ZONES) {
+    if (!usedZones.has(zone.n)) continue;
+    items.push(
+      el("li", {}, el("span", { class: "swatch", style: `background:${zone.color}` }), app.state.legend[zone.legendKey] || zone.name),
+    );
   }
   $("#legend").replaceChildren(...items);
 }
@@ -890,10 +902,10 @@ function onPointerDown(event) {
     const tileHits = tilesAt(app.state, cell.x, cell.y);
     if (hits.length) removeAt(hits[0]);
     else if (tileHits.length) removeTileAt(tileHits[0]);
-  } else if (kind === "highlight") {
+  } else if (kind === "highlight" || kind === "zone") {
     event.preventDefault();
     $("#board").setPointerCapture(event.pointerId);
-    app.paint = { value, changed: false };
+    app.paint = { kind, value, changed: false };
     paintCell(cell);
   } else {
     app.pinned = { x: cell.x, y: cell.y };
@@ -924,7 +936,8 @@ function onPointerDown(event) {
 }
 
 function paintCell(cell) {
-  if (setHighlight(app.state, cell.x, cell.y, app.paint.value)) {
+  const paint = app.paint.kind === "zone" ? setZone : setHighlight;
+  if (paint(app.state, cell.x, cell.y, app.paint.value)) {
     app.paint.changed = true;
     renderMap();
   }
@@ -1100,12 +1113,15 @@ function buildPalette() {
     const button = toolButton(h.value ? h.name.replace(" (solid stone)", "") : "Clear", "highlight", h.value, swatch);
     // Grey (value 1) marks solid stone, so it has its own section; the other colors stay together.
     if (h.value === 1) button.title = "Paint solid stone like a highlight; Clear erases it";
-    (h.zone ? zones : h.value === 1 ? solid : hls).append(button);
+    (h.value === 1 ? solid : hls).append(button);
   }
   root.append(hls);
   solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
   root.append(el("h2", { text: "Solid stone areas" }), solid);
-  zones.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
+  for (const zone of ZONES) {
+    zones.append(toolButton(zone.name, "zone", zone.n, el("span", { class: "swatch", style: `background:${zone.color}` })));
+  }
+  zones.append(toolButton("Clear", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
   root.append(el("h2", { text: "Hero view zones" }), zones);
   root.append(
     el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
@@ -1136,22 +1152,27 @@ function markTools() {
 function buildLegendEditor() {
   const root = $("#legend-edit");
   root.replaceChildren();
-  for (const h of HIGHLIGHTS.filter((x) => x.value > 1)) {
+  // The ordinary colors, then the zones: zone n is named by legend entry 5 + n.
+  const entries = [
+    ...HIGHLIGHTS.filter((x) => x.value > 1).map((h) => ({ key: h.value, name: h.name, placeholder: h.defaultLabel || h.name, color: h.color })),
+    ...ZONES.map((z) => ({ key: z.legendKey, name: z.name, placeholder: z.name, color: z.color })),
+  ];
+  for (const entry of entries) {
     const input = el("input", {
       type: "text",
-      "data-color": String(h.value),
+      "data-color": String(entry.key),
       maxlength: String(LIMITS.legend),
-      placeholder: h.defaultLabel || h.name,
-      "aria-label": `Legend label for ${h.name}`,
+      placeholder: entry.placeholder,
+      "aria-label": `Legend label for ${entry.name}`,
       autocomplete: "off",
     });
     input.addEventListener("input", () => {
       const cleaned = cleanText(input.value, { limit: LIMITS.legend }).text;
       if (cleaned !== input.value) input.value = cleaned;
-      app.state.legend[h.value] = cleaned;
+      app.state.legend[entry.key] = cleaned;
       textChanged();
     });
-    root.append(el("div", { class: "lg" }, el("span", { class: "swatch", style: `background:${h.color}` }), input));
+    root.append(el("div", { class: "lg" }, el("span", { class: "swatch", style: `background:${entry.color}` }), input));
   }
 }
 
@@ -1182,10 +1203,9 @@ function bindField(selector, key, options) {
 
 // A zone's palette button shows its name once the author has typed one in the legend.
 function refreshZoneButtons() {
-  for (const h of HIGHLIGHTS) {
-    if (!h.zone) continue;
-    const button = document.querySelector(`#tools button[data-kind="highlight"][data-value="${h.value}"]`);
-    if (button) button.lastChild.textContent = legendLabel(h);
+  for (const zone of ZONES) {
+    const button = document.querySelector(`#tools button[data-kind="zone"][data-value="${zone.n}"]`);
+    if (button) button.lastChild.textContent = app.state.legend[zone.legendKey] || zone.name;
   }
 }
 

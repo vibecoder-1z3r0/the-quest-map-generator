@@ -201,17 +201,17 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 190 | I don't think we label the hallways.  That gives too much info away. | 04:49:27 | 36s | 16s | 20 | 8,531 | 4,315 | 3,955,596 |
 | 191 | Why does the fog of war zoning look like it's different shades? | 04:50:19 | 39s | 8s | 23 | 10,413 | 14,982 | 5,704,727 |
 | 192 | That also gives too much away.... fog of war should be the same color … | 04:51:06 | 48s | 23s | 29 | 12,902 | 15,289 | 5,207,180 |
-| 193 | Let's implement this full feature | 04:52:17 | 22m 27s | — | 330 | 263,133 | 373,012 | 98,574,439 |
+| 193 | Let's implement this full feature | 04:52:17 | 26m 51s | — | 398 | 320,761 | 456,731 | 123,792,401 |
 
 **Total turns:** 193  
-**Total agent time spent (excl. flagged):** 3h 33m  
+**Total agent time spent (excl. flagged):** 3h 37m  
 **Total human think time (excl. outliers):** 4h 0m  
 **Average human think time (excl. outliers):** 1m 25s  
 **Think-time outliers (> 15 min):** 23  
-**Total input tokens:** 4,235  
-**Total output tokens:** 2,126,187  
-**Total cache-write tokens:** 19,041,564  
-**Total cache-read tokens:** 746,676,016  
+**Total input tokens:** 4,303  
+**Total output tokens:** 2,183,815  
+**Total cache-write tokens:** 19,125,283  
+**Total cache-read tokens:** 771,893,978  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183 had an 'agent time spent' over 30 min (total 1h 22m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

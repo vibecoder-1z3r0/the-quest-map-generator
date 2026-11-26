@@ -46,6 +46,7 @@ def blank() -> dict:
         "wm_text": "",
         "series": "",
         "hero": False,
+        "zones": [0] * SQUARES,  # 0 none, 1-10 zone n (11-15 reserved)
         "rooms": {},  # region -> {"start": bool, "group": int, "texts": [4 strings]}
         "play": None,  # None, or {"rev": [regions], "t": [...], "tr": [...], "sd": [...]}
     }
@@ -82,7 +83,14 @@ def encode_body(st: dict) -> bytes:
     out += bytes([st["wm_id"]]) + string(st["wm_text"])
     out += string(st["series"])
     rooms, play = st.get("rooms") or {}, st.get("play")
-    if rooms or play:  # optional trailing sections: omitted entirely when there is nothing to say
+    zones = st.get("zones") or [0] * SQUARES
+    if (
+        rooms or play or any(zones)
+    ):  # optional trailing sections: omitted entirely when there is nothing to say
+        zone_bytes = bytearray((SQUARES + 1) // 2)
+        for i, v in enumerate(zones):
+            zone_bytes[i >> 1] |= (v & 15) << ((i & 1) * 4)
+        out += zone_bytes
         out += varint(len(rooms))
         for region in sorted(rooms):
             rec = rooms[region]
@@ -155,7 +163,10 @@ def decode(payload: str) -> dict:
     st["wm_text"] = read_string()
     if pos < len(body):  # optional trailing field; older links end before it
         st["series"] = read_string()
-    if pos < len(body):  # optional hero view data
+    if pos < len(body):  # optional hero view data: the zone layer, then the room records
+        zone_bytes = body[pos : pos + (SQUARES + 1) // 2]
+        pos += len(zone_bytes)
+        st["zones"] = [(zone_bytes[i >> 1] >> ((i & 1) * 4)) & 15 for i in range(SQUARES)]
         for _ in range(read_varint()):
             region, flags, group = byte(), byte(), byte()
             st["rooms"][region] = {

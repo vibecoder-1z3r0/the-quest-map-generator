@@ -65,7 +65,7 @@ The body is these sections, in this order, with no padding between them.
 | 9 | Wandering monster id | 1 byte |
 | 10 | Wandering monster text | string |
 | 11 | Series (optional, trailing) | string |
-| 12 | Hero view rooms and zones (optional, trailing) | `varint count` + records |
+| 12 | Hero view: zone layer and rooms (optional, trailing) | 247 bytes + `varint count` + records |
 | 13 | Hero view play state (optional, trailing) | 20 bytes |
 
 ### 4.0 Flags
@@ -105,13 +105,12 @@ Opening a link applies its theme; changing the theme updates the link but is not
 | 3 | cyan |
 | 4 | yellow |
 | 5 | bright green |
-| 6-15 | **zones 1-10** (hero view, section 4.7) |
+| 6-15 | reserved |
 
-Values are permanent once assigned. A highlight is a translucent tint drawn over whatever is in the
-square; it never hides anything. Values 6-15 paint **zones**: groups of corridor squares that heroes
-reveal like a room in hero view. In the editor a zone is tinted like any other highlight and its
-legend entry (section 4.4) is its name. A zone paint on a square inside a lettered room is ignored
-for hero view.
+Values are permanent once assigned. A decoder that meets a reserved value keeps it in the map (so it
+survives re-encoding) and draws a neutral tint. A highlight is a translucent tint drawn over whatever
+is in the square; it never hides anything. (Hero view zones are a separate layer, section 4.7, so a
+square can have a highlight and be in a zone at once.)
 
 ### 4.2 Items
 
@@ -177,6 +176,8 @@ filtered like single-line text (§6).
   entry for color 1 is never written, and one read from a link is ignored.
 - **Orange (2) means a trap of any kind.** With no label it is shown as "Trap"; a stored label
   replaces that text.
+- Legend entries **6 to 15 name zones 1 to 10** (section 4.7): zone *n* is named by entry *5 + n*. They
+  are not highlight colors and are listed with the zones that are used on the map.
 - Display: the viewer lists an entry for each color that is used on the map (grey as "Solid stone",
   orange as its label or "Trap", the others only if they have a label).
 
@@ -218,8 +219,15 @@ state is stored). Hero view is a second way to look at the same quest: the map s
 heroes reveal it room by room. See `docs/HERO_VIEW.md` for how it behaves.
 
 A **region** is a room or a zone. Rooms are the board's letters: A..Z are regions 0..25 (the standard
-board uses A..V). Zones 1..10 are regions 26..35, painted with highlight values 6..15 (section 4.1) on
-squares that are not inside a lettered room.
+board uses A..V). Zones 1..10 are regions 26..35.
+
+The section starts with the **zone layer**: 247 bytes, 4 bits per square, packed exactly like the
+highlights (section 4.1): `0` no zone, `1`..`10` zone 1..10, `11`..`15` reserved (kept). It is separate
+from the highlights, so any square, including solid stone or a trap highlight, can be in a zone. A zone
+on a square inside a lettered room is ignored for hero view. A zone is named by a legend entry
+(section 4.4).
+
+Then, as before, the room records:
 
 `varint count` (0..36), then `count` records:
 
@@ -241,12 +249,13 @@ then four strings, in this order:
   A count above 36 makes the link invalid.
 - Regions with no data have no record. Texts of the regions in a group are shown together, joined in
   region order.
-- An encoder leaves the whole section out (and with it section 4.8) when there are no records and no
-  play state, so a quest without hero view data keeps exactly the link it always had.
+- An encoder leaves the whole section out (and with it section 4.8) when there is no zone, no record and
+  no play state, so a quest without hero view data keeps exactly the link it always had.
 
 ### 4.8 Hero view play state
 
-Optional, directly after the records of section 4.7 (even when there are none, `count` is then 0).
+Optional, directly after the records of section 4.7 (even when there are none, `count` is then 0 and the
+zone layer is still present).
 Exactly **20 bytes**: four masks of 5 bytes each, in this order:
 
 1. revealed regions

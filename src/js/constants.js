@@ -39,7 +39,6 @@ export const HIGHLIGHTS = [
   { value: 5, name: "Bright green", color: "#3fd24a" },
 ];
 
-// Values 6-15 are the ten hero view zones (docs/FORMAT.md 4.1, 4.7).
 export const ZONE_COLORS = [
   "#8e5bd9",
   "#e0457b",
@@ -52,9 +51,9 @@ export const ZONE_COLORS = [
   "#c58be8",
   "#c9a66b",
 ];
-for (let n = 1; n <= ZONE_COLORS.length; n++) {
-  HIGHLIGHTS.push({ value: 5 + n, name: `Zone ${n}`, color: ZONE_COLORS[n - 1], zone: n, defaultLabel: `Zone ${n}` });
-}
+// The ten hero view zones: their own per-square layer (docs/FORMAT.md 4.7), so a square can be solid
+// stone or a trap highlight and in a zone at once. Zone n is named by legend entry 5 + n.
+export const ZONES = ZONE_COLORS.map((color, i) => ({ n: i + 1, color, legendKey: ZONE_FIRST_VALUE + i, name: `Zone ${i + 1}` }));
 
 // Theme ids are permanent. printSafe themes print as themselves; others print as theme 0.
 export const THEMES = [
