@@ -140,10 +140,9 @@ one at the bottom touches room S.
 - A blank treasure text says "Shuffle the treasure deck and draw the top card.", since the real game
   decides the treasure. A blank traps text still says "You find nothing."
 
-- On a phone (single column) the public quest info sits above the map and the room card (Reveal, the
-  searches, Hide again) sits below it, so the map stays next to the buttons that act on it. On a wide
-  screen both cards stay in the side column.
-
+- On a phone (single column) the room card (Reveal, the searches, Hide again) sits above the map and the
+  public quest info sits below it, so the buttons are the first thing under the header. On a wide
+  screen both cards stay in the side column, quest info first.
 - A secret door on a zoned corridor square first belonged to the zone only, so the search of the room
   next to it found nothing (seen on quest 1, bottom corridor beside room S). It now belongs to the zone
   and to each touching room.
