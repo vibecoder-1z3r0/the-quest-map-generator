@@ -23,19 +23,29 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
 4. **Revealing a room.** Click a room on the map and a room panel opens (like "What's here"). It has a
    Reveal button, which asks "are you sure?". Revealing shows the room's monsters, furniture and
    doors. It does **not** show secret doors or hidden doors, and trap pieces are **never** shown.
-   Markers and Zargon's colored highlights always stay hidden. Solid stone always shows.
+   Markers and Zargon's colored highlights (every color except grey) always stay hidden. Solid stone
+   always shows.
 5. **Search buttons are always there**, even when the room has nothing to find, so a button never
    gives anything away. Once a search is done its result stays shown.
    - **Search for treasure** shows the room's treasure text (a hero-facing field, not private).
    - **Search for traps** shows the room's traps text only. No trap pieces are revealed.
    - **Search for secret doors** shows the room's secret doors text and reveals the secret doors in
-     the room and on the outside of its walls.
+     the room and on the outside of its walls. Hidden doors (the edge pieces) are revealed together
+     with secret doors (the slab tiles).
 6. **Merged rooms: the author chooses.** Rooms are not grouped automatically from room tiles. The
-   author marks which rooms reveal together, and a group reveals as one.
+   author marks which rooms reveal together, and a group reveals as one. A group's texts are joined
+   in alphabetical room order: the read-aloud texts of the rooms in the group, then the treasure
+   texts, traps texts and secret-door texts the same way (each room's own text is still capped at
+   600 characters).
 7. **Room texts: four per room**, each up to **600 characters**: read aloud (on reveal), treasure,
    traps, secret doors. A room with an empty field simply has nothing to show for it.
 8. **Quest-level text in hero view:** series, number, title, intro and the wandering monster are
    shown. Zargon's secret notes are not.
+9. **No undo or back for play state.** Revealing and searching change the link in place (no new
+   browser history entries) and hero view has no Undo/Redo, so the back button does not step through
+   play. A mistaken reveal is prevented by the "are you sure?" and cleared only by "reset reveals".
+10. **Print stays as it is.** The print page keeps Zargon's notes and the quest text; it does not
+    include the room texts. Hero view is meant to be used on a device, not on paper.
 
 ## Future decision, not yet made
 
@@ -46,15 +56,28 @@ text cannot be read on the hero view anyway, it would duplicate the quest notes,
 longer. Adding it later is an additive trailing field, so no existing link would break. Revisit if the
 quest-level notes become unwieldy.
 
-## Still open (assumptions to confirm, and details)
+## Door ownership: the rule proposed (needs the owner's OK)
 
-- Assumed, not yet confirmed: hidden doors (the edge pieces) are revealed together with secret doors
-  by the secret-door search; markers always stay hidden; non-grey highlights always stay hidden.
-- Which room's texts a merged group uses (each room's own texts in turn, or one set for the group).
-- Exactly which door pieces count as being "on the outside of the room walls".
-- How play state interacts with Undo and the browser's back button, and what it looks like in the
-  editor (probably it is ignored there).
-- The authoring screens: a Room tool and a room card in the editor, and how rooms are grouped.
-- Whether the print page should include the room texts.
-- Link length: worst case is 22 rooms x 4 texts x 600 characters, so the existing link-length warning
-  matters. A tighter limit is possible if real quests get long.
+A secret door or hidden door is revealed by the secret-door search of **every room it touches**:
+- a piece on a room square belongs to that room;
+- a piece on a corridor square belongs to each room that shares a wall with that square;
+- a hidden door (an edge piece) belongs to the rooms on both sides of its edge.
+
+Real examples from quest 1: the secret door at H10-ish sits in the corridor between rooms H and N, so
+a search in either room reveals it; the one at the left edge touches room L; the one inside room K
+belongs to K; the one at the bottom touches room S.
+
+**Open question:** a secret door in a corridor that touches no room (diagram C in the mockup) cannot be
+revealed by any room search. Either it stays hidden in hero view, or it is always shown.
+
+## Still open
+
+- The door ownership rule above, and what happens to a secret door that touches no room.
+- The authoring screens: a "Room data" tool that opens a room card (revealed at the start, a
+  "reveals together with" group chooser, and the four texts, each with a 600 character counter), a
+  badge on grouped rooms and a dot on rooms that have text. A mockup was shown to the owner; it needs
+  feedback.
+- How play state is kept in the link when Zargon switches to the main view and edits the map (the
+  suggestion: it is carried along untouched, and New map clears it).
+- Link length: the worst case is 22 rooms x 4 texts x 600 characters, so the existing link-length
+  warning matters. A tighter limit is possible if real quests get long.
