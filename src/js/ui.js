@@ -827,7 +827,7 @@ const HERO_SEARCHES = [
 
 function heroQuestCard() {
   const st = app.state;
-  const card = el("section", { class: "card" });
+  const card = el("section", { id: "hero-quest", class: "card" });
   if (st.series) card.append(el("div", { class: "muted", text: st.series }));
   const title = [st.num ? `Quest ${st.num}` : "", st.title].filter(Boolean).join(": ");
   if (title) card.append(el("h2", { text: title }));
@@ -841,7 +841,7 @@ function heroQuestCard() {
 function heroRegionCard() {
   const st = app.state;
   const region = app.heroRegion;
-  const card = el("section", { class: "card" });
+  const card = el("section", { id: "hero-region", class: "card" });
   if (region === null) {
     if (!app.heroCell) {
       card.append(el("p", { class: "muted", text: "Tap a room or a hallway on the map." }));

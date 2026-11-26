@@ -214,17 +214,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 203 | PR? | 16:06:54 | 7s | 20s | 6 | 544 | 43,899 | 162,887 |
 | 204 | LGTM ship it! | 16:07:22 | 54s | 9s | 30 | 1,667 | 9,785 | 1,268,515 |
 | 205 | I did and deleted the branch | 16:08:24 | 6s | 16m 30s ⏳ | 4 | 255 | 709 | 221,464 |
-| 206 | Hero view:  When room S was revealed and I searched for secret doors n… | 16:25:00 | 3m 21s | — | 84 | 19,058 | 37,893 | 4,989,180 |
+| 206 | Hero view:  When room S was revealed and I searched for secret doors n… | 16:25:00 | 3m 29s | 3s | 86 | 19,490 | 38,532 | 5,123,971 |
+| 207 | For hero view on mobile:  Public Quest info should be above the map, a… | 16:28:32 | 2m 13s | — | 40 | 8,403 | 21,845 | 2,523,026 |
 
-**Total turns:** 206  
-**Total agent time spent (excl. flagged):** 3h 33m  
+**Total turns:** 207  
+**Total agent time spent (excl. flagged):** 3h 36m  
 **Total human think time (excl. outliers):** 4h 13m  
 **Average human think time (excl. outliers):** 1m 26s  
 **Think-time outliers (> 15 min):** 28  
-**Total input tokens:** 4,815  
-**Total output tokens:** 2,445,634  
-**Total cache-write tokens:** 22,035,685  
-**Total cache-read tokens:** 899,830,347  
+**Total input tokens:** 4,857  
+**Total output tokens:** 2,454,469  
+**Total cache-write tokens:** 22,058,169  
+**Total cache-read tokens:** 902,488,164  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

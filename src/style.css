@@ -215,7 +215,10 @@ body.hero #copy-hero { display: none; }
   #side > .card { margin: 8px 6px 0; order: 4; }
   #side > #inspector-card { order: 1; min-height: 110px; }
   #app > #tools { order: 2; margin-top: 8px; }
-  #hero-panel { order: 1; margin: 8px 6px 0; }
+  /* Hero view: the public quest info above the map, the room card (Reveal and searches) below it. */
+  #hero-panel { display: contents; }
+  #hero-quest { order: -1; margin: 8px 6px 0; }
+  #hero-region { order: 1; margin: 8px 6px 0; }
   #side > #hero-card { order: 1; }
   #stage > .sheet { order: 3; }
 }

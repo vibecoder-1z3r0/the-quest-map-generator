@@ -294,13 +294,28 @@ def test_the_zargon_view_can_switch_to_hero_view_keeping_the_play_state(page, si
     assert not page.locator("#tools").is_visible()
 
 
-def test_the_hero_panel_sits_right_after_the_map_in_the_single_column_layout(page, site):
+def test_in_the_single_column_layout_the_quest_info_is_above_the_map_and_reveal_below_it(
+    page, site
+):
     page.set_viewport_size({"width": 390, "height": 844})
     open_hero(page, site)
+    tap(page, 2, 2)  # a hidden room, so the card with the Reveal button shows
     board = page.locator("#board").bounding_box()
-    hero_panel = page.locator("#hero-panel").bounding_box()
-    assert hero_panel["y"] >= board["y"] + board["height"] - 2
-    assert hero_panel["y"] < board["y"] + board["height"] + 120
+    quest = page.locator("#hero-quest").bounding_box()
+    region = page.locator("#hero-region").bounding_box()
+    assert quest["y"] + quest["height"] <= board["y"] + 2
+    assert region["y"] >= board["y"] + board["height"] - 2
+    assert region["y"] < board["y"] + board["height"] + 120
+    assert page.locator("#hero-reveal").bounding_box()["y"] >= board["y"] + board["height"]
+
+
+def test_on_a_wide_screen_both_hero_cards_stay_in_the_side_column(page, site):
+    open_hero(page, site)
+    board = page.locator("#board").bounding_box()
+    quest = page.locator("#hero-quest").bounding_box()
+    region = page.locator("#hero-region").bounding_box()
+    assert quest["x"] >= board["x"] + board["width"] - 2
+    assert region["x"] >= board["x"] + board["width"] - 2
 
 
 def test_stone_in_a_zone_is_hidden_until_the_zone_is_revealed(page, site):
