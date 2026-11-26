@@ -172,7 +172,7 @@ def test_legend_lists_only_used_colors_with_fixed_grey_and_default_orange(page):
 
 def test_grey_has_no_editable_legend_but_the_others_do(page):
     assert page.locator('#legend-edit input[data-color="1"]').count() == 0
-    assert page.locator("#legend-edit input").count() == 4
+    assert page.locator("#legend-edit input").count() == 4 + 10  # the four colors and the ten zones
     page.fill('#legend-edit input[data-color="3"]', "secret room")
     assert page.locator("#legend li").count() == 0  # cyan is not used yet
     paint(page, 3, 5, 5)
@@ -649,7 +649,8 @@ def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
     headings = [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
     assert headings[:2] == ["tools", "highlight"]
     assert headings[2].startswith("solid stone areas")
-    assert headings[3] == "doors & walls"
+    assert headings[3] == "hero view zones"
+    assert headings[4] == "doors & walls"
     highlight_grid = page.locator("#tools h2", has_text="Highlight").locator(
         "xpath=following-sibling::div[1]"
     )

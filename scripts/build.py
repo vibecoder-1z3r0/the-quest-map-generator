@@ -33,6 +33,7 @@ JS_ORDER = [
     "markdown",
     "format",
     "state",
+    "hero",
     "render",
     "ui",
     "main",
