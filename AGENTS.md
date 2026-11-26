@@ -326,9 +326,7 @@ Repo is MIT. Footer and README carry a notice along these lines:
 
   (`highlights` is 19 rows of 26 characters like `board.txt`: `.` none, `g` grey, `o` orange,
   `c` cyan, `y` yellow, `l` bright green.)
-- **Fog of war mode.** Someone sends a link and the recipient reveals parts of the map as they play
-  through. Not part of v1; the format and UI should not be bent to accommodate it yet. Questions to
-  settle when it is picked up: where the revealed state lives (it should stay in the URL, with no
-  storage), how Zargon's secret notes and hidden pieces are kept out of a player-facing link
-  (everything in a link is readable by anyone who has it), and how reveals relate to the highlight
-  layer.
+- **Hero view (designed, not built).** Supersedes the old "fog of war" idea. A second view of the same link where
+  heroes reveal rooms one at a time, with per-room texts and search buttons. The decisions made so far, the one
+  future decision (per-room Zargon-only notes) and the open details are in `docs/HERO_VIEW.md`. Do not build it
+  until the owner says so.
