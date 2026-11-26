@@ -223,17 +223,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 212 | MAD - merged and deleted | 17:42:50 | 5s | 1h 10m ⏳ | 6 | 229 | 276 | 302,152 |
 | 213 | Ah - you can not search for treasure in the hallway.... | 18:53:54 | 1m 40s | 2s | 22 | 3,652 | 187,509 | 1,187,957 |
 | 214 | Unless there is a treasure chest... like if you make a makeshift room.… | 18:55:35 | 1m 40s | 45m 54s ⏳ | 22 | 5,176 | 5,429 | 1,402,089 |
-| 215 | Flip quest info and reveal on hero view. | 19:43:10 | 1m 39s | — | 18 | 4,610 | 8,119 | 1,114,336 |
+| 215 | Flip quest info and reveal on hero view. | 19:43:10 | 1m 46s | 2m 16s | 20 | 4,783 | 9,246 | 1,276,497 |
+| 216 | The helper text is twice in a row.  That's odd.  What else could we do… | 19:47:12 | 6s | 3m 1s | 8 | 1,240 | 52 | 326,922 |
+| 217 | Maybe more of an explanation in the header for hero view?  And could p… | 19:50:19 | 3m 29s | — | 58 | 17,117 | 34,593 | 4,646,623 |
 
-**Total turns:** 215  
-**Total agent time spent (excl. flagged):** 3h 42m  
-**Total human think time (excl. outliers):** 4h 15m  
-**Average human think time (excl. outliers):** 1m 24s  
+**Total turns:** 217  
+**Total agent time spent (excl. flagged):** 3h 46m  
+**Total human think time (excl. outliers):** 4h 20m  
+**Average human think time (excl. outliers):** 1m 25s  
 **Think-time outliers (> 15 min):** 31  
-**Total input tokens:** 4,963  
-**Total output tokens:** 2,473,029  
-**Total cache-write tokens:** 22,354,961  
-**Total cache-read tokens:** 908,325,416  
+**Total input tokens:** 5,031  
+**Total output tokens:** 2,491,559  
+**Total cache-write tokens:** 22,390,733  
+**Total cache-read tokens:** 913,461,122  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

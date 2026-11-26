@@ -829,9 +829,7 @@ const HERO_SEARCHES = [
 function heroQuestCard() {
   const st = app.state;
   const card = el("section", { id: "hero-quest", class: "card" });
-  if (st.series) card.append(el("div", { class: "muted", text: st.series }));
-  const title = [st.num ? `Quest ${st.num}` : "", st.title].filter(Boolean).join(": ");
-  if (title) card.append(el("h2", { text: title }));
+  // The series, number and title are in the header (the quest line), so they are not repeated here.
   if (st.intro.trim()) card.append(heroText("hero-quote", st.intro));
   const monster = BY_ID.get(st.wmId);
   const wm = [monster?.name, st.wmText].filter(Boolean).join(" \u2013 ");
