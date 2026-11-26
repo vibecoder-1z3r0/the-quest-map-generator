@@ -96,8 +96,9 @@ def first_cell(link: str, piece_id: int) -> tuple[int, int]:
     return 12, 9
 
 
-# Hero view needs hero data, which the owner's quest does not have yet, so the screenshots add some:
-# zones along the corridors and a few invented room texts. Sample text only, not part of the quest.
+# Hero view needs hero text, which the owner's quest does not have yet. The screenshots keep the
+# zones and room records the quest already has, and only add invented zones (if it has none) and
+# invented room texts (where a room has none). Sample text only, not part of the quest.
 HERO_DEMO_JS = """
 async ([rows]) => {
   const st = QMG.app.state;
@@ -110,32 +111,38 @@ async ([rows]) => {
     if (x === 25) return 5;
     return 6;
   };
-  for (let y = 0; y < 19; y++) {
-    for (let x = 0; x < 26; x++) st.zones[y * 26 + x] = zoneOf(x, y);
-  }
-  st.legend[9] = 'West corridor';
   const room = (start, a, b, c, d) => ({ start, group: 0, texts: [a, b, c, d] });
-  st.rooms = {
-    29: room(
+  if (!st.zones.some(Boolean)) {
+    for (let y = 0; y < 19; y++) {
+      for (let x = 0; x < 26; x++) st.zones[y * 26 + x] = zoneOf(x, y);
+    }
+    st.legend[9] = 'West corridor';
+    st.rooms[29] = room(
       true,
       'A cold draught runs down the long corridor. Torches gutter in iron brackets.',
       '', '', '',
-    ),
-    10: room(
-      false,
+    );
+  }
+  if (!Object.values(st.rooms).some((r) => r.start)) st.rooms[8] = room(true, '', '', '', '');
+  const texts = {
+    10: [
       'The door grinds open. Dust hangs in the torchlight above an old stone tomb.',
       'Beneath the tomb lid: 84 gold coins.',
       'A pressure plate is set into the floor.',
       'Nothing but cold stone.',
-    ),
-    18: room(
-      false,
+    ],
+    18: [
       'A fire crackles in a stone hearth. Goblins snarl and reach for their weapons!',
       'A small chest holds a silver ring.',
       'The flagstones look sound.',
       'You find a hidden catch behind a loose brick.',
-    ),
+    ],
   };
+  for (const [region, t] of Object.entries(texts)) {
+    const rec = st.rooms[region] ?? room(false, '', '', '', '');
+    if (!rec.texts.some(Boolean)) rec.texts = t;
+    st.rooms[region] = rec;
+  }
   const editor = await QMG.encodeState(st);
   st.hero = true;
   const hero = await QMG.encodeState(st);
