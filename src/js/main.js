@@ -2,6 +2,7 @@ import { BY_ID, CATALOG } from "./catalog.js";
 import { computeStats } from "./stats.js";
 import { decodeHash, encodeState } from "./format.js";
 import {
+  canSearchTreasure,
   groupMembers,
   hideRegion,
   isRevealed,
@@ -37,6 +38,7 @@ window.QMG = {
   syncUrl,
   computeStats,
   hero: {
+    canSearchTreasure,
     groupMembers,
     hideRegion,
     isRevealed,

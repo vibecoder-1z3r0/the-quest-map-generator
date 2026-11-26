@@ -245,6 +245,17 @@ def test_a_revealed_hallway_has_no_treasure_search_but_keeps_the_others(page, si
     assert "Search for treasure" not in panel(page)
 
 
+def test_a_revealed_hallway_with_a_treasure_chest_can_be_searched_for_treasure(page, site):
+    st = hero_state()
+    st["items"].append((CHEST, 3, 0, 0))  # a chest on a square of zone 1
+    open_hero(page, site, st)
+    tap(page, 3, 0)
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-t")
+    assert "Shuffle the treasure deck and draw the top card." in panel(page)
+
+
 def test_a_revealed_room_still_has_the_treasure_search(page, site):
     open_hero(page, site)
     tap(page, 2, 2)

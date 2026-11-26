@@ -221,17 +221,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 210 | Make a PR | 17:41:20 | 8s | 2s | 6 | 655 | 89,713 | 209,034 |
 | 211 | Have you been updating session log? | 17:41:30 | 4s | 1m 15s | 6 | 363 | 1,171 | 299,467 |
 | 212 | MAD - merged and deleted | 17:42:50 | 5s | 1h 10m ⏳ | 6 | 229 | 276 | 302,152 |
-| 213 | Ah - you can not search for treasure in the hallway.... | 18:53:54 | 1m 35s | — | 20 | 3,479 | 187,062 | 1,033,897 |
+| 213 | Ah - you can not search for treasure in the hallway.... | 18:53:54 | 1m 40s | 2s | 22 | 3,652 | 187,509 | 1,187,957 |
+| 214 | Unless there is a treasure chest... like if you make a makeshift room.… | 18:55:35 | 1m 35s | — | 20 | 4,887 | 5,010 | 1,244,010 |
 
-**Total turns:** 213  
-**Total agent time spent (excl. flagged):** 3h 39m  
+**Total turns:** 214  
+**Total agent time spent (excl. flagged):** 3h 41m  
 **Total human think time (excl. outliers):** 4h 15m  
 **Average human think time (excl. outliers):** 1m 24s  
 **Think-time outliers (> 15 min):** 30  
-**Total input tokens:** 4,921  
-**Total output tokens:** 2,463,070  
-**Total cache-write tokens:** 22,340,966  
-**Total cache-read tokens:** 905,654,931  
+**Total input tokens:** 4,943  
+**Total output tokens:** 2,468,130  
+**Total cache-write tokens:** 22,346,423  
+**Total cache-read tokens:** 907,053,001  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

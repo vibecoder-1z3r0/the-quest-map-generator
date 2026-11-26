@@ -3,6 +3,8 @@ import { roomAt, isRoom, roomSquares } from "./board.js";
 import { BY_ID } from "./catalog.js";
 import { COLS, ROOM_REGIONS, ROWS, ZONES } from "./constants.js";
 
+const TREASURE_CHEST = 30; // catalog id of the Treasure chest piece
+
 // A square's region: its room (regions 0-25 for A-Z), else its zone (26-35, from the zone layer),
 // else null. A zone painted inside a room is ignored.
 export function regionAt(st, x, y) {
@@ -86,6 +88,12 @@ export function searchRegion(st, region, kind) {
 
 export function resetGame(st) {
   st.play = null;
+}
+
+// Treasure is searched for in rooms, and in a hallway only where a treasure chest stands in it.
+export function canSearchTreasure(st, region) {
+  if (region < ROOM_REGIONS) return true;
+  return st.items.some((item) => item.id === TREASURE_CHEST && regionAt(st, item.x, item.y) === region);
 }
 
 // The texts shown for a region: those of its whole group, joined in region order, empty ones skipped.
