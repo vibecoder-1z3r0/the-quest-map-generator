@@ -183,17 +183,25 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 172 | Another set of updates...lol   https://vibecoder-1z3r0.github.io/the-q… | 22:29:37 | 1m 12s | 24s | 17 | 6,909 | 10,735 | 2,986,854 |
 | 173 | PR please | 22:31:14 | 6s | 1m 27s | 6 | 545 | 459 | 860,049 |
 | 174 | Merged and deleted | 22:32:46 | 5s | 2m 34s | 6 | 285 | 285 | 861,261 |
-| 175 | sigh.... another update - however I do think I want the README to have… | 22:35:26 | 1m 22s | — | 31 | 15,128 | 22,771 | 4,765,777 |
+| 175 | sigh.... another update - however I do think I want the README to have… | 22:35:26 | 1m 35s | 13s | 35 | 15,801 | 23,760 | 5,644,604 |
+| 176 | PR please | 22:37:13 | 7s | 25s | 6 | 655 | 557 | 881,121 |
+| 177 | Merged and deleted | 22:37:45 | 5s | 1h 49m ⏳ | 6 | 295 | 291 | 882,553 |
+| 178 | Ok so let's talk about "hero mode" for a bit.  Basically it will be an… | 00:27:16 | 2m 15s | 8m 22s | 52 | 39,865 | 1,195,966 | 7,896,457 |
+| 179 | Let's work through the open items one at a time. | 00:37:54 | 33m 18s ⚠ | 2m 56s | 14 | 5,778 | 4,060 | 3,759,436 |
+| 180 | I hit enter too fast...   Then you get the are you sure?  Once the roo… | 01:14:07 | 5m 13s | 1m 14s | 34 | 16,648 | 14,792 | 6,631,993 |
+| 181 | Not sure, let's just go with overall Zargon notes at the quest level a… | 01:20:34 | 27s | — | 5 | 9,647 | 3,552 | 1,913,135 |
 
-**Total turns:** 175  
-**Total agent time spent (excl. flagged):** 2h 47m  
-**Total human think time (excl. outliers):** 3h 35m  
-**Average human think time (excl. outliers):** 1m 24s  
-**Think-time outliers (> 15 min):** 20  
-**Total input tokens:** 3,540  
-**Total output tokens:** 1,618,804  
-**Total cache-write tokens:** 15,884,223  
-**Total cache-read tokens:** 577,472,811  
+**Total turns:** 181  
+**Total agent time spent (excl. flagged):** 2h 55m  
+**Total human think time (excl. outliers):** 3h 48m  
+**Average human think time (excl. outliers):** 1m 26s  
+**Think-time outliers (> 15 min):** 21  
+**Total input tokens:** 3,661  
+**Total output tokens:** 1,692,365  
+**Total cache-write tokens:** 17,104,430  
+**Total cache-read tokens:** 600,316,333  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164 had a 'human think time' over 15 min (total 159h 14m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⚠ Turn(s) 179 had an 'agent time spent' over 30 min (total 33m 18s), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
+
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177 had a 'human think time' over 15 min (total 161h 3m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
