@@ -873,7 +873,10 @@ function heroRegionCard() {
     if (isSearched(st, region, kind)) {
       const result = el("div", { class: "hero-result" }, el("b", { text: label }));
       const found = kind === "sd" ? secretDoorsFound(st, region) : 0;
-      const none = found === 0 ? "You find nothing." : found === 1 ? "You find a secret door." : `You find ${found} secret doors.`;
+      let none = "You find nothing.";
+      if (kind === "t") none = "Shuffle the treasure deck and draw the top card.";
+      else if (found === 1) none = "You find a secret door.";
+      else if (found > 1) none = `You find ${found} secret doors.`;
       result.append(texts[key] ? heroText("", texts[key]) : el("div", { class: "muted", text: none }));
       actions.append(result);
     } else {

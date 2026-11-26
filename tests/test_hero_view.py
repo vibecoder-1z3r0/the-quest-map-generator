@@ -199,8 +199,20 @@ def test_a_region_without_texts_still_has_all_search_buttons_and_says_so_politel
     page.click("#hero-reveal")
     confirm(page)
     assert all(page.locator(f"#hero-search-{k}").is_visible() for k in ("t", "tr", "sd"))
-    page.click("#hero-search-t")
+    page.click("#hero-search-tr")
     assert "You find nothing." in panel(page)
+    page.click("#hero-search-t")
+    assert "Shuffle the treasure deck and draw the top card." in panel(page)
+
+
+def test_written_treasure_text_replaces_the_deck_instruction(page, site):
+    open_hero(page, site)  # room A has the treasure text "A purse: 84 gold."
+    tap(page, 2, 2)
+    page.click("#hero-reveal")
+    confirm(page)
+    page.click("#hero-search-t")
+    assert "A purse: 84 gold." in panel(page)
+    assert "Shuffle the treasure deck" not in panel(page)
 
 
 def test_revealing_one_room_of_a_group_reveals_the_others(page, site):

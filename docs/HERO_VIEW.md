@@ -132,6 +132,9 @@ one at the bottom touches room S.
 
 ## Notes since it was built
 
+- A blank treasure text says "Shuffle the treasure deck and draw the top card.", since the real game
+  decides the treasure. A blank traps text still says "You find nothing."
+
 - On a phone (single column) the public quest info sits above the map and the room card (Reveal, the
   searches, Hide again) sits below it, so the map stays next to the buttons that act on it. On a wide
   screen both cards stay in the side column.
@@ -141,7 +144,7 @@ one at the bottom touches room S.
   and to each touching room.
 - The secret-door search never leaves a blank result: with no text written it says "You find a secret
   door." (or "You find N secret doors.") when doors were found, and "You find nothing." otherwise. The
-  count covers the whole group. Treasure and trap searches still say "You find nothing." when blank.
+  count covers the whole group. 
 
 - Zones started out as highlight values 6 to 15. Trying it on the owner's quest showed that stone and
   trap-highlighted corridor squares then could not be in a zone and gave the map away, so zones became
