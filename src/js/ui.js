@@ -17,6 +17,7 @@ import {
   chooserRegions,
   editRoom,
   hideRegion,
+  canSearchTreasure,
   isRevealed,
   isSearched,
   regionAt,
@@ -870,7 +871,7 @@ function heroRegionCard() {
   if (texts.readAloud) card.append(heroText("hero-quote", texts.readAloud));
   const actions = el("div", { class: "hero-actions" });
   for (const { kind, label, key } of HERO_SEARCHES) {
-    if (kind === "t" && region >= ROOM_REGIONS) continue; // there is no treasure in a hallway
+    if (kind === "t" && !canSearchTreasure(st, region)) continue; // no treasure in a hallway without a chest
     if (isSearched(st, region, kind)) {
       const result = el("div", { class: "hero-result" }, el("b", { text: label }));
       const found = kind === "sd" ? secretDoorsFound(st, region) : 0;

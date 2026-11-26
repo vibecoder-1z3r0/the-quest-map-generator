@@ -291,3 +291,13 @@ def test_a_found_secret_door_shows_even_where_the_square_is_hidden(page):
         page, found + " st.items = [{ id: 4, x: 7, y: 9, r: 0 }]; return H.squareVisible(st, 8, 9);"
     )
     assert other is False  # only the door's own square is shown, not the corridor around it
+
+
+def test_treasure_can_be_searched_in_every_room_but_in_a_hallway_only_with_a_treasure_chest(page):
+    body = (
+        "st.zones[4] = 1; st.zones[5] = 2;"  # zone 1 on (4, 0), zone 2 on (5, 0)
+        " st.items = [{ id: 30, x: 4, y: 0, r: 0 }, { id: 40, x: 5, y: 0, r: 0 }];"
+        " return [0, 7, 26, 27, 28].map((r) => H.canSearchTreasure(st, r));"
+    )
+    # rooms A and H always; zone 1 holds a chest; zone 2 only a goblin; zone 3 is empty
+    assert run(page, body) == [True, True, True, False, False]
