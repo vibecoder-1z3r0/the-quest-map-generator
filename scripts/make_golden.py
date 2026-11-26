@@ -88,6 +88,39 @@ CASES = [
     ),
     case("series", series="The Order of the Oth", num="1", title="The Stone Tablets of Uganoth"),
     case("unicode", title="日本語 éèê", notes="Привет - hello"),
+    case("hero-view-flag", hero=True, title="Opens in hero view"),
+    case(
+        "hero-rooms-groups-and-zones",
+        hl=hl_cells({26 * 3 + 0: 6, 26 * 3 + 1: 6, 26 * 4 + 0: 15, 26 * 5 + 5: 1}),
+        legend={6: "North hallway", 15: "Last zone"},
+        rooms={
+            0: {
+                "start": True,
+                "group": 0,
+                "texts": [
+                    "The door grinds open.\nDust hangs in the air.",
+                    "84 gold coins.",
+                    "",
+                    "Hollow wall.",
+                ],
+            },
+            10: {
+                "start": False,
+                "group": 1,
+                "texts": ["Room K read aloud", "", "A pressure plate.", ""],
+            },
+            11: {"start": False, "group": 1, "texts": ["Room L read aloud", "", "", "日本語 éèê"]},
+            26: {"start": False, "group": 0, "texts": ["", "A hallway purse.", "", ""]},
+            35: {"start": False, "group": 255, "texts": ["", "", "", ""]},
+        },
+    ),
+    case(
+        "hero-play-state",
+        hero=True,
+        rooms={0: {"start": True, "group": 0, "texts": ["Start room", "", "", ""]}},
+        play={"rev": [0, 10, 26], "t": [10], "tr": [], "sd": [0, 35]},
+    ),
+    case("hero-play-state-all-hidden", hero=True, play={"rev": [], "t": [], "tr": [], "sd": []}),
 ]
 
 out = ROOT / "tests/golden/v1.json"

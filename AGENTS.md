@@ -75,7 +75,7 @@ map. It can be hosted anywhere static.
 - The format may change freely until the first tagged release; after that only versioned, additive
   changes, and old links must keep decoding (golden-link tests enforce this).
 - Show live link length; warn (message only, never block copying) above about 2,000 characters.
-- Decode defensively: bounds-check everything, cap total decompressed size at 64 KB, reject oversized
+- Decode defensively: bounds-check everything, cap total decompressed size at 256 KB, reject oversized
   fields, and show a banner then start blank on any failure.
 
 ## Board, pieces and layers

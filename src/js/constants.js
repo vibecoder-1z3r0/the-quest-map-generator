@@ -4,13 +4,29 @@ export const ROWS = 19;
 export const CELL = 32;
 export const SQUARES = COLS * ROWS;
 export const FORMAT_VERSION = 1;
-export const MAX_BODY = 65536;
+export const MAX_BODY = 262144;
 export const MAX_PAYLOAD_CHARS = 200000;
 export const MAX_ITEMS = 1024;
 export const MAX_TILES = 256;
 export const SOFT_LINK_LIMIT = 2000;
 
-export const LIMITS = { series: 160, num: 10, title: 160, intro: 2500, notes: 10000, wmText: 160, legend: 40 };
+export const LIMITS = {
+  series: 160,
+  num: 10,
+  title: 160,
+  intro: 2500,
+  notes: 10000,
+  wmText: 160,
+  legend: 40,
+  roomText: 600,
+};
+
+// Hero view regions (docs/FORMAT.md 4.7): rooms A-Z are regions 0-25, zones 1-10 are regions 26-35
+// and come from the highlight values 6-15.
+export const ROOM_REGIONS = 26;
+export const ZONE_FIRST_VALUE = 6;
+export const REGIONS = 36;
+export const ROOM_TEXT_KINDS = ["Read aloud", "Search for treasure", "Search for traps", "Search for secret doors"];
 
 // Highlight values are permanent once assigned (docs/FORMAT.md section 4.1).
 export const HIGHLIGHTS = [

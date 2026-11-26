@@ -23,6 +23,9 @@ async (payload) => {
     tiles: state.tiles.map((t) => [t.id, t.x, t.y, t.w, t.h]),
     legend: state.legend, num: state.num, title: state.title, intro: state.intro, notes: state.notes,
     wm_id: state.wmId, wm_text: state.wmText, series: state.series, warnings,
+    hero: state.hero,
+    rooms: Object.fromEntries(Object.entries(state.rooms).map(([r, v]) => [r, { start: v.start, group: v.group, texts: v.texts }])),
+    play: state.play && Object.fromEntries(Object.entries(state.play).map(([k, v]) => [k, [...v].sort((a, b) => a - b)])),
   };
 }
 """
@@ -33,6 +36,7 @@ def as_ref_state(js: dict) -> dict:
     out["legend"] = {int(k): v for k, v in out["legend"].items()}
     out["items"] = [tuple(i) for i in out["items"]]
     out["tiles"] = [tuple(t) for t in out["tiles"]]
+    out["rooms"] = {int(k): v for k, v in out["rooms"].items()}
     return out
 
 
@@ -42,6 +46,10 @@ def normalized(st: dict) -> dict:
     st["items"] = [tuple(i) for i in st["items"]]
     st["tiles"] = [tuple(t) for t in st["tiles"]]
     st.setdefault("series", "")  # links made before the series field existed have none
+    st.setdefault("hero", False)  # ... and before hero view existed
+    st.setdefault("rooms", {})
+    st.setdefault("play", None)
+    st["rooms"] = {int(k): v for k, v in st["rooms"].items()}
     return st
 
 
@@ -277,3 +285,141 @@ def test_the_js_encoder_writes_the_series_in_the_spec_position(page):
         "async () => { QMG.app.state.series = 'Oth'; return QMG.encodeState(QMG.app.state); }"
     )
     assert ref.decode(payload)["series"] == "Oth"
+
+
+# ---------------------------------------------------------------- hero view data (FORMAT.md 4.7, 4.8)
+def hero_state() -> dict:
+    st = ref.blank()
+    st["hero"] = True
+    st["rooms"] = {
+        0: {
+            "start": True,
+            "group": 0,
+            "texts": ["Read aloud A", "Treasure A", "Traps A", "Secret A"],
+        },
+        10: {"start": False, "group": 1, "texts": ["K", "", "", ""]},
+        11: {"start": False, "group": 1, "texts": ["L", "", "", ""]},
+        26: {"start": False, "group": 0, "texts": ["", "Zone 1 purse", "", ""]},
+    }
+    st["play"] = {"rev": [0, 10], "t": [10], "tr": [], "sd": [26]}
+    return st
+
+
+def body_of(payload: str) -> bytes:
+    data = base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))
+    return zlib.decompress(data[1:], -15)
+
+
+def test_hero_data_decodes_to_what_the_reference_encoded(page):
+    st = hero_state()
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    assert as_ref_state(js) == normalized(st)
+    assert js["warnings"] == []
+
+
+def test_hero_data_roundtrips_through_the_js_encoder(page):
+    st = hero_state()
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert normalized(ref.decode(payload)) == normalized(st)
+
+
+def test_states_without_hero_data_encode_exactly_as_before(page):
+    st = ref.blank()
+    st["title"] = "Plain quest"
+    st["series"] = "Oth"
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert body_of(payload) == ref.encode_body(
+        st
+    )  # no trailing hero bytes, links stay as short as before
+
+
+def test_no_play_state_and_an_explicit_empty_one_are_different_and_both_survive(page):
+    for play in (None, {"rev": [], "t": [], "tr": [], "sd": []}):
+        st = hero_state()
+        st["play"] = play
+        payload = page.evaluate(
+            "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+            ref.encode(st),
+        )
+        assert ref.decode(payload)["play"] == play
+
+
+def test_a_truncated_play_state_is_refused(page):
+    body = ref.encode_body(hero_state())
+    with pytest.raises(Exception, match="truncated"):
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(body[:-3]))
+
+
+def test_too_many_room_records_are_refused(page):
+    st = ref.blank()
+    body = ref.encode_body(st) + ref.varint(37)
+    with pytest.raises(Exception, match="corrupt"):
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(body))
+
+
+def test_room_records_for_unknown_regions_are_skipped_with_a_warning(page):
+    st = ref.blank()
+    st["rooms"] = {5: {"start": True, "group": 0, "texts": ["ok", "", "", ""]}}
+    body = bytearray(ref.encode_body(st))
+    # add a second record for region 40 (there are only 36 regions): bump the count, append a record
+    body[len(ref.encode_body(ref.blank())) :] = ref.varint(2) + bytes(
+        body[len(ref.encode_body(ref.blank())) + 1 :]
+    )
+    body += bytes([40, 1, 0]) + b"".join(ref.string("") for _ in range(4))
+    js = page.evaluate(DECODE_JS, ref.raw_payload(bytes(body)))
+    assert list(js["rooms"]) == ["5"]
+    assert any("room" in w and "skipped" in w for w in js["warnings"])
+
+
+def test_room_texts_are_limited_to_600_characters_and_filtered(page):
+    st = ref.blank()
+    st["rooms"] = {
+        3: {"start": False, "group": 0, "texts": ["<b>" + "x" * 700 + "</b>", "ok", "", ""]}
+    }
+    js = page.evaluate(DECODE_JS, ref.encode(st))
+    text = js["rooms"]["3"]["texts"][0]
+    assert len(text) == 600 and "<" not in text
+    assert js["rooms"]["3"]["texts"][1] == "ok"
+    assert any("shortened" in w for w in js["warnings"])
+    assert any("removed" in w for w in js["warnings"])
+
+
+def test_a_duplicate_room_record_keeps_the_last_one(page):
+    st = ref.blank()
+    one = bytes([4, 0, 0]) + ref.string("first") + b"".join(ref.string("") for _ in range(3))
+    two = bytes([4, 1, 0]) + ref.string("second") + b"".join(ref.string("") for _ in range(3))
+    body = ref.encode_body(st) + ref.varint(2) + one + two
+    js = page.evaluate(DECODE_JS, ref.raw_payload(body))
+    assert js["rooms"]["4"]["texts"][0] == "second" and js["rooms"]["4"]["start"] is True
+
+
+def test_a_full_set_of_room_texts_fits_in_a_link(page):
+    st = ref.blank()
+    words = (
+        "the door grinds open and dust hangs in the torchlight above the old stone floor ".split()
+    )
+    st["rooms"] = {
+        region: {
+            "start": False,
+            "group": 0,
+            "texts": [
+                " ".join(words[(region + k + i) % len(words)] for i in range(120))[:600]
+                for k in range(4)
+            ],
+        }
+        for region in range(ref.REGIONS)
+    }
+    payload = ref.encode(st)
+    js = page.evaluate(DECODE_JS, payload)
+    assert len(js["rooms"]) == 36 and js["warnings"] == []
+    again = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        payload,
+    )
+    assert ref.decode(again)["rooms"] == st["rooms"]
