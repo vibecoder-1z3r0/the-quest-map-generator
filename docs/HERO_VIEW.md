@@ -1,8 +1,8 @@
-# Hero view (designed, not built)
+# Hero view (design record)
 
-**Status: design agreed with the owner, nothing implemented yet.** This replaces the older tabled
-"fog of war" idea in `AGENTS.md`. When it is built, `docs/FORMAT.md` and `AGENTS.md` get the
-byte-level details and the UI rules, and this file shrinks to history.
+**Status: built.** This file records the decisions the owner made and why. The byte layout is in
+`docs/FORMAT.md` (4.7 and 4.8) and the behavior is summarized in `AGENTS.md` and the README; where this
+file and the code differ, the code and `FORMAT.md` win.
 
 Hero view is a second way to look at the same quest: the map starts hidden, and the heroes reveal it
 room by room. The game itself is still played at the table. The site only shows what the quest
@@ -124,13 +124,10 @@ Real examples from quest 1: the secret door in the corridor between rooms H and 
 either room's search; the one at the left edge touches room L; the one inside room K belongs to K; the
 one at the bottom touches room S.
 
-## Still open
+## Notes since it was built
 
-Nothing the owner has to decide. Details for the build:
-- The authoring screens: a "Hero view zones" palette section for painting zones (possibly with a fill
-  tool that stops at walls and at other zones), and the collapsible room and zone card (revealed at the
-  start, group chooser, four texts with a 600 character counter, a live total counter, a badge on
-  grouped rooms and a dot on rooms and zones that have text). Mockups were shown to the owner.
-- The exact byte layout for the room and zone data, the play state and the view flag (goes into
-  `docs/FORMAT.md` when it is built), with golden links and a check that old links still decode.
-- A possible later addition: an editor warning for a secret door that touches no room or zone.
+- Zones started out as highlight values 6 to 15. Trying it on the owner's quest showed that stone and
+  trap-highlighted corridor squares then could not be in a zone and gave the map away, so zones became
+  their own layer (decision 14).
+- A possible later addition: an editor warning for a secret door that touches no room or zone (it can
+  never be revealed in hero view).
