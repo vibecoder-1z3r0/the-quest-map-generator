@@ -206,19 +206,23 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 195 | Hero view shouldn't have a print.  The desire is to have that on a dev… | 06:10:11 | 1m 40s | 1m 22s | 32 | 10,660 | 9,259 | 10,690,682 |
 | 196 | Merged, deleted the branch | 06:13:13 | 6s | 9m 28s | 6 | 421 | 335 | 1,651,364 |
 | 197 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#AbVXa28bRRT… | 06:22:47 | 32s | 2s | 16 | 10,428 | 41,928 | 4,154,508 |
-| 198 | New link for quest 1 with zoning hallways | 06:23:21 | 1m 52s | — | 42 | 14,929 | 24,084 | 11,818,564 |
+| 198 | New link for quest 1 with zoning hallways | 06:23:21 | 2m 1s | 0s | 44 | 15,470 | 25,914 | 12,668,648 |
+| 199 | There's a bug... Non zoned halls are shown in hero view in plain sight… | 06:25:22 | 37s | 6h 7m ⏳ | 22 | 12,167 | 11,449 | 6,825,090 |
+| 200 | Is zargon's info the same? | 12:33:21 | 15s | 29m 52s ⏳ | 14 | 2,545 | 2,394,617 | 1,037,153 |
+| 201 | ok here's the correct updated link:  https://vibecoder-1z3r0.github.io… | 13:03:28 | 1m 46s | 1m 24s | 16 | 28,292 | 24,725 | 6,895,779 |
+| 202 | there is a bug when clicking a corridor zone, it shows the zone highli… | 13:06:38 | 7m 36s | — | 76 | 57,033 | 69,452 | 28,510,698 |
 
-**Total turns:** 198  
-**Total agent time spent (excl. flagged):** 3h 15m  
-**Total human think time (excl. outliers):** 4h 11m  
+**Total turns:** 202  
+**Total agent time spent (excl. flagged):** 3h 25m  
+**Total human think time (excl. outliers):** 4h 13m  
 **Average human think time (excl. outliers):** 1m 27s  
-**Think-time outliers (> 15 min):** 24  
-**Total input tokens:** 4,543  
-**Total output tokens:** 2,320,975  
-**Total cache-write tokens:** 19,358,933  
-**Total cache-read tokens:** 848,245,459  
+**Think-time outliers (> 15 min):** 26  
+**Total input tokens:** 4,673  
+**Total output tokens:** 2,421,553  
+**Total cache-write tokens:** 21,861,006  
+**Total cache-read tokens:** 892,364,263  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193 had a 'human think time' over 15 min (total 163h 58m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200 had a 'human think time' over 15 min (total 170h 35m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).

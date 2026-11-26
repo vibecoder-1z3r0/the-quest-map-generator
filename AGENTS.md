@@ -169,7 +169,9 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
 - Hero view hides: markers, trap pieces, Zargon's highlight colors, secret and hidden doors until their
   owner's secret-door search, and everything in a hidden room or zone. One flat opaque fog covers hidden
   squares (solid stone included, shown only once its region is revealed); doors show if either side is
-  visible; squares in no region stay visible. Zargon's notes are never shown; the quest text, intro and
+  visible; a square in no room or zone is solid stone to the heroes (fogged for good, so is anything on it;
+  tapping it and pressing Reveal says "Nothing to reveal. This is solid stone."); a hallway tap highlights
+  only the tapped square, never the zone; a found secret door shows on its own square. Zargon's notes are never shown; the quest text, intro and
   wandering monster are.
 - Hero controls: tap a region, **Reveal** / **Hide this room again** / **Reset game** each confirm in a
   dialog; **Zargon view** confirms with a warning. Editor: a collapsible card follows the pinned square

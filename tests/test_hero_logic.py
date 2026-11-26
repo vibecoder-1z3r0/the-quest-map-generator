@@ -123,7 +123,7 @@ def test_texts_of_a_group_are_joined_in_region_order_skipping_empty_ones(page):
     assert r[2] == {"readAloud": "", "treasure": "", "traps": "", "secretDoors": ""}
 
 
-def test_squares_are_visible_when_unzoned_corridor_or_in_a_revealed_region(page):
+def test_squares_are_visible_only_in_a_revealed_region_and_unzoned_squares_never_are(page):
     r = run(
         page,
         """
@@ -133,7 +133,13 @@ def test_squares_are_visible_when_unzoned_corridor_or_in_a_revealed_region(page)
         return out.concat([H.squareVisible(st, 5, 0), H.squareVisible(st, 2, 2)]);
         """,
     )
-    assert r == [True, False, False, True, True]
+    assert r == [
+        False,
+        False,
+        False,
+        True,
+        True,
+    ]  # a square in no room or zone is solid stone: hidden for good
 
 
 def piece_visibility(page, items, setup=""):
@@ -155,9 +161,12 @@ def test_ordinary_pieces_follow_their_room_but_markers_and_traps_are_never_shown
     assert shown == [True, True, False, False]
 
 
-def test_pieces_in_unzoned_corridor_are_always_shown_and_zoned_ones_follow_the_zone(page):
+def test_pieces_in_an_unzoned_corridor_are_never_shown_and_zoned_ones_follow_the_zone(page):
     items = [[GOBLIN, 3, 0, 0]]
-    assert piece_visibility(page, items) == [True]
+    assert piece_visibility(page, items) == [False]
+    assert piece_visibility(page, items, "H.revealRegion(st, 0);") == [
+        False
+    ]  # revealing a room does not help
     zoned = "st.zones[3] = 1;"  # zone 1 on (3, 0)
     assert piece_visibility(page, items, zoned) == [False]
     assert piece_visibility(page, items, zoned + "H.revealRegion(st, 26);") == [True]
@@ -165,7 +174,9 @@ def test_pieces_in_unzoned_corridor_are_always_shown_and_zoned_ones_follow_the_z
 
 def test_a_door_shows_when_either_side_is_visible(page):
     west_door = [DOOR, 1, 2, 3]  # west edge of room A: between corridor (0, 2) and room A (1, 2)
-    assert piece_visibility(page, [west_door]) == [True]  # unzoned corridor side is visible
+    assert piece_visibility(page, [west_door]) == [
+        False
+    ]  # the corridor side is solid stone, the room hidden
     hidden_both = "st.zones[2 * 26 + 0] = 1;"  # make the corridor square a hidden zone
     assert piece_visibility(page, [west_door], hidden_both) == [False]
     assert piece_visibility(page, [west_door], hidden_both + "H.revealRegion(st, 0);") == [True]
@@ -218,17 +229,12 @@ def test_stone_shows_only_where_its_square_is_visible(page):
         page,
         """
         st.hl[2 * 26 + 2] = 1; st.hl[0 * 26 + 3] = 1;
-        const before = [H.stoneVisible(st, 2, 2), H.stoneVisible(st, 3, 0), H.stoneVisible(st, 6, 0)];
+        const before = [H.stoneVisible(st, 2, 2), H.stoneVisible(st, 3, 0), H.stoneVisible(st, 6, 0)];  // 3,0 is unzoned
         H.revealRegion(st, 0);
         return before.concat([H.stoneVisible(st, 2, 2)]);
         """,
     )
-    assert r == [
-        False,
-        True,
-        False,
-        True,
-    ]  # room stone hidden until revealed; unzoned corridor stone shows
+    assert r == [False, False, False, True]  # stone shows only once its room or zone is revealed
 
 
 def test_stone_and_a_trap_highlight_can_sit_in_a_zone_and_stay_hidden_with_it(page):
@@ -245,3 +251,24 @@ def test_stone_and_a_trap_highlight_can_sit_in_a_zone_and_stay_hidden_with_it(pa
         """,
     )
     assert r == [False, False, True, True]
+
+
+def test_a_found_secret_door_shows_even_where_the_square_is_hidden(page):
+    tile = [SECRET_DOOR, 7, 9, 0]  # on an unzoned corridor square between rooms H and N
+    found = f"H.revealRegion(st, {H}); H.searchRegion(st, {H}, 'sd');"
+    assert piece_visibility(page, [tile], found) == [True]
+    assert (
+        run(
+            page,
+            found + " st.items = [{ id: 4, x: 7, y: 9, r: 0 }]; return H.squareVisible(st, 7, 9);",
+        )
+        is True
+    )
+    assert (
+        run(page, "st.items = [{ id: 4, x: 7, y: 9, r: 0 }]; return H.squareVisible(st, 7, 9);")
+        is False
+    )
+    other = run(
+        page, found + " st.items = [{ id: 4, x: 7, y: 9, r: 0 }]; return H.squareVisible(st, 8, 9);"
+    )
+    assert other is False  # only the door's own square is shown, not the corridor around it

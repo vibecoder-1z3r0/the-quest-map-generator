@@ -63,9 +63,16 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
       revealed. A **door is shown when a room or zone on either side of it is revealed.** Secret and
       hidden doors are the exception: only the secret-door search shows them, and a secret door in a
       zone belongs to that zone. Traps and markers are never shown.
-    - **Squares with no zone stay visible, and so do the pieces on them,** because nothing could ever
-      reveal them. An author who wants a hallway hidden paints it (stone and highlighted squares can be
-      painted too).
+    - **A square in no room and no zone is solid stone to the heroes.** It is fogged like everything
+      hidden, for good, and so is anything standing on it, because nothing can reveal it. Tapping one
+      looks like tapping any hidden hallway: the panel says "Hallway" and offers **Reveal**, and pressing
+      it shows a message, "Nothing to reveal. This is solid stone." (no question first, and nothing
+      changes). Heroes therefore cannot tell a hallway from solid stone until they try it. An author who
+      wants a hallway to be walkable paints it into a zone.
+    - **A highlighted tap shows only the tapped square.** Tapping a hallway or zone highlights just that
+      square, never the whole zone, because the extent of a zone would give the map away. A room is
+      highlighted whole (its shape is printed on the board).
+    - **A found secret door shows on its own square,** even when that square is otherwise hidden fog.
     - **Hero view never shows a zone name.** A name could give something away, so a fogged hallway is
       just dark and a revealed zone's panel says "Hallway". Zone names exist only for the author (the
       editor card and the legend).
@@ -84,9 +91,7 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     heroes cannot tell which rooms are in the quest. Tapping it works like any room: it can be
     revealed, and revealing it simply shows solid stone (it has no texts worth showing). In a room or
     zone that is only partly stone, the stone squares are hidden with the rest and show as stone once
-    that room or zone is revealed. Stone that belongs to no room or zone has nothing that can hide it,
-    so it is always shown: an author who does not want heroes to see where stone is paints those
-    squares into a zone (a zone can be painted over stone).
+    that room or zone is revealed. Stone in no room or zone is simply fogged for good (see decision 14).
 12. **Authoring: a collapsible room card driven by the pinned square, plus a room chooser.** In the
     editor, pinning a square with the Select tool opens the card for that square's room under
     "What's here" (collapsed until it is needed; open or closed is a view setting, not stored in the

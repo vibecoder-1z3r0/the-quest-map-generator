@@ -100,10 +100,24 @@ export function regionTexts(st, region) {
 }
 
 // ---------------------------------------------------------------- what the heroes can see
-// A square is visible when it belongs to no region (plain corridor) or its region is revealed.
+// A square is visible when its room or zone is revealed, or a secret door found there stands on it. A
+// square in no room or zone is solid stone to the heroes: fogged for good, and nothing can reveal it.
 export function squareVisible(st, x, y) {
   const region = regionAt(st, x, y);
-  return region === null || isRevealed(st, region);
+  if (region !== null && isRevealed(st, region)) return true;
+  return foundSecretSquare(st, x, y);
+}
+
+// Whether a secret door or hidden door that has been found stands on this square. The square shows on
+// its own, so a door found in otherwise hidden corridor can be seen.
+function foundSecretSquare(st, x, y) {
+  return st.items.some(
+    (item) =>
+      (item.id === 2 || item.id === 4) &&
+      item.x === x &&
+      item.y === y &&
+      secretOwners(st, item).some((region) => isSearched(st, region, "sd")),
+  );
 }
 
 // Solid stone (grey) shows only where its square is visible, so hidden stone looks like any hidden area.
