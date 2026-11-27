@@ -230,19 +230,21 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 219 | Must've been an old link | 20:56:33 | 2s | 21s | 4 | 129 | 131,297 | 59,953 |
 | 220 | PR | 20:56:56 | 6s | 36s | 6 | 551 | 647 | 382,635 |
 | 221 | MAD | 20:57:38 | 4s | 3h 42m ⏳ | 6 | 217 | 265 | 383,985 |
-| 222 | We need like an unselect type tool next to select / erase | 00:39:52 | 2m 54s | — | 42 | 7,955 | 288,256 | 3,264,862 |
+| 222 | We need like an unselect type tool next to select / erase | 00:39:52 | 3m 1s | 17m 41s ⏳ | 44 | 8,227 | 289,299 | 3,467,507 |
+| 223 | Deselect, yes | 01:00:33 | 1s | 24s | 4 | 72 | 9,709 | 203,960 |
+| 224 | Updated 2nd quest - https://vibecoder-1z3r0.github.io/the-quest-map-ge… | 01:00:58 | 17s | — | 20 | 4,704 | 7,050 | 1,719,970 |
 
-**Total turns:** 222  
-**Total agent time spent (excl. flagged):** 3h 50m  
+**Total turns:** 224  
+**Total agent time spent (excl. flagged):** 3h 51m  
 **Total human think time (excl. outliers):** 4h 21m  
 **Average human think time (excl. outliers):** 1m 23s  
-**Think-time outliers (> 15 min):** 33  
-**Total input tokens:** 5,127  
-**Total output tokens:** 2,509,846  
-**Total cache-write tokens:** 22,826,682  
-**Total cache-read tokens:** 920,713,846  
+**Think-time outliers (> 15 min):** 34  
+**Total input tokens:** 5,153  
+**Total output tokens:** 2,514,894  
+**Total cache-write tokens:** 22,844,484  
+**Total cache-read tokens:** 922,840,421  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221 had a 'human think time' over 15 min (total 181h 30m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222 had a 'human think time' over 15 min (total 181h 48m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
