@@ -213,7 +213,7 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
   themselves, others print with the default light theme (enforce in `@media print`). The theme is stored in the URL (theme id in the flags
   byte, `docs/FORMAT.md`); toggling it updates the hash but is not an undo step.
 - "What's here" panel: hover shows, click/tap pins. Lists everything in the square top to bottom
-  (pieces with footprint, anchor, rotation; the highlight) with Bring forward, Send back, Rotate,
+  (the room letter, the highlight and zone, pieces with footprint, anchor, rotation) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
   **The panel follows the selected piece**: moving it (panel buttons, arrow keys, drag) or rotating it re-pins
   the panel to the piece's new square, so it never loses the piece. Placing a piece selects it and leaves the Place
