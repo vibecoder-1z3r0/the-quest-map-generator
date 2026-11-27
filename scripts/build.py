@@ -185,9 +185,12 @@ def board_svg(rows: list[str]) -> str:
     for y, row in enumerate(rows):
         for x, ch in enumerate(row):
             fill = CORRIDOR_COLOR if ch == "." else SOLID_COLOR if ch == "#" else colors[ch]
+            # A room's tint can be turned off for print: the CSS variable --room-plain is inherited
+            # from the board into this copy of the art and replaces the tint when it is set.
+            style = f' style="fill:var(--room-plain,{fill})"' if ch.isalpha() else ""
             tiles.append(
                 f'<rect x="{x * CELL}" y="{y * CELL}" '
-                f'width="{CELL}" height="{CELL}" fill="{fill}"/>'
+                f'width="{CELL}" height="{CELL}" fill="{fill}"{style}/>'
             )
             for nx, ny, edge in (
                 (x + 1, y, f"M{(x + 1) * CELL} {y * CELL}v{CELL}"),

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import io
+
+import reference as ref
 from conftest import (
     cell_center,
     click_cell,
@@ -11,6 +14,7 @@ from conftest import (
     piece_id,
     settle,
 )
+from PIL import Image
 
 
 def state(page, expr):
@@ -790,3 +794,81 @@ def test_drawing_a_tile_moves_a_pinned_panel_to_the_tile(page):
     pick_tile(page)
     drag_cells(page, 8, 8, 9, 9)
     assert panel_square(page) == "Square I9"
+
+
+# ---------------------------------------------------------------- print: zones and room colors
+CORRIDOR = (226, 217, 198)  # the plain board color rooms print in without their tints
+
+
+def zoned_map(page, site):
+    st = ref.blank()
+    st["zones"][100] = 2  # a zone square (F4 .. any corridor or room square will do)
+    st["hl"][101] = 1  # solid stone: a highlight that must always print
+    open_link(page, site, ref.encode(st))
+
+
+def room_tint(page):
+    """The color actually painted at the middle of an empty square of room E (what a printer gets)."""
+    x, y = cell_center(page, 18, 2)
+    png = page.screenshot(clip={"x": x - 2, "y": y - 2, "width": 4, "height": 4})
+    return Image.open(io.BytesIO(png)).convert("RGB").getpixel((1, 1))
+
+
+def test_the_print_options_for_zones_and_room_colors_are_on_by_default(page):
+    assert page.locator("#po-zones").is_checked()
+    assert page.locator("#po-rooms").is_checked()
+
+
+def test_there_is_no_print_option_for_highlights(page):
+    labels = page.locator(".printopts").inner_text().lower()
+    assert "zone" in labels and "room" in labels and "highlight" not in labels
+
+
+def test_the_print_options_show_on_screen_but_are_not_printed(page):
+    assert page.locator(".printopts").is_visible()
+    page.emulate_media(media="print")
+    assert page.locator(".printopts").is_hidden()
+
+
+def test_zones_print_unless_their_option_is_off_and_the_zone_legend_goes_with_them(page, site):
+    zoned_map(page, site)
+    assert page.locator("#legend li.legend-zone").count() == 1
+    page.emulate_media(media="print")
+    assert (
+        page.evaluate("getComputedStyle(document.querySelector('#layer-zones')).display") != "none"
+    )
+    assert page.locator("#legend li.legend-zone").is_visible()
+    page.emulate_media(media="screen")
+    page.uncheck("#po-zones")
+    page.emulate_media(media="print")
+    assert (
+        page.evaluate("getComputedStyle(document.querySelector('#layer-zones')).display") == "none"
+    )
+    assert page.locator("#legend li.legend-zone").is_hidden()
+
+
+def test_zones_still_show_on_screen_when_their_print_option_is_off(page, site):
+    zoned_map(page, site)
+    page.uncheck("#po-zones")
+    assert (
+        page.evaluate("getComputedStyle(document.querySelector('#layer-zones')).display") != "none"
+    )
+
+
+def test_room_tints_print_unless_their_option_is_off(page):
+    page.emulate_media(media="print")
+    assert room_tint(page) != CORRIDOR
+    page.emulate_media(media="screen")
+    page.uncheck("#po-rooms")
+    assert room_tint(page) != CORRIDOR  # the screen keeps its colors
+    page.emulate_media(media="print")
+    assert room_tint(page) == CORRIDOR
+
+
+def test_highlights_print_whatever_the_other_options_say(page, site):
+    zoned_map(page, site)
+    page.uncheck("#po-zones")
+    page.uncheck("#po-rooms")
+    page.emulate_media(media="print")
+    assert page.evaluate("getComputedStyle(document.querySelector('#layer-hl')).display") != "none"
+    assert page.evaluate("document.querySelectorAll('#layer-hl *').length") > 0

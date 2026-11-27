@@ -237,7 +237,9 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
 - **Print view (portrait, one page for a typical quest), in the order of the official books:** the
   map (row/column markings hidden in print), then series and title, the introduction (no heading),
   Zargon's notes (only when there are any), the wandering monster, then a compact piece key and very
-  small statistics (about 8pt). Each printable section has a **Print checkbox next to its title**
+  small statistics (about 8pt). Under the map (above its legend), **Zones** and **Room colors** checkboxes choose whether the
+  zone tints (and their legend entries) and the room tints print; highlights always print (solid stone and
+  traps carry meaning), and a custom `board.svg` keeps its own room colors. Each printable section has a **Print checkbox next to its title**
   (Introduction, Pieces on this map with a "Monsters only" option, Quest stats, Highlight legend,
   Zargon's notes). These choices are not stored in the link (the flags byte has spare bits if that
   is ever wanted).
