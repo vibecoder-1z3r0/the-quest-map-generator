@@ -3,8 +3,7 @@ export const COLS = 26;
 export const ROWS = 19;
 export const CELL = 32;
 export const SQUARES = COLS * ROWS;
-export const FORMAT_VERSION = 1; // written whenever a quest fits it
-export const FORMAT_VERSION_2 = 2; // written only for more than ten zones (docs/FORMAT.md section 7)
+export const FORMAT_VERSION = 1;
 export const MAX_BODY = 262144;
 export const MAX_PAYLOAD_CHARS = 200000;
 export const MAX_ITEMS = 1024;
@@ -22,12 +21,10 @@ export const LIMITS = {
   roomText: 600,
 };
 
-// Hero view regions (docs/FORMAT.md 4.7): rooms A-Z are regions 0-25, zones 1-10 are regions 26-35
-// and come from the highlight values 6-15.
+// Hero view regions (docs/FORMAT.md 4.7): rooms A-Z are regions 0-25, zones 1-30 are regions 26-55.
 export const ROOM_REGIONS = 26;
 export const ZONE_FIRST_VALUE = 6;
-export const REGIONS = 36; // version 1
-export const REGIONS_V2 = 56; // version 2: zones 1-30 are regions 26-55
+export const REGIONS = 56; // rooms A-Z are regions 0-25, zones 1-30 are regions 26-55
 export const ZONE_MAX = 30;
 export const ZONE_MIN = 10; // the zones every quest has
 export const LEGEND_KEY_MAX = 35; // zone n is named by legend entry 5 + n

@@ -159,15 +159,16 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
 - **Regions** are the board's rooms (A-Z are regions 0-25) and **zones** (regions 26-55): a quest has ten
   zones and can add up to thirty with **Add zone** / **Remove zone** under the zone palette (the count is
   not stored: it is the highest zone used, never under ten; removing a used zone asks first and clears
-  its squares, record and name). More than ten zones needs link **format version 2**, which an encoder
-  writes only then (`docs/FORMAT.md` 4.9), so every other link stays identical. Zones are
+  its squares, record and name). The link format is still version 1: it was widened in place
+  for 30 zones (zone layer one byte per square, 56 regions, 28-byte play state), so links made before
+  that change that have hero data no longer decode and must be converted (see the git history). Zones are
   a separate per-square layer (not highlights), painted with the Hero view zones palette, so any square
   can be in a zone; zone names are legend entries 6-35 and are never shown to heroes. `src/js/hero.js`
   holds the pure rules (regions, groups, reveal/hide/search/reset, visibility, secret door ownership,
   merged texts) and is exposed to tests as `QMG.hero`.
 - Per region (optional records): revealed at the start, a group (regions with the same group reveal
   together), and four texts of up to 600 characters: read aloud, treasure, traps, secret doors.
-- **Play state** (revealed and searched regions) lives in the link, 20 bytes, and replaces the start
+- **Play state** (revealed and searched regions) lives in the link, 28 bytes, and replaces the start
   state once present. Play changes the link in place (`replaceState`): no history entries and no undo.
   A quest without hero data keeps exactly the link it always had.
 - Hero view hides: markers, trap pieces, Zargon's highlight colors, secret and hidden doors until their
