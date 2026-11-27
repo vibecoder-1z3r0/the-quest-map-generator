@@ -237,19 +237,24 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 226 | Ran out of zones.... lol https://vibecoder-1z3r0.github.io/the-quest-m… | 03:57:36 | 12m 26s | 3m 36s | 166 | 85,341 | 457,241 | 20,578,351 |
 | 227 | Wait... you've moved to v2 for links?  What happens with my existing l… | 04:13:38 | 3s | 1m 43s | 4 | 384 | 27 | 288,135 |
 | 228 | Why do we need v2? | 04:15:25 | 6s | 59s | 8 | 1,386 | 20 | 577,096 |
-| 229 | Yes let's do an in place conversion | 04:16:30 | 4m 48s | — | 58 | 25,941 | 37,670 | 8,062,292 |
+| 229 | Yes let's do an in place conversion | 04:16:30 | 4m 57s | 15m 54s ⏳ | 62 | 27,333 | 40,220 | 8,680,850 |
+| 230 | What happens if there's a link that doesn't work? | 04:37:21 | 13s | 59s | 12 | 2,276 | 21,244 | 1,264,754 |
+| 231 | You updated the links in the README? | 04:38:32 | 3s | 21s | 8 | 698 | 22 | 644,690 |
+| 232 | PR | 04:38:57 | 7s | 40s | 6 | 726 | 671 | 645,418 |
+| 233 | MAD | 04:39:44 | 4s | 10h 46m ⏳ | 6 | 279 | 266 | 646,987 |
+| 234 | When I select a square in a room the what's here area should have the … | 15:26:23 | 2m 2s | — | 36 | 4,713 | 542,521 | 4,037,307 |
 
-**Total turns:** 229  
-**Total agent time spent (excl. flagged):** 4h 11m  
-**Total human think time (excl. outliers):** 4h 32m  
-**Average human think time (excl. outliers):** 1m 25s  
-**Think-time outliers (> 15 min):** 35  
-**Total input tokens:** 5,401  
-**Total output tokens:** 2,629,866  
-**Total cache-write tokens:** 23,342,695  
-**Total cache-read tokens:** 953,440,616  
+**Total turns:** 234  
+**Total agent time spent (excl. flagged):** 4h 14m  
+**Total human think time (excl. outliers):** 4h 34m  
+**Average human think time (excl. outliers):** 1m 24s  
+**Think-time outliers (> 15 min):** 37  
+**Total input tokens:** 5,473  
+**Total output tokens:** 2,639,950  
+**Total cache-write tokens:** 23,909,969  
+**Total cache-read tokens:** 961,298,330  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225 had a 'human think time' over 15 min (total 184h 37m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225, 229, 233 had a 'human think time' over 15 min (total 195h 40m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).

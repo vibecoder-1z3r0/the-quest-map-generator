@@ -1,4 +1,5 @@
 // The editor: tools, pointer handling, inspector, quest fields, history and URL sync.
+import { isRoom, roomAt } from "./board.js";
 import { BY_ID, CATALOG, GROUPS, MONSTERS, footprint } from "./catalog.js";
 import {
   CELL,
@@ -456,6 +457,8 @@ function renderInspector() {
   const hl = highlightAt(app.state, cell.x, cell.y);
   const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
   box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
+  const room = roomAt(cell.x, cell.y);
+  if (isRoom(room)) box.append(el("div", { class: "meta", text: `Room: ${room}` }));
   box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
   const zone = ZONES[app.state.zones[cell.y * COLS + cell.x] - 1];
   if (zone) box.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));

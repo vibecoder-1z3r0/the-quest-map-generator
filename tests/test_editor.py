@@ -119,6 +119,24 @@ def test_clicking_a_stacked_square_again_cycles_down_the_stack(page):
     assert first != second
 
 
+def pin(page, x, y):
+    page.evaluate("window.scrollTo(0, 0)")
+    click_cell(page, x, y)
+
+
+def test_the_whats_here_panel_names_the_room_of_the_pinned_square(page):
+    pin(page, 2, 2)  # inside room A (x 1-4, y 1-3)
+    text = page.locator("#inspector").inner_text()
+    assert "Room: A" in text
+    pin(page, 11, 8)  # inside room K (x 10-15, y 7-12)
+    assert "Room: K" in page.locator("#inspector").inner_text()
+
+
+def test_the_whats_here_panel_names_no_room_for_a_corridor_square(page):
+    pin(page, 0, 0)
+    assert "Room" not in page.locator("#inspector").inner_text().replace("Room tiles", "")
+
+
 def test_inspector_lists_the_stack_top_first_and_can_reorder(page):
     place(page, "goblin", 5, 5)
     place(page, "orc", 5, 5)
