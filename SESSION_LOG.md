@@ -225,19 +225,24 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 214 | Unless there is a treasure chest... like if you make a makeshift room.… | 18:55:35 | 1m 40s | 45m 54s ⏳ | 22 | 5,176 | 5,429 | 1,402,089 |
 | 215 | Flip quest info and reveal on hero view. | 19:43:10 | 1m 46s | 2m 16s | 20 | 4,783 | 9,246 | 1,276,497 |
 | 216 | The helper text is twice in a row.  That's odd.  What else could we do… | 19:47:12 | 6s | 3m 1s | 8 | 1,240 | 52 | 326,922 |
-| 217 | Maybe more of an explanation in the header for hero view?  And could p… | 19:50:19 | 3m 29s | — | 58 | 17,117 | 34,593 | 4,646,623 |
+| 217 | Maybe more of an explanation in the header for hero view?  And could p… | 19:50:19 | 3m 36s | 0s | 60 | 17,595 | 36,029 | 4,828,010 |
+| 218 | Or on a reload (series title wipe bug) | 19:53:55 | 57s | 1h 1m ⏳ | 36 | 8,957 | 14,048 | 2,979,902 |
+| 219 | Must've been an old link | 20:56:33 | 2s | 21s | 4 | 129 | 131,297 | 59,953 |
+| 220 | PR | 20:56:56 | 6s | 36s | 6 | 551 | 647 | 382,635 |
+| 221 | MAD | 20:57:38 | 4s | 3h 42m ⏳ | 6 | 217 | 265 | 383,985 |
+| 222 | We need like an unselect type tool next to select / erase | 00:39:52 | 2m 54s | — | 42 | 7,955 | 288,256 | 3,264,862 |
 
-**Total turns:** 217  
-**Total agent time spent (excl. flagged):** 3h 46m  
-**Total human think time (excl. outliers):** 4h 20m  
-**Average human think time (excl. outliers):** 1m 25s  
-**Think-time outliers (> 15 min):** 31  
-**Total input tokens:** 5,031  
-**Total output tokens:** 2,491,559  
-**Total cache-write tokens:** 22,390,733  
-**Total cache-read tokens:** 913,461,122  
+**Total turns:** 222  
+**Total agent time spent (excl. flagged):** 3h 50m  
+**Total human think time (excl. outliers):** 4h 21m  
+**Average human think time (excl. outliers):** 1m 23s  
+**Think-time outliers (> 15 min):** 33  
+**Total input tokens:** 5,127  
+**Total output tokens:** 2,509,846  
+**Total cache-write tokens:** 22,826,682  
+**Total cache-read tokens:** 920,713,846  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214 had a 'human think time' over 15 min (total 176h 46m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221 had a 'human think time' over 15 min (total 181h 30m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).

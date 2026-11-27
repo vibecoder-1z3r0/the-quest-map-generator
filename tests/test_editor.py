@@ -591,6 +591,27 @@ def test_escape_cancels_a_tile_that_is_being_dragged_out(page):
     assert tiles(page) == [] and active_tool(page) == "select"
 
 
+def test_the_deselect_button_does_what_escape_does_without_a_keyboard(page):
+    place(page, "goblin", 5, 5)  # leaves the Place tool active and the goblin selected
+    assert page.evaluate("QMG.app.selected") >= 0
+    page.click("#deselect")
+    assert active_tool(page) == "select"
+    assert page.evaluate("QMG.app.selected") == -1 and page.evaluate("QMG.app.pinned") is None
+    assert page.locator('#tools button[data-kind="select"]').get_attribute("aria-pressed") == "true"
+    click_cell(page, 6, 6)  # the Place tool is gone: nothing more is placed
+    assert len(items(page)) == 1
+
+
+def test_the_deselect_button_sits_with_the_select_and_eraser_buttons(page):
+    names = page.locator("#tools .tgrid").first.locator("button").all_inner_texts()
+    assert [n.strip() for n in names] == ["Select", "Eraser", "Deselect"]
+
+
+def test_the_deselect_button_is_not_a_tool_that_stays_pressed(page):
+    page.click("#deselect")
+    assert page.locator("#deselect").get_attribute("aria-pressed") in (None, "false")
+
+
 def test_escape_deselects_and_unpins_in_the_select_tool(page):
     place(page, "goblin", 5, 5)
     page.keyboard.press("Escape")  # back to Select
