@@ -453,3 +453,73 @@ def test_a_truncated_zone_layer_is_refused(page):
     body = ref.encode_body(st)
     with pytest.raises(Exception, match="truncated"):
         page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(body[:-100]))
+
+
+def many_zones_state():
+    st = ref.blank()
+    st["zones"][100] = 4
+    st["zones"][101] = 17
+    st["zones"][102] = 30
+    st["legend"] = {6: "Zone one name", 22: "Seventeenth", 35: "Thirtieth"}
+    st["rooms"] = {
+        3: {"start": True, "group": 0, "texts": ["D", "", "", ""]},
+        42: {"start": False, "group": 2, "texts": ["Z17 reads", "chest", "", "door"]},
+        55: {"start": False, "group": 2, "texts": ["Z30", "", "", ""]},
+    }
+    st["play"] = {"rev": [3, 42], "t": [42], "tr": [], "sd": [55]}
+    return st
+
+
+def version_of(payload: str) -> int:
+    return base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))[0]
+
+
+def test_a_quest_with_more_than_ten_zones_is_written_as_version_two(page):
+    st = many_zones_state()
+    payload = ref.encode(st)
+    assert version_of(payload) == 2
+    js = page.evaluate(DECODE_JS, payload)
+    assert as_ref_state(js) == normalized(st)
+    assert js["warnings"] == []
+
+
+def test_a_quest_with_more_than_ten_zones_roundtrips_through_the_js_encoder(page):
+    st = many_zones_state()
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert version_of(payload) == 2
+    assert normalized(ref.decode(payload)) == normalized(st)
+    assert body_of(payload) == ref.encode_body(st)
+
+
+def test_a_quest_that_fits_version_one_is_still_written_as_version_one(page):
+    st = hero_state()  # ten zones at most, regions below 36
+    payload = page.evaluate(
+        "async (p) => { const { state } = await QMG.decodeHash(p); return QMG.encodeState(state); }",
+        ref.encode(st),
+    )
+    assert version_of(payload) == 1
+    assert body_of(payload) == ref.encode_body(st)
+
+
+def test_a_zone_name_alone_beyond_the_tenth_needs_version_two(page):
+    st = ref.blank()
+    st["legend"] = {16: "Zone 11"}
+    payload = ref.encode(st)
+    assert version_of(payload) == 2
+    assert as_ref_state(page.evaluate(DECODE_JS, payload))["legend"] == {16: "Zone 11"}
+
+
+def test_version_two_refuses_a_region_beyond_the_fifty_sixth(page):
+    body = ref.encode_body(many_zones_state())
+    with pytest.raises(Exception, match="corrupt"):
+        too_many = ref.encode_body(ref.blank()) + bytes(ref.SQUARES) + ref.varint(57)
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(too_many, 2))
+    assert body  # the valid body above is only used to prove the helper builds
+
+
+def test_an_unknown_version_is_still_refused(page):
+    with pytest.raises(Exception, match="version"):
+        page.evaluate("(p) => QMG.decodeHash(p)", ref.raw_payload(ref.encode_body(ref.blank()), 3))

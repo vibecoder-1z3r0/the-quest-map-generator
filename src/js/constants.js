@@ -3,7 +3,8 @@ export const COLS = 26;
 export const ROWS = 19;
 export const CELL = 32;
 export const SQUARES = COLS * ROWS;
-export const FORMAT_VERSION = 1;
+export const FORMAT_VERSION = 1; // written whenever a quest fits it
+export const FORMAT_VERSION_2 = 2; // written only for more than ten zones (docs/FORMAT.md section 7)
 export const MAX_BODY = 262144;
 export const MAX_PAYLOAD_CHARS = 200000;
 export const MAX_ITEMS = 1024;
@@ -25,7 +26,11 @@ export const LIMITS = {
 // and come from the highlight values 6-15.
 export const ROOM_REGIONS = 26;
 export const ZONE_FIRST_VALUE = 6;
-export const REGIONS = 36;
+export const REGIONS = 36; // version 1
+export const REGIONS_V2 = 56; // version 2: zones 1-30 are regions 26-55
+export const ZONE_MAX = 30;
+export const ZONE_MIN = 10; // the zones every quest has
+export const LEGEND_KEY_MAX = 35; // zone n is named by legend entry 5 + n
 export const ROOM_TEXT_KINDS = ["Read aloud", "Search for treasure", "Search for traps", "Search for secret doors"];
 
 // Highlight values are permanent once assigned (docs/FORMAT.md section 4.1).
@@ -50,8 +55,29 @@ export const ZONE_COLORS = [
   "#4fb3e0",
   "#c58be8",
   "#c9a66b",
+  // zones 11-30 (a quest has them only when it adds them)
+  "#0a3d62",
+  "#b5179e",
+  "#7f1d1d",
+  "#14532d",
+  "#d6a2a2",
+  "#5c3d2e",
+  "#3730a3",
+  "#0e7490",
+  "#c2410c",
+  "#6b2d5c",
+  "#64748b",
+  "#e7d9b6",
+  "#fb7185",
+  "#4d5d1f",
+  "#37474f",
+  "#e29578",
+  "#9aa5ff",
+  "#9fe3c8",
+  "#9d174d",
+  "#a8a060",
 ];
-// The ten hero view zones: their own per-square layer (docs/FORMAT.md 4.7), so a square can be solid
+// The hero view zones (ten always, up to thirty): their own per-square layer (docs/FORMAT.md 4.7), so a square can be solid
 // stone or a trap highlight and in a zone at once. Zone n is named by legend entry 5 + n.
 export const ZONES = ZONE_COLORS.map((color, i) => ({ n: i + 1, color, legendKey: ZONE_FIRST_VALUE + i, name: `Zone ${i + 1}` }));
 

@@ -156,9 +156,13 @@ and the card notes "BP not included (varies by quest)" instead of going n/a.
 
 A second view of the same link for playing a quest (`docs/HERO_VIEW.md` has the full rules and the
 decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is bit 4 of the flags byte.
-- **Regions** are the board's rooms (A-Z are regions 0-25) and ten **zones** (regions 26-35). Zones are
+- **Regions** are the board's rooms (A-Z are regions 0-25) and **zones** (regions 26-55): a quest has ten
+  zones and can add up to thirty with **Add zone** / **Remove zone** under the zone palette (the count is
+  not stored: it is the highest zone used, never under ten; removing a used zone asks first and clears
+  its squares, record and name). More than ten zones needs link **format version 2**, which an encoder
+  writes only then (`docs/FORMAT.md` 4.9), so every other link stays identical. Zones are
   a separate per-square layer (not highlights), painted with the Hero view zones palette, so any square
-  can be in a zone; zone names are legend entries 6-15 and are never shown to heroes. `src/js/hero.js`
+  can be in a zone; zone names are legend entries 6-35 and are never shown to heroes. `src/js/hero.js`
   holds the pure rules (regions, groups, reveal/hide/search/reset, visibility, secret door ownership,
   merged texts) and is exposed to tests as `QMG.hero`.
 - Per region (optional records): revealed at the start, a group (regions with the same group reveal

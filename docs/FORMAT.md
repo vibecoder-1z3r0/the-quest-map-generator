@@ -18,7 +18,9 @@ payload = base64url( [ version byte ] ++ deflateRaw( body ) )
 ```
 
 - `base64url` is RFC 4648 §5 (`-` and `_`), **no padding**.
-- The first byte is the **format version** (`1`). A decoder that does not know the version must show
+- The first byte is the **format version**: `1`, or `2` for a quest with more than ten hero view zones
+  (section 4.9). An encoder writes `1` whenever the quest fits it, so links stay byte-identical for every
+  quest that does not need `2`. A decoder that does not know the version must show
   an "unsupported link version" banner and start blank. It must never guess.
 - `deflateRaw` is raw DEFLATE (RFC 1951), no zlib or gzip header. Browsers expose it as
   `CompressionStream("deflate-raw")`.
@@ -168,7 +170,7 @@ byte 4   height         1..19
 
 Optional labels for highlight colors (for example "cyan = secret room").
 
-`varint count` (0..16), then per entry: one byte **color value** (2..15), then a **string** label
+`varint count` (0..35), then per entry: one byte **color value** (2..35; 16..35 only name zones 11..30, section 4.9), then a **string** label
 (at most 40 characters). A color appears at most once; if repeated, the last entry wins. Labels are
 filtered like single-line text (§6).
 
@@ -268,6 +270,25 @@ If this section is absent the game is at its start: exactly the regions with the
 start" flag are revealed and no search was done. If it is present it replaces that start state
 completely, so an all-zero play state means that nothing is revealed, not even the start regions.
 Fewer than 20 bytes remaining is a truncated link.
+
+### 4.9 Version 2: more than ten zones
+
+A quest can have up to **30 zones** (a quest always has at least ten, and the count itself is not
+stored: it is the highest zone that is painted, has a record or has a name, and never fewer than ten).
+An encoder writes version `2` only when something does not fit version 1: a zone above 10, a region
+record or play state bit at or above 36, or a legend entry above 15. The body is identical to version 1
+except for the hero view part:
+
+- The **zone layer** is one byte per square (494 bytes, `0` none, `1`..`30` zone n) instead of 247 packed
+  nibbles. It compresses to almost nothing. A value above 30 is read as no zone.
+- **Regions** are `0..55`: zones 1..30 are regions 26..55. The record count is at most 56 and a record at
+  or above 56 is skipped with a warning.
+- The **play state** has four masks of **7 bytes** (56 bits) instead of 5, so 28 bytes.
+- **Legend entries** are `2..35`; zone *n* is named by entry *5 + n* as before, so zones 11..30 use entries
+  16..35. A decoder accepts these keys in any version (an encoder only writes them in version 2) and the
+  legend count is at most 35.
+
+Everything else (flags, highlights, items, tiles, text, series) is unchanged.
 
 ## 5. Size limits (defensive decoding)
 

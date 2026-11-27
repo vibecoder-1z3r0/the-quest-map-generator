@@ -10,6 +10,7 @@ import {
   ROWS,
   SOFT_LINK_LIMIT,
   THEMES,
+  ZONE_MIN,
   ZONES,
 } from "./constants.js";
 import { blankState, decodeHash, encodeState } from "./format.js";
@@ -24,6 +25,7 @@ import {
   regionName,
   regionTexts,
   secretDoorsFound,
+  zoneCount,
   resetGame,
   revealRegion,
   searchRegion,
@@ -107,6 +109,8 @@ export const app = {
   heroRegion: null, // the region whose panel hero view shows
   heroCell: null, // the square the heroes tapped (only that square is highlighted for a hallway)
   editRegion: null, // the region whose hero view data card the editor shows
+  zoneShown: ZONE_MIN, // zones the editor shows: at least what the quest uses (not stored in the link)
+  zonesBuilt: 0,
   shownRegion: null,
 };
 
@@ -195,6 +199,7 @@ export async function loadFromHash() {
       showBanner([`Couldn't read a map from this link (${error.message}). Starting with a blank map.`], true);
     }
   }
+  app.zoneShown = ZONE_MIN;
   app.selected = -1;
   app.selectedTile = -1;
   app.pinned = null;
@@ -628,6 +633,7 @@ function renderPreviews() {
 }
 
 function renderAll() {
+  syncZones();
   applyMode();
   renderMap();
   renderOverlay();
@@ -1254,6 +1260,60 @@ function deselectAll() {
   renderAll();
 }
 
+// ---------------------------------------------------------------- zones (10 to 30)
+// The zones shown: ten at least, more as far as the quest uses them or the author has added them.
+function shownZones() {
+  return Math.min(ZONES.length, Math.max(zoneCount(app.state), app.zoneShown));
+}
+
+// Makes the palette's zone buttons and the legend's zone fields match the number of zones shown.
+function syncZones() {
+  const count = shownZones();
+  const grid = $("#zone-grid");
+  if (!grid || !$("#add-zone")) return;
+  if (app.zonesBuilt !== count) {
+    grid.replaceChildren();
+    for (const zone of ZONES.slice(0, count)) {
+      grid.append(toolButton(zone.name, "zone", zone.n, el("span", { class: "swatch", style: `background:${zone.color}` })));
+    }
+    grid.append(toolButton("Clear", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
+    const legend = $("#legend-edit");
+    for (const row of legend.querySelectorAll(".lg.zone")) row.remove();
+    for (const zone of ZONES.slice(0, count)) legend.append(legendRow(zone.legendKey, zone.name, zone.name, zone.color, true));
+    app.zonesBuilt = count;
+    refreshZoneButtons();
+    markTools();
+  }
+  $("#add-zone").disabled = count >= ZONES.length;
+  $("#remove-zone").disabled = count <= ZONE_MIN;
+}
+
+// Removes the last zone. A zone with squares, a record or a name asks first and then clears all three.
+async function removeLastZone() {
+  const n = shownZones();
+  if (n <= ZONE_MIN) return;
+  const zone = ZONES[n - 1];
+  const region = ROOM_REGIONS + n - 1;
+  let squares = 0;
+  for (const z of app.state.zones) if (z === n) squares += 1;
+  const record = Boolean(app.state.rooms[region]);
+  const named = Boolean(app.state.legend[zone.legendKey]);
+  if (squares || record || named) {
+    const parts = [squares ? plural(squares, "square") : "", record ? "its hero view data" : "", named ? "its name" : ""].filter(Boolean);
+    const ok = await askConfirm(`Remove ${zone.name}${named ? ` (${app.state.legend[zone.legendKey]})` : ""}? ${parts.join(", ")} will be cleared.`, "Remove");
+    if (!ok) return;
+    for (let i = 0; i < app.state.zones.length; i++) if (app.state.zones[i] === n) app.state.zones[i] = 0;
+    delete app.state.rooms[region];
+    delete app.state.legend[zone.legendKey];
+    if (app.editRegion === region) app.editRegion = null;
+    if (app.heroRegion === region) app.heroRegion = null;
+  }
+  if (app.tool.kind === "zone" && app.tool.value === n) app.tool = { kind: "select", value: 0 };
+  app.zoneShown = n - 1;
+  syncZones();
+  commit();
+}
+
 function buildPalette() {
   const root = $("#tools");
   root.replaceChildren();
@@ -1282,11 +1342,19 @@ function buildPalette() {
   root.append(hls);
   solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
   root.append(el("h2", { text: "Solid stone areas" }), solid);
-  for (const zone of ZONES) {
-    zones.append(toolButton(zone.name, "zone", zone.n, el("span", { class: "swatch", style: `background:${zone.color}` })));
-  }
-  zones.append(toolButton("Clear", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
+  zones.id = "zone-grid";
   root.append(el("h2", { text: "Hero view zones" }), zones);
+  const zoneActions = el("div", { class: "zone-actions" });
+  const addZone = el("button", { id: "add-zone", type: "button", text: "Add zone", title: "Add the next zone (up to 30)" });
+  addZone.addEventListener("click", () => {
+    app.zoneShown = Math.min(ZONES.length, shownZones() + 1);
+    syncZones();
+  });
+  const removeZone = el("button", { id: "remove-zone", type: "button", text: "Remove zone", title: "Remove the last zone (never fewer than 10)" });
+  removeZone.addEventListener("click", removeLastZone);
+  zoneActions.append(addZone, removeZone);
+  root.append(zoneActions);
+  app.zonesBuilt = 0;
   root.append(
     el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
   );
@@ -1314,30 +1382,32 @@ function markTools() {
 }
 
 // ---------------------------------------------------------------- quest fields
+function legendRow(key, name, placeholder, color, isZone = false) {
+  const input = el("input", {
+    type: "text",
+    "data-color": String(key),
+    maxlength: String(LIMITS.legend),
+    placeholder,
+    "aria-label": `Legend label for ${name}`,
+    autocomplete: "off",
+  });
+  input.value = app.state.legend[key] ?? "";
+  input.addEventListener("input", () => {
+    const cleaned = cleanText(input.value, { limit: LIMITS.legend }).text;
+    if (cleaned !== input.value) input.value = cleaned;
+    app.state.legend[key] = cleaned;
+    textChanged();
+  });
+  return el("div", { class: isZone ? "lg zone" : "lg" }, el("span", { class: "swatch", style: `background:${color}` }), input);
+}
+
 function buildLegendEditor() {
   const root = $("#legend-edit");
   root.replaceChildren();
-  // The ordinary colors, then the zones: zone n is named by legend entry 5 + n.
-  const entries = [
-    ...HIGHLIGHTS.filter((x) => x.value > 1).map((h) => ({ key: h.value, name: h.name, placeholder: h.defaultLabel || h.name, color: h.color })),
-    ...ZONES.map((z) => ({ key: z.legendKey, name: z.name, placeholder: z.name, color: z.color })),
-  ];
-  for (const entry of entries) {
-    const input = el("input", {
-      type: "text",
-      "data-color": String(entry.key),
-      maxlength: String(LIMITS.legend),
-      placeholder: entry.placeholder,
-      "aria-label": `Legend label for ${entry.name}`,
-      autocomplete: "off",
-    });
-    input.addEventListener("input", () => {
-      const cleaned = cleanText(input.value, { limit: LIMITS.legend }).text;
-      if (cleaned !== input.value) input.value = cleaned;
-      app.state.legend[entry.key] = cleaned;
-      textChanged();
-    });
-    root.append(el("div", { class: "lg" }, el("span", { class: "swatch", style: `background:${entry.color}` }), input));
+  app.zonesBuilt = 0;
+  // The ordinary colors; the zones follow (see syncZones): zone n is named by legend entry 5 + n.
+  for (const h of HIGHLIGHTS.filter((x) => x.value > 1)) {
+    root.append(legendRow(h.value, h.name, h.defaultLabel || h.name, h.color));
   }
 }
 

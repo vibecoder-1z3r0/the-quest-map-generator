@@ -247,6 +247,21 @@ def test_revealing_one_room_of_a_group_reveals_the_others(page, site):
     assert "K reads" in panel(page) and "N reads" in panel(page)
 
 
+def test_a_zone_above_the_tenth_reveals_like_any_other_and_its_play_state_is_kept(page, site):
+    st = hero_state()
+    st["zones"][3] = 17  # (3, 0) is in zone 17, which is region 42
+    st["rooms"][42] = {"start": False, "group": 0, "texts": ["Zone seventeen reads.", "", "", ""]}
+    open_hero(page, site, st)
+    assert fogged(page, 3, 0)
+    tap(page, 3, 0)
+    assert "hallway" in panel(page).lower()
+    page.click("#hero-reveal")
+    confirm(page)
+    assert "Zone seventeen reads." in panel(page)
+    assert not fogged(page, 3, 0)
+    assert 42 in played(page)["rev"]
+
+
 def test_a_hallway_is_called_hallway_and_its_zone_name_never_appears(page, site):
     open_hero(page, site)
     tap(page, 3, 0)

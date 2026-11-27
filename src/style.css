@@ -82,6 +82,8 @@ input[type="text"] { width: 100%; }
 .tgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
 .tgrid button { text-align: left; display: flex; align-items: center; gap: 6px; padding: 4px 6px; font-size: 12.5px; line-height: 1.15; min-width: 0; overflow-wrap: break-word; }
 .tgrid svg { width: 26px; height: 26px; flex: none; overflow: visible; }
+.zone-actions { display: flex; gap: 6px; margin: 6px 0 4px; }
+.zone-actions button { flex: 1; }
 .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.45); flex: none; }
 
 #stage { padding: 10px; background: var(--stage); min-height: 70vh; }
