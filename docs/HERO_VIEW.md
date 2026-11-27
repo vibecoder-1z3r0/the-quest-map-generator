@@ -132,6 +132,12 @@ one at the bottom touches room S.
 
 ## Notes since it was built
 
+- Zones are flexible: ten always, up to thirty with Add zone / Remove zone (quest 2 used all ten). The
+  count is not stored in the link; it is the highest zone painted, recorded or named, never under ten, and
+  an added zone nobody uses disappears on reload. Removing the last zone asks first when it is used and
+  clears its squares, hero view data and name (one Undo step). More than ten zones writes link format
+  version 2 (`docs/FORMAT.md` 4.9).
+
 - The hero header carries the quest line (series, number and title, wrapped rather than cut off) and a
   short how-to: tap a room or hallway, press Reveal, then use the search buttons. The quest card
   under the map no longer repeats the series and title; it holds the introduction and the wandering

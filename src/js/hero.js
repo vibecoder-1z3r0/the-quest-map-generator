@@ -1,7 +1,7 @@
 // Hero view: regions, groups, visibility and the play actions. See docs/HERO_VIEW.md.
 import { roomAt, isRoom, roomSquares } from "./board.js";
 import { BY_ID } from "./catalog.js";
-import { COLS, ROOM_REGIONS, ROWS, ZONES } from "./constants.js";
+import { COLS, ROOM_REGIONS, ROWS, ZONE_MIN, ZONES } from "./constants.js";
 
 const TREASURE_CHEST = 30; // catalog id of the Treasure chest piece
 
@@ -13,6 +13,16 @@ export function regionAt(st, x, y) {
   if (isRoom(ch)) return ch.charCodeAt(0) - 65;
   const zone = st.zones[y * COLS + x];
   return zone >= 1 && zone <= ZONES.length ? ROOM_REGIONS + zone - 1 : null;
+}
+
+// How many zones this quest has: at least ten, more only as far as a zone is painted, has a record or has a
+// name (the count itself is not stored in the link, docs/FORMAT.md 4.9).
+export function zoneCount(st) {
+  let count = ZONE_MIN;
+  for (const z of st.zones) if (z > count) count = z;
+  for (const region of Object.keys(st.rooms)) count = Math.max(count, Number(region) - ROOM_REGIONS + 1);
+  for (const zone of ZONES) if (st.legend[zone.legendKey]) count = Math.max(count, zone.n);
+  return Math.min(count, ZONES.length);
 }
 
 // The author's name for a region: "Room K", or the zone's legend name ("Zone 1" if unnamed).

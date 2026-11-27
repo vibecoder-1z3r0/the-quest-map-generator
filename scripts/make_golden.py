@@ -122,6 +122,19 @@ CASES = [
         play={"rev": [0, 10, 26], "t": [10], "tr": [], "sd": [0, 35]},
     ),
     case("hero-play-state-all-hidden", hero=True, play={"rev": [], "t": [], "tr": [], "sd": []}),
+    # Version 2: more than ten zones (zones 1-30 are regions 26-55, names are legend entries 6-35).
+    case(
+        "hero-many-zones-v2",
+        hero=True,
+        zones=[0] * 100 + [4, 17, 30] + [0] * (ref.SQUARES - 103),
+        legend={6: "First", 22: "Seventeenth", 35: "Thirtieth"},
+        rooms={
+            3: {"start": True, "group": 0, "texts": ["Start", "", "", ""]},
+            42: {"start": False, "group": 2, "texts": ["Zone 17 reads", "A chest.", "", "A door."]},
+            55: {"start": False, "group": 2, "texts": ["Zone 30 reads", "", "", ""]},
+        },
+        play={"rev": [3, 42], "t": [42], "tr": [], "sd": [55]},
+    ),
 ]
 
 out = ROOT / "tests/golden/v1.json"

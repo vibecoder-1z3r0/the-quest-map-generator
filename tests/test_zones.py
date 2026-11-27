@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+
 import pytest
 import reference as ref
 from conftest import click_cell, open_link
@@ -183,3 +185,145 @@ def test_zones_survive_the_link(page, site):
     assert ref.decode(payload)["zones"][9 * 26 + 3] == 4
     open_link(page, site, payload)
     assert square(page, 3, 9) == [0, 4]
+
+
+# ---------------------------------------------------------------- adding and removing zones (10 to 30)
+def zone_values(page):
+    values = page.locator('#tools button[data-kind="zone"]').evaluate_all(
+        "els => els.map(e => Number(e.dataset.value))"
+    )
+    return [v for v in values if v]
+
+
+def legend_zone_inputs(page):
+    return page.locator("#legend-edit input").evaluate_all(
+        "els => els.map(e => Number(e.dataset.color)).filter((k) => k >= 6)"
+    )
+
+
+def confirm(page):
+    page.wait_for_selector("#confirm-dialog[open]")
+    page.click("#confirm-ok")
+    page.wait_for_selector("#confirm-dialog:not([open])", state="attached")
+
+
+def test_a_new_quest_has_ten_zones_and_can_add_but_not_remove(page):
+    assert zone_values(page) == ZONES
+    assert page.locator("#add-zone").is_enabled()
+    assert page.locator("#remove-zone").is_disabled()
+    assert legend_zone_inputs(page) == list(range(6, 16))
+
+
+def test_add_zone_adds_the_next_zone_to_the_palette_and_the_legend_up_to_thirty(page):
+    page.click("#add-zone")
+    assert zone_values(page) == list(range(1, 12))
+    assert (
+        "Zone 11" in page.locator('#tools button[data-kind="zone"][data-value="11"]').inner_text()
+    )
+    assert legend_zone_inputs(page)[-1] == 16
+    for _ in range(19):
+        page.click("#add-zone")
+    assert zone_values(page) == list(range(1, 31))
+    assert legend_zone_inputs(page)[-1] == 35
+    assert page.locator("#add-zone").is_disabled()
+
+
+def test_every_zone_has_its_own_color(page):
+    for _ in range(20):
+        page.click("#add-zone")
+    colors = page.locator('#tools button[data-kind="zone"] .swatch').evaluate_all(
+        "els => els.map(e => e.style.background)"
+    )
+    colors = [c for c in colors if c != "transparent"]
+    assert len(colors) == 30 and len(set(colors)) == 30
+
+
+def test_an_added_zone_can_be_painted_and_is_stored_in_a_version_two_link(page):
+    page.click("#add-zone")
+    paint_zone(page, 11, 3, 9)
+    assert square(page, 3, 9) == [0, 11]
+    page.evaluate("QMG.syncUrl()")
+    page.wait_for_timeout(100)
+    payload = page.evaluate("location.hash").lstrip("#")
+    data = base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))
+    assert data[0] == 2
+    assert ref.decode(payload)["zones"][9 * 26 + 3] == 11
+
+
+def test_a_link_with_a_zone_above_ten_opens_with_that_many_zones(page, site):
+    st = ref.blank()
+    st["zones"][100] = 17
+    open_link(page, site, ref.encode(st))
+    assert zone_values(page) == list(range(1, 18))
+
+
+def test_an_added_zone_that_is_never_used_is_not_kept_in_the_link(page, site):
+    page.click("#add-zone")
+    page.click("#add-zone")
+    page.evaluate("QMG.syncUrl()")
+    page.reload()
+    page.wait_for_function("window.QMG !== undefined")
+    assert zone_values(page) == ZONES
+
+
+def test_remove_zone_drops_an_unused_last_zone_without_asking(page):
+    page.click("#add-zone")
+    page.click("#add-zone")
+    page.click("#remove-zone")
+    assert zone_values(page) == list(range(1, 12))
+    page.click("#remove-zone")
+    assert zone_values(page) == ZONES
+    assert page.locator("#remove-zone").is_disabled()
+    assert not page.locator("#confirm-dialog").is_visible()
+
+
+def used_zone_twelve(page):
+    for _ in range(2):
+        page.click("#add-zone")
+    paint_zone(page, 12, 3, 9)
+    paint_zone(page, 12, 4, 9)
+    page.fill('#legend-edit input[data-color="17"]', "The long hall")
+    page.evaluate(
+        "QMG.app.state.rooms[37] = { start: false, group: 0, texts: ['read', '', '', ''] }"
+    )
+
+
+def test_removing_a_used_zone_asks_then_clears_its_squares_name_and_record(page):
+    used_zone_twelve(page)
+    page.click("#remove-zone")
+    page.wait_for_selector("#confirm-dialog[open]")
+    assert "Zone 12" in page.locator("#confirm-message").inner_text()
+    assert "2 squares" in page.locator("#confirm-message").inner_text()
+    page.click("#confirm-ok")
+    page.wait_for_selector("#confirm-dialog:not([open])", state="attached")
+    assert zone_values(page) == list(range(1, 12))
+    assert square(page, 3, 9) == [0, 0] and square(page, 4, 9) == [0, 0]
+    assert page.evaluate("QMG.app.state.legend[17]") in (None, "")
+    assert page.evaluate("37 in QMG.app.state.rooms") is False
+
+
+def test_cancelling_the_removal_of_a_used_zone_keeps_everything(page):
+    used_zone_twelve(page)
+    page.click("#remove-zone")
+    page.wait_for_selector("#confirm-dialog[open]")
+    page.click("#confirm-cancel")
+    page.wait_for_selector("#confirm-dialog:not([open])", state="attached")
+    assert zone_values(page) == list(range(1, 13))
+    assert square(page, 3, 9) == [0, 12]
+
+
+def test_removing_a_used_zone_is_one_undo_step(page):
+    used_zone_twelve(page)
+    page.wait_for_timeout(800)  # the typed name settles into its own history step
+    page.click("#remove-zone")
+    confirm(page)
+    page.keyboard.press("Control+z")
+    assert square(page, 3, 9) == [0, 12]
+    assert zone_values(page) == list(range(1, 13))
+
+
+def test_removing_the_zone_that_is_the_current_tool_returns_to_select(page):
+    page.click("#add-zone")
+    page.click('#tools button[data-kind="zone"][data-value="11"]')
+    page.click("#remove-zone")
+    assert page.evaluate("QMG.app.tool.kind") == "select"

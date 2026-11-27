@@ -301,3 +301,39 @@ def test_treasure_can_be_searched_in_every_room_but_in_a_hallway_only_with_a_tre
     )
     # rooms A and H always; zone 1 holds a chest; zone 2 only a goblin; zone 3 is empty
     assert run(page, body) == [True, True, True, False, False]
+
+
+def test_zones_up_to_thirty_are_regions_and_have_names(page):
+    body = (
+        "st.zones[0] = 17; st.zones[1] = 30; st.legend[22] = 'Long corridor';"
+        " return [H.regionAt(st, 0, 0), H.regionAt(st, 1, 0), H.regionName(st, 42),"
+        " H.regionName(st, 55), H.regionName(st, 26)];"
+    )
+    assert run(page, body) == [42, 55, "Long corridor", "Zone 30", "Zone 1"]
+
+
+def test_a_zone_beyond_thirty_is_no_zone(page):
+    assert run(page, "st.zones[0] = 31; return H.regionAt(st, 0, 0);") is None
+
+
+def test_a_quest_always_has_ten_zones_and_more_only_when_they_are_used(page):
+    body = """
+        const counts = [H.zoneCount(st)];
+        st.zones[5] = 12; counts.push(H.zoneCount(st)); st.zones[5] = 0;
+        st.rooms[41] = { start: false, group: 0, texts: ['', '', '', 'x'] };
+        counts.push(H.zoneCount(st)); delete st.rooms[41];
+        st.legend[24] = 'named'; counts.push(H.zoneCount(st)); delete st.legend[24];
+        st.zones[6] = 3; counts.push(H.zoneCount(st));
+        return counts;
+    """
+    # none: 10; a square in zone 12: 12; a record for region 41 (zone 16): 16; a name in entry 24
+    # (zone 19): 19; a zone 3 square alone: back to 10
+    assert run(page, body) == [10, 12, 16, 19, 10]
+
+
+def test_zones_above_the_tenth_have_separate_play_state_bits(page):
+    body = """
+        H.revealRegion(st, 5); H.revealRegion(st, 30); H.revealRegion(st, 55);
+        return [H.isRevealed(st, 30), H.isRevealed(st, 55), H.isRevealed(st, 31)];
+    """
+    assert run(page, body) == [True, True, False]

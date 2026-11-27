@@ -18,6 +18,7 @@ import {
   secretOwners,
   squareVisible,
   stoneVisible,
+  zoneCount,
 } from "./hero.js";
 import { renderIntro, renderNotes } from "./markdown.js";
 import { cleanText } from "./text.js";
@@ -52,6 +53,7 @@ window.QMG = {
     searchRegion,
     secretDoorsFound,
     secretOwners,
+    zoneCount,
     squareVisible,
     stoneVisible,
   },
