@@ -122,9 +122,9 @@ CASES = [
         play={"rev": [0, 10, 26], "t": [10], "tr": [], "sd": [0, 35]},
     ),
     case("hero-play-state-all-hidden", hero=True, play={"rev": [], "t": [], "tr": [], "sd": []}),
-    # Version 2: more than ten zones (zones 1-30 are regions 26-55, names are legend entries 6-35).
+    # Zones 1-30 are regions 26-55; zone names are legend entries 6-35.
     case(
-        "hero-many-zones-v2",
+        "hero-thirty-zones",
         hero=True,
         zones=[0] * 100 + [4, 17, 30] + [0] * (ref.SQUARES - 103),
         legend={6: "First", 22: "Seventeenth", 35: "Thirtieth"},

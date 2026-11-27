@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import base64
-
 import pytest
 import reference as ref
 from conftest import click_cell, open_link
@@ -238,15 +236,13 @@ def test_every_zone_has_its_own_color(page):
     assert len(colors) == 30 and len(set(colors)) == 30
 
 
-def test_an_added_zone_can_be_painted_and_is_stored_in_a_version_two_link(page):
+def test_an_added_zone_can_be_painted_and_is_stored_in_the_link(page):
     page.click("#add-zone")
     paint_zone(page, 11, 3, 9)
     assert square(page, 3, 9) == [0, 11]
     page.evaluate("QMG.syncUrl()")
     page.wait_for_timeout(100)
     payload = page.evaluate("location.hash").lstrip("#")
-    data = base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))
-    assert data[0] == 2
     assert ref.decode(payload)["zones"][9 * 26 + 3] == 11
 
 

@@ -53,7 +53,7 @@ author wrote, and it never rolls dice or decides whether a trap is sprung.
     in any good way, so the author paints corridor squares with a **zone color** to make hallways.
     A zone behaves exactly like a lettered room: a Reveal button (with "are you sure?"), "Hide this
     zone again", the four texts and the search buttons, grouping with other rooms or zones, and one
-    bit of play state. Storage is a **separate zone layer** (10 zones, a 247-byte layer at the start of the
+    bit of play state. Storage is a **separate zone layer** (a 494-byte layer, one byte per square, at the start of the
     hero section of the link), not the highlight colors: a square holds only one highlight, so a zone
     stored as a highlight could not also be solid stone or a trap highlight, and stone in a hallway would
     have stayed visible from the start. With its own layer any square can be in a zone. Zones are named by
@@ -135,9 +135,8 @@ one at the bottom touches room S.
 - Zones are flexible: ten always, up to thirty with Add zone / Remove zone (quest 2 used all ten). The
   count is not stored in the link; it is the highest zone painted, recorded or named, never under ten, and
   an added zone nobody uses disappears on reload. Removing the last zone asks first when it is used and
-  clears its squares, hero view data and name (one Undo step). More than ten zones writes link format
-  version 2 (`docs/FORMAT.md` 4.9).
-
+  clears its squares, hero view data and name (one Undo step). The format holds up to thirty zones
+  (`docs/FORMAT.md` 4.7).
 - The hero header carries the quest line (series, number and title, wrapped rather than cut off) and a
   short how-to: tap a room or hallway, press Reveal, then use the search buttons. The quest card
   under the map no longer repeats the series and title; it holds the introduction and the wandering

@@ -18,9 +18,7 @@ payload = base64url( [ version byte ] ++ deflateRaw( body ) )
 ```
 
 - `base64url` is RFC 4648 §5 (`-` and `_`), **no padding**.
-- The first byte is the **format version**: `1`, or `2` for a quest with more than ten hero view zones
-  (section 4.9). An encoder writes `1` whenever the quest fits it, so links stay byte-identical for every
-  quest that does not need `2`. A decoder that does not know the version must show
+- The first byte is the **format version** (`1`). A decoder that does not know the version must show
   an "unsupported link version" banner and start blank. It must never guess.
 - `deflateRaw` is raw DEFLATE (RFC 1951), no zlib or gzip header. Browsers expose it as
   `CompressionStream("deflate-raw")`.
@@ -67,8 +65,8 @@ The body is these sections, in this order, with no padding between them.
 | 9 | Wandering monster id | 1 byte |
 | 10 | Wandering monster text | string |
 | 11 | Series (optional, trailing) | string |
-| 12 | Hero view: zone layer and rooms (optional, trailing) | 247 bytes + `varint count` + records |
-| 13 | Hero view play state (optional, trailing) | 20 bytes |
+| 12 | Hero view: zone layer and rooms (optional, trailing) | 494 bytes + `varint count` + records |
+| 13 | Hero view play state (optional, trailing) | 28 bytes |
 
 ### 4.0 Flags
 
@@ -170,7 +168,7 @@ byte 4   height         1..19
 
 Optional labels for highlight colors (for example "cyan = secret room").
 
-`varint count` (0..35), then per entry: one byte **color value** (2..35; 16..35 only name zones 11..30, section 4.9), then a **string** label
+`varint count` (0..35), then per entry: one byte **color value** (2..35), then a **string** label
 (at most 40 characters). A color appears at most once; if repeated, the last entry wins. Labels are
 filtered like single-line text (§6).
 
@@ -178,7 +176,7 @@ filtered like single-line text (§6).
   entry for color 1 is never written, and one read from a link is ignored.
 - **Orange (2) means a trap of any kind.** With no label it is shown as "Trap"; a stored label
   replaces that text.
-- Legend entries **6 to 15 name zones 1 to 10** (section 4.7): zone *n* is named by entry *5 + n*. They
+- Legend entries **6 to 35 name zones 1 to 30** (section 4.7): zone *n* is named by entry *5 + n*. They
   are not highlight colors and are listed with the zones that are used on the map.
 - Display: the viewer lists an entry for each color that is used on the map (grey as "Solid stone",
   orange as its label or "Trap", the others only if they have a label).
@@ -221,20 +219,22 @@ state is stored). Hero view is a second way to look at the same quest: the map s
 heroes reveal it room by room. See `docs/HERO_VIEW.md` for how it behaves.
 
 A **region** is a room or a zone. Rooms are the board's letters: A..Z are regions 0..25 (the standard
-board uses A..V). Zones 1..10 are regions 26..35.
+board uses A..V). Zones 1..30 are regions 26..55.
 
-The section starts with the **zone layer**: 247 bytes, 4 bits per square, packed exactly like the
-highlights (section 4.1): `0` no zone, `1`..`10` zone 1..10, `11`..`15` reserved (kept). It is separate
+The section starts with the **zone layer**: 494 bytes, one byte per square in the order of section 3:
+`0` no zone, `1`..`30` zone 1..30; a larger value is read as no zone. It compresses to almost nothing
+when few zones are used. A quest has at least ten zones and can have up to thirty; the number of zones
+is not stored (it is the highest zone that is painted, has a record or has a name, never under ten). It is separate
 from the highlights, so any square, including solid stone or a trap highlight, can be in a zone. A zone
 on a square inside a lettered room is ignored for hero view. A zone is named by a legend entry
 (section 4.4).
 
 Then, as before, the room records:
 
-`varint count` (0..36), then `count` records:
+`varint count` (0..56), then `count` records:
 
 ```
-byte 0   region        0..35
+byte 0   region        0..55
 byte 1   bit 0         the region is revealed at the start of the game
          bits 1-7      reserved (0)
 byte 2   group         0 = none; regions that share a non-zero group reveal together
@@ -247,8 +247,8 @@ then four strings, in this order:
 
 - Each text is multi-line, bold/italics only like the intro, at most **600** characters, and is
   filtered like the intro (section 6). A longer text is truncated with a warning.
-- A region at or above 36 is skipped with a warning. If a region appears twice the last record wins.
-  A count above 36 makes the link invalid.
+- A region at or above 56 is skipped with a warning. If a region appears twice the last record wins.
+  A count above 56 makes the link invalid.
 - Regions with no data have no record. Texts of the regions in a group are shown together, joined in
   region order.
 - An encoder leaves the whole section out (and with it section 4.8) when there is no zone, no record and
@@ -258,37 +258,18 @@ then four strings, in this order:
 
 Optional, directly after the records of section 4.7 (even when there are none, `count` is then 0 and the
 zone layer is still present).
-Exactly **20 bytes**: four masks of 5 bytes each, in this order:
+Exactly **28 bytes**: four masks of 7 bytes each (56 bits), in this order:
 
 1. revealed regions
 2. regions where the treasure search was done
 3. regions where the traps search was done
 4. regions where the secret-door search was done
 
-Bit `r & 7` of byte `r >> 3` is region `r`, low bit first; bits for regions 36 and up are ignored.
+Bit `r & 7` of byte `r >> 3` is region `r`, low bit first; bits for regions 56 and up are ignored.
 If this section is absent the game is at its start: exactly the regions with the "revealed at the
 start" flag are revealed and no search was done. If it is present it replaces that start state
 completely, so an all-zero play state means that nothing is revealed, not even the start regions.
-Fewer than 20 bytes remaining is a truncated link.
-
-### 4.9 Version 2: more than ten zones
-
-A quest can have up to **30 zones** (a quest always has at least ten, and the count itself is not
-stored: it is the highest zone that is painted, has a record or has a name, and never fewer than ten).
-An encoder writes version `2` only when something does not fit version 1: a zone above 10, a region
-record or play state bit at or above 36, or a legend entry above 15. The body is identical to version 1
-except for the hero view part:
-
-- The **zone layer** is one byte per square (494 bytes, `0` none, `1`..`30` zone n) instead of 247 packed
-  nibbles. It compresses to almost nothing. A value above 30 is read as no zone.
-- **Regions** are `0..55`: zones 1..30 are regions 26..55. The record count is at most 56 and a record at
-  or above 56 is skipped with a warning.
-- The **play state** has four masks of **7 bytes** (56 bits) instead of 5, so 28 bytes.
-- **Legend entries** are `2..35`; zone *n* is named by entry *5 + n* as before, so zones 11..30 use entries
-  16..35. A decoder accepts these keys in any version (an encoder only writes them in version 2) and the
-  legend count is at most 35.
-
-Everything else (flags, highlights, items, tiles, text, series) is unchanged.
+Fewer than 28 bytes remaining is a truncated link.
 
 ## 5. Size limits (defensive decoding)
 

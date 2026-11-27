@@ -234,17 +234,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 223 | Deselect, yes | 01:00:33 | 1s | 24s | 4 | 72 | 9,709 | 203,960 |
 | 224 | Updated 2nd quest - https://vibecoder-1z3r0.github.io/the-quest-map-ge… | 01:00:58 | 1m 34s | 4m 20s | 22 | 4,913 | 7,704 | 1,937,238 |
 | 225 | Updated -  https://vibecoder-1z3r0.github.io/the-quest-map-generator/#… | 01:06:53 | 1m 29s | 2h 49m ⏳ | 10 | 1,711 | 2,599 | 877,053 |
-| 226 | Ran out of zones.... lol https://vibecoder-1z3r0.github.io/the-quest-m… | 03:57:36 | 12m 12s | — | 158 | 84,137 | 454,531 | 19,432,999 |
+| 226 | Ran out of zones.... lol https://vibecoder-1z3r0.github.io/the-quest-m… | 03:57:36 | 12m 26s | 3m 36s | 166 | 85,341 | 457,241 | 20,578,351 |
+| 227 | Wait... you've moved to v2 for links?  What happens with my existing l… | 04:13:38 | 3s | 1m 43s | 4 | 384 | 27 | 288,135 |
+| 228 | Why do we need v2? | 04:15:25 | 6s | 59s | 8 | 1,386 | 20 | 577,096 |
+| 229 | Yes let's do an in place conversion | 04:16:30 | 4m 48s | — | 58 | 25,941 | 37,670 | 8,062,292 |
 
-**Total turns:** 226  
-**Total agent time spent (excl. flagged):** 4h 6m  
-**Total human think time (excl. outliers):** 4h 26m  
-**Average human think time (excl. outliers):** 1m 24s  
+**Total turns:** 229  
+**Total agent time spent (excl. flagged):** 4h 11m  
+**Total human think time (excl. outliers):** 4h 32m  
+**Average human think time (excl. outliers):** 1m 25s  
 **Think-time outliers (> 15 min):** 35  
-**Total input tokens:** 5,323  
-**Total output tokens:** 2,600,951  
-**Total cache-write tokens:** 23,302,268  
-**Total cache-read tokens:** 943,367,741  
+**Total input tokens:** 5,401  
+**Total output tokens:** 2,629,866  
+**Total cache-write tokens:** 23,342,695  
+**Total cache-read tokens:** 953,440,616  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

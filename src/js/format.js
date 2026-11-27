@@ -1,9 +1,8 @@
-// Link format, versions 1 and 2. This file implements docs/FORMAT.md; keep the two in sync.
+// Link format, version 1. This file implements docs/FORMAT.md; keep the two in sync.
 import { BY_ID, footprint } from "./catalog.js";
 import {
   COLS,
   FORMAT_VERSION,
-  FORMAT_VERSION_2,
   LEGEND_KEY_MAX,
   LIMITS,
   MAX_BODY,
@@ -11,7 +10,6 @@ import {
   MAX_TILES,
   MAX_PAYLOAD_CHARS,
   REGIONS,
-  REGIONS_V2,
   ROWS,
   SQUARES,
   ZONE_MAX,
@@ -100,7 +98,7 @@ export function blankState() {
     wmText: "",
     series: "",
     hero: false,
-    zones: new Uint8Array(SQUARES), // per square: 0 none, 1-10 zone n (11-15 reserved)
+    zones: new Uint8Array(SQUARES), // per square: 0 none, 1-30 zone n
     rooms: {}, // region -> { start, group, texts: [read aloud, treasure, traps, secret doors] }
     play: null, // null (the start state), or { rev, t, tr, sd } Sets of regions
   };
@@ -112,21 +110,8 @@ function maskOf(set, regions) {
   return out;
 }
 
-// Version 2 is written only when something does not fit version 1 (more than ten zones).
-function needsV2(st) {
-  const play = st.play ? [...st.play.rev, ...st.play.t, ...st.play.tr, ...st.play.sd] : [];
-  return (
-    st.zones.some((z) => z > 10) ||
-    Object.keys(st.rooms).some((r) => Number(r) >= REGIONS) ||
-    play.some((r) => r >= REGIONS) ||
-    Object.entries(st.legend).some(([color, label]) => label && Number(color) > 15)
-  );
-}
-
 // Returns the link payload (without the leading #).
 export async function encodeState(st) {
-  const v2 = needsV2(st);
-  const regionCount = v2 ? REGIONS_V2 : REGIONS;
   const out = [(st.theme & 0x0f) | (st.hero ? 0x10 : 0)];
   const hl = new Uint8Array(HIGHLIGHT_BYTES);
   for (let i = 0; i < SQUARES; i++) hl[i >> 1] |= (st.hl[i] & 15) << ((i & 1) * 4);
@@ -156,26 +141,20 @@ export async function encodeState(st) {
     .map(Number)
     .sort((a, b) => a - b);
   if (regions.length || st.play || st.zones.some(Boolean)) {
-    if (v2) {
-      for (let i = 0; i < SQUARES; i++) out.push(st.zones[i]);
-    } else {
-      const zoneBytes = new Uint8Array(HIGHLIGHT_BYTES);
-      for (let i = 0; i < SQUARES; i++) zoneBytes[i >> 1] |= (st.zones[i] & 15) << ((i & 1) * 4);
-      for (const b of zoneBytes) out.push(b);
-    }
+    for (let i = 0; i < SQUARES; i++) out.push(st.zones[i]);
     pushVarint(out, regions.length);
     for (const region of regions) {
       const rec = st.rooms[region];
       out.push(region, rec.start ? 1 : 0, rec.group & 255);
       for (let k = 0; k < 4; k++) pushString(out, rec.texts[k] ?? "");
     }
-    if (st.play) for (const key of PLAY_KEYS) for (const b of maskOf(st.play[key], regionCount)) out.push(b);
+    if (st.play) for (const key of PLAY_KEYS) for (const b of maskOf(st.play[key], REGIONS)) out.push(b);
   }
   const body = new Uint8Array(out);
   if (body.length > MAX_BODY) throw new Error("quest is too large to store in a link");
   const packed = await deflate(body);
   const full = new Uint8Array(packed.length + 1);
-  full[0] = v2 ? FORMAT_VERSION_2 : FORMAT_VERSION;
+  full[0] = FORMAT_VERSION;
   full.set(packed, 1);
   return toBase64Url(full);
 }
@@ -226,9 +205,7 @@ export async function decodeHash(payload) {
   if (payload.length > MAX_PAYLOAD_CHARS) throw new Error("link is too large");
   const full = fromBase64Url(payload);
   if (full.length < 2) throw new Error("link is empty or truncated");
-  if (full[0] !== FORMAT_VERSION && full[0] !== FORMAT_VERSION_2) throw new Error(`unsupported link version ${full[0]}`);
-  const v2 = full[0] === FORMAT_VERSION_2;
-  const regionCount = v2 ? REGIONS_V2 : REGIONS;
+  if (full[0] !== FORMAT_VERSION) throw new Error(`unsupported link version ${full[0]}`);
   const body = await inflateLimited(full.subarray(1), MAX_BODY);
   const r = new Reader(body);
   const st = blankState();
@@ -309,17 +286,11 @@ export async function decodeHash(payload) {
   if (r.remaining > 0) st.series = field("series", { limit: LIMITS.series });
   // Optional hero view data (rooms and zones), then the optional play state.
   if (r.remaining > 0) {
-    if (v2) {
-      r.need(SQUARES);
-      for (let i = 0; i < SQUARES; i++) st.zones[i] = r.b[r.p + i] <= ZONE_MAX ? r.b[r.p + i] : 0;
-      r.p += SQUARES;
-    } else {
-      r.need(HIGHLIGHT_BYTES);
-      for (let i = 0; i < SQUARES; i++) st.zones[i] = (r.b[r.p + (i >> 1)] >> ((i & 1) * 4)) & 15;
-      r.p += HIGHLIGHT_BYTES;
-    }
+    r.need(SQUARES);
+    for (let i = 0; i < SQUARES; i++) st.zones[i] = r.b[r.p + i] <= ZONE_MAX ? r.b[r.p + i] : 0;
+    r.p += SQUARES;
     const roomCount = r.varint();
-    if (roomCount > regionCount) throw new Error("link is corrupt");
+    if (roomCount > REGIONS) throw new Error("link is corrupt");
     let skippedRooms = 0;
     for (let n = 0; n < roomCount; n++) {
       const region = r.byte();
@@ -332,7 +303,7 @@ export async function decodeHash(payload) {
         if (res.truncated) warnings.push("A room text was too long and was shortened.");
         texts.push(res.text);
       }
-      if (region >= regionCount) {
+      if (region >= REGIONS) {
         skippedRooms += 1;
         continue;
       }
@@ -341,12 +312,12 @@ export async function decodeHash(payload) {
     if (skippedRooms) warnings.push(`${skippedRooms} room record(s) in this link could not be shown and were skipped.`);
   }
   if (r.remaining > 0) {
-    const size = maskBytes(regionCount);
+    const size = maskBytes(REGIONS);
     r.need(PLAY_KEYS.length * size);
     st.play = {};
     for (const key of PLAY_KEYS) {
       const set = new Set();
-      for (let region = 0; region < regionCount; region++) {
+      for (let region = 0; region < REGIONS; region++) {
         if ((r.b[r.p + (region >> 3)] >> (region & 7)) & 1) set.add(region);
       }
       r.p += size;
