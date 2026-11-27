@@ -82,6 +82,7 @@ input[type="text"] { width: 100%; }
 .tgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
 .tgrid button { text-align: left; display: flex; align-items: center; gap: 6px; padding: 4px 6px; font-size: 12.5px; line-height: 1.15; min-width: 0; overflow-wrap: break-word; }
 .tgrid svg { width: 26px; height: 26px; flex: none; overflow: visible; }
+.printopts { margin: 4px 6px 0; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
 .zone-actions { display: flex; gap: 6px; margin: 6px 0 4px; }
 .zone-actions button { flex: 1; }
 .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.45); flex: none; }
@@ -258,6 +259,10 @@ body.hero #copy-hero { display: none; }
   body.np-intro #print-intro, body.np-key #print-key-section, body.np-stats #print-stats-section,
   body.np-notes #print-notes-section, body.np-legend #stage .legend { display: none !important; }
   body.po-monsters #print-key .keygroup:not([data-group="Monsters"]) { display: none; }
+  .printopts { display: none !important; }
+  /* Print choices: zones (and their legend entries) and the room tints can be left off the page. */
+  body.np-zones #layer-zones, body.np-zones #stage .legend .legend-zone { display: none !important; }
+  body.np-rooms #board { --room-plain: #e2d9c6; }
   #stage .legend { margin-top: 6px; }
   /* Hero view never prints: the print layout holds Zargon's notes and the whole map. */
   body.hero #app, body.hero #printhead, body.hero #printsheet, body.hero #topbar, body.hero #footer { display: none !important; }

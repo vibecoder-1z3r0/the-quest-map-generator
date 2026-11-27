@@ -491,7 +491,7 @@ function renderLegend() {
   for (const zone of ZONES) {
     if (!usedZones.has(zone.n)) continue;
     items.push(
-      el("li", {}, el("span", { class: "swatch", style: `background:${zone.color}` }), app.state.legend[zone.legendKey] || zone.name),
+      el("li", { class: "legend-zone" }, el("span", { class: "swatch", style: `background:${zone.color}` }), app.state.legend[zone.legendKey] || zone.name),
     );
   }
   $("#legend").replaceChildren(...items);
@@ -1540,7 +1540,7 @@ export function initUi() {
   $("#print-btn").addEventListener("click", () => window.print());
   bindHeroControls();
   bindHeroCard();
-  for (const [id, cls] of [["intro", "np-intro"], ["key", "np-key"], ["stats", "np-stats"], ["notes", "np-notes"], ["legend", "np-legend"]]) {
+  for (const [id, cls] of [["intro", "np-intro"], ["key", "np-key"], ["stats", "np-stats"], ["notes", "np-notes"], ["legend", "np-legend"], ["zones", "np-zones"], ["rooms", "np-rooms"]]) {
     $(`#po-${id}`).addEventListener("change", (e) => document.body.classList.toggle(cls, !e.target.checked));
   }
   $("#po-monsters").addEventListener("change", (e) => document.body.classList.toggle("po-monsters", e.target.checked));
