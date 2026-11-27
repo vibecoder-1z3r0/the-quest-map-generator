@@ -1199,15 +1199,7 @@ function onKeyDown(event) {
     event.preventDefault();
     removeAt(app.selected);
   } else if (key === "Escape") {
-    // Cancel whatever is in progress and go back to the Select tool with nothing selected.
-    app.tileDraw = null;
-    app.tool = { kind: "select", value: 0 };
-    app.ghostRot = 0;
-    app.selected = -1;
-    app.selectedTile = -1;
-    app.pinned = null;
-    app.editRegion = null;
-    renderAll();
+    deselectAll();
   } else if ((app.selected >= 0 || app.selectedTile >= 0) && key.startsWith("Arrow")) {
     event.preventDefault();
     const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[key];
@@ -1249,12 +1241,32 @@ function toolButton(label, kind, value, lead) {
   return button;
 }
 
+// Cancel whatever is in progress and go back to the Select tool with nothing selected or pinned. This
+// is Esc, and the Deselect button for screens without a keyboard.
+function deselectAll() {
+  app.tileDraw = null;
+  app.tool = { kind: "select", value: 0 };
+  app.ghostRot = 0;
+  app.selected = -1;
+  app.selectedTile = -1;
+  app.pinned = null;
+  app.editRegion = null;
+  renderAll();
+}
+
 function buildPalette() {
   const root = $("#tools");
   root.replaceChildren();
   root.append(el("h2", { text: "Tools" }));
   const basics = el("div", { class: "tgrid" });
-  basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0));
+  const deselect = el("button", {
+    id: "deselect",
+    type: "button",
+    title: "Cancel the current tool and clear the selection (Esc)",
+    text: "Deselect",
+  });
+  deselect.addEventListener("click", deselectAll);
+  basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0), deselect);
   root.append(basics);
   root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
@@ -1292,6 +1304,7 @@ function buildPalette() {
 
 function markTools() {
   for (const button of document.querySelectorAll("#tools button")) {
+    if (!button.dataset.kind) continue; // Deselect is an action, not a tool
     const active =
       button.dataset.kind === app.tool.kind && Number(button.dataset.value) === app.tool.value;
     button.classList.toggle("active", active);

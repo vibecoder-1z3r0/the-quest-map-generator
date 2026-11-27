@@ -216,7 +216,7 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
   a mouse or pen, never for touch.
 - Place, select, **drag-to-move** (keeps rotation and stack position), panel move buttons and arrow
   keys, `R` rotate, `Del` remove, Highlight tool, Eraser. **`Esc` cancels any tool in progress (even a
-  tile being dragged out) and returns to the Select tool with nothing selected or pinned.** Clicking a stacked square selects the top
+  tile being dragged out) and returns to the Select tool with nothing selected or pinned.** A **Deselect** button next to Select and Eraser does the same for screens without a keyboard. Clicking a stacked square selects the top
   piece, clicking again cycles down.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
