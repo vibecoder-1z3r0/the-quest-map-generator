@@ -244,17 +244,18 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 233 | MAD | 04:39:44 | 4s | 10h 46m ⏳ | 6 | 279 | 266 | 646,987 |
 | 234 | When I select a square in a room the what's here area should have the … | 15:26:23 | 2m 9s | 9m 44s | 38 | 4,879 | 543,214 | 4,369,284 |
 | 235 | For print view, we should have a toggle on zones if we want those disp… | 15:38:16 | 8m 42s | 2s | 100 | 31,416 | 80,720 | 17,869,606 |
-| 236 | Quest 2 updates  https://vibecoder-1z3r0.github.io/the-quest-map-gener… | 15:47:01 | 20s | — | 14 | 4,176 | 5,432 | 1,875,555 |
+| 236 | Quest 2 updates  https://vibecoder-1z3r0.github.io/the-quest-map-gener… | 15:47:01 | 1m 43s | 3s | 16 | 4,339 | 6,312 | 2,252,683 |
+| 237 | https://vibecoder-1z3r0.github.io/the-quest-map-generator/#Ab1UTW_TQBD… | 15:48:46 | 13s | — | 8 | 1,814 | 2,805 | 1,137,252 |
 
-**Total turns:** 236  
-**Total agent time spent (excl. flagged):** 4h 23m  
+**Total turns:** 237  
+**Total agent time spent (excl. flagged):** 4h 24m  
 **Total human think time (excl. outliers):** 4h 44m  
 **Average human think time (excl. outliers):** 1m 26s  
 **Think-time outliers (> 15 min):** 37  
-**Total input tokens:** 5,589  
-**Total output tokens:** 2,675,708  
-**Total cache-write tokens:** 23,996,814  
-**Total cache-read tokens:** 981,375,468  
+**Total input tokens:** 5,599  
+**Total output tokens:** 2,677,685  
+**Total cache-write tokens:** 24,000,499  
+**Total cache-read tokens:** 982,889,848  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
