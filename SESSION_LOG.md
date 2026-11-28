@@ -259,17 +259,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 248 | MaD | 04:47:33 | 3s | 9h 15m ⏳ | 4 | 239 | 821 | 884,928 |
 | 249 | Would there be any real credence to running playthrough simulations?  … | 14:03:23 | 2m 37s | 11m 6s | 24 | 35,138 | 800,486 | 3,729,324 |
 | 250 | Here's the monster stats again - | 14:17:06 | 18s | 1m 48s | 4 | 4,486 | 1,678 | 928,290 |
-| 251 | Yes, build the simulator | 14:19:12 | 5m 14s | — | 80 | 61,830 | 74,429 | 18,676,942 |
+| 251 | Yes, build the simulator | 14:19:12 | 5m 23s | 5m 30s | 82 | 62,708 | 75,120 | 19,182,268 |
+| 252 | Do we need to keep the simulator and main map stuff in sync now? | 14:30:05 | 12s | 1m 12s | 8 | 2,624 | 48 | 1,013,790 |
+| 253 | Yes, write that test | 14:31:29 | 22s | — | 16 | 5,988 | 5,780 | 3,052,168 |
 
-**Total turns:** 251  
+**Total turns:** 253  
 **Total agent time spent (excl. flagged):** 4h 48m  
-**Total human think time (excl. outliers):** 5h 7m  
-**Average human think time (excl. outliers):** 1m 29s  
+**Total human think time (excl. outliers):** 5h 13m  
+**Average human think time (excl. outliers):** 1m 30s  
 **Think-time outliers (> 15 min):** 42  
-**Total input tokens:** 5,889  
-**Total output tokens:** 2,815,899  
-**Total cache-write tokens:** 26,654,235  
-**Total cache-read tokens:** 1,035,396,168  
+**Total input tokens:** 5,915  
+**Total output tokens:** 2,825,389  
+**Total cache-write tokens:** 26,660,754  
+**Total cache-read tokens:** 1,039,967,452  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.

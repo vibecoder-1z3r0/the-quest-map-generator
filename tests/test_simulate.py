@@ -254,6 +254,47 @@ def test_the_cost_of_a_room_is_the_bp_the_heroes_lose_in_it():
     assert result.bp_left == pytest.approx(21 - sum(result.cost.values()), abs=0.01)  # no healing
 
 
+# ---------------------------------------------------------------- staying in step with the catalog
+CATALOG_PIECES = __import__("json").loads((ROOT / "src/catalog.json").read_text())
+CATALOG_MONSTERS = [p for p in CATALOG_PIECES if p.get("monster")]
+CATALOG_TRAPS = [p for p in CATALOG_PIECES if p["slug"].endswith("-trap")]
+
+
+def test_every_catalog_monster_has_simulator_stats_or_is_a_known_caster():
+    missing = [
+        p["name"]
+        for p in CATALOG_MONSTERS
+        if p["name"] not in sim.MONSTERS and p["name"] not in sim.CASTERS
+    ]
+    assert missing == [], f"add these to MONSTERS (or CASTERS) in scripts/simulate.py: {missing}"
+
+
+def test_the_simulator_has_no_monster_the_catalog_does_not_know():
+    known = {p["name"] for p in CATALOG_MONSTERS}
+    assert set(sim.MONSTERS) <= known and sim.CASTERS <= known
+
+
+def test_simulator_body_points_match_the_catalog():
+    wrong = {
+        p["name"]: (sim.MONSTERS[p["name"]][0], p["bp"])
+        for p in CATALOG_MONSTERS
+        if p["name"] in sim.MONSTERS
+        and p["bp"] is not None
+        and sim.MONSTERS[p["name"]][0] != p["bp"]
+    }
+    assert wrong == {}, f"simulator BP differs from the catalog (simulator, catalog): {wrong}"
+
+
+def test_casters_are_the_monsters_whose_body_points_vary_by_quest():
+    varies = {p["name"] for p in CATALOG_MONSTERS if p.get("bp_varies")}
+    assert sim.CASTERS == varies
+
+
+def test_every_catalog_trap_has_a_damage_value_and_no_stale_ones_remain():
+    names = {p["name"] for p in CATALOG_TRAPS}
+    assert names == set(sim.TRAP_DAMAGE), f"trap pieces {sorted(names)} vs damage table"
+
+
 # ---------------------------------------------------------------- the command line
 def run_cli(*args):
     return subprocess.run(
