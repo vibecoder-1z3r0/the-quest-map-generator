@@ -49,6 +49,11 @@ map. It can be hosted anywhere static.
   enabled by `make setup` via `core.hooksPath`) runs `make session-log` and stages the result, so every commit
   carries a fresh log. If the hook is not active in a checkout, run `make session-log` before committing. The
   header note lives in `scripts/session_log_header.md`.
+- **Quest simulator**: `scripts/simulate.py` is a developer tool (Python only, reads links with
+  `tests/reference.py`, tested in `tests/test_simulate.py`). A fights-only Monte Carlo of a quest link for 2-4
+  heroes: win rate, BP left, BP lost per room. It is never part of the page or the link format. Monster and
+  hero stats are the base-game chart; stat blocks in Zargon's notes override them. Its assumptions are printed
+  with every report and must stay honest: do not present its numbers as predictions.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
 - CI (GitHub Actions) runs `make build`, `make lint` and `make test` as separate steps, in that

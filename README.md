@@ -192,6 +192,25 @@ make baselines    # regenerate the visual baselines (tests/baselines/)
 make clean   # remove dist/
 ```
 
+### Quest simulator (developer tool)
+
+`scripts/simulate.py` gives a rough idea of how hard a quest is for 2, 3 or 4 heroes. It reads a quest
+link (a URL, the part after `#`, or a file that holds one) and plays the fights many times with the
+base-game dice, then prints how often the heroes survive, how many body points they have left, and
+which rooms cost the most. It is a fights-only Monte Carlo: no movement, line of sight, doors,
+treasure or equipment, and special rules written in the quest text are not modeled. Only the stat
+blocks in Zargon's notes (`**Name**` followed by a `|BP|MP|Attack|Defense|Special|` table) and the
+potions of healing named there are read. Use it to compare quests and spot a room that decides
+everything, not to predict a table's result. It is not part of the page and does not change a link.
+
+```
+.venv/bin/python scripts/simulate.py docs/showcase/quest-1.txt
+.venv/bin/python scripts/simulate.py "<link>" --runs 5000 --heroes 3,4 --caster-damage 0
+```
+
+A stat block goes to the only monster piece of its type (for example the one Abomination); use
+`--boss "Lumeloth=Abomination"` when that is not clear. The printed assumptions say what was guessed.
+
 Every piece's artwork is a separate SVG in `src/icons/`. To use your own, put a same-named file in
 `icons-custom/`; the build prints which file it used for each piece.
 

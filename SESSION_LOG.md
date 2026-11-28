@@ -254,19 +254,24 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 243 | Quest 1 minor updates - https://vibecoder-1z3r0.github.io/the-quest-ma… | 00:43:52 | 2m 0s | 3h 55m ⏳ | 16 | 4,760 | 8,880 | 2,959,739 |
 | 244 | Ok so what's in this branch now? | 04:41:22 | 16s | 20s | 12 | 2,930 | 369,350 | 1,765,297 |
 | 245 | Get it ready | 04:41:58 | 1m 39s | 38s | 22 | 3,739 | 4,807 | 3,867,542 |
-| 246 | Can we rebase and clean that up? | 04:44:15 | 11s | — | 8 | 2,752 | 28 | 864,612 |
+| 246 | Can we rebase and clean that up? | 04:44:15 | 1m 40s | 41s | 14 | 3,575 | 4,190 | 2,163,130 |
+| 247 | Yeah let's get that merged | 04:46:36 | 32s | 25s | 30 | 1,760 | 7,781 | 4,811,097 |
+| 248 | MaD | 04:47:33 | 3s | 9h 15m ⏳ | 4 | 239 | 821 | 884,928 |
+| 249 | Would there be any real credence to running playthrough simulations?  … | 14:03:23 | 2m 37s | 11m 6s | 24 | 35,138 | 800,486 | 3,729,324 |
+| 250 | Here's the monster stats again - | 14:17:06 | 18s | 1m 48s | 4 | 4,486 | 1,678 | 928,290 |
+| 251 | Yes, build the simulator | 14:19:12 | 5m 14s | — | 80 | 61,830 | 74,429 | 18,676,942 |
 
-**Total turns:** 246  
-**Total agent time spent (excl. flagged):** 4h 37m  
-**Total human think time (excl. outliers):** 4h 53m  
-**Average human think time (excl. outliers):** 1m 26s  
-**Think-time outliers (> 15 min):** 41  
-**Total input tokens:** 5,741  
-**Total output tokens:** 2,711,623  
-**Total cache-write tokens:** 25,764,878  
-**Total cache-read tokens:** 1,005,067,069  
-**Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
+**Total turns:** 251  
+**Total agent time spent (excl. flagged):** 4h 48m  
+**Total human think time (excl. outliers):** 5h 7m  
+**Average human think time (excl. outliers):** 1m 29s  
+**Think-time outliers (> 15 min):** 42  
+**Total input tokens:** 5,889  
+**Total output tokens:** 2,815,899  
+**Total cache-write tokens:** 26,654,235  
+**Total cache-read tokens:** 1,035,396,168  
+**Cache hit ratio (cache-read ÷ all prompt-side tokens):** 97%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225, 229, 233, 237, 238, 239, 243 had a 'human think time' over 15 min (total 208h 13m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225, 229, 233, 237, 238, 239, 243, 248 had a 'human think time' over 15 min (total 217h 29m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
