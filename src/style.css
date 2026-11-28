@@ -147,6 +147,8 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 
 #inspector .square { font-weight: 600; margin-bottom: 4px; }
 #inspector .none { color: var(--muted); }
+#inspector .square { min-height: 1.4em; }
+#inspector .facts { color: var(--muted); }
 .stack { list-style: none; margin: 6px 0 0; padding: 0; }
 .stack li {
   border: 1px solid var(--border); border-radius: 6px; padding: 5px 6px; margin-bottom: 5px; background: var(--panel2);
@@ -204,6 +206,13 @@ body.hero #copy-hero { display: none; }
   #tools { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); }
   #side { border-left: 0; border-top: 1px solid var(--border); }
   .tgrid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* Wide screens: the What's here card keeps one size (room for the facts, and a pieces list that shows two
+   pieces and a peek of a third, then scrolls), so it does not dance as the mouse moves over the map. */
+@media (min-width: 1001px) {
+  #inspector .facts { min-height: calc(3 * 1.45em); }
+  #inspector .here { height: 17.5rem; overflow-y: auto; padding-right: 2px; }
 }
 
 /* Single column: the map, its legend and the What's here panel first, then the palette, then the

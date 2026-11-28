@@ -450,24 +450,31 @@ function renderInspector() {
   box.replaceChildren();
   const cell = app.pinned || app.hover;
   $("#inspector-hint").textContent = app.pinned ? "(pinned, Esc to unpin)" : "";
+  // Three parts: the square, a few facts about it, then the pieces and tiles in a list of its own. On a
+  // wide screen the list has a fixed height and scrolls, so the card never changes size as the mouse
+  // moves and nothing below it jumps around.
+  const label = el("div", { class: "square" });
+  const facts = el("div", { class: "facts" });
+  const here = el("div", { class: "here" });
+  box.append(label, facts, here);
   if (!cell) {
-    box.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
+    here.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
     return;
   }
   const hl = highlightAt(app.state, cell.x, cell.y);
   const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
-  box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
+  label.textContent = `Square ${squareLabel(cell.x, cell.y)}`;
   const room = roomAt(cell.x, cell.y);
-  if (isRoom(room)) box.append(el("div", { class: "meta", text: `Room: ${room}` }));
-  box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
+  if (isRoom(room)) facts.append(el("div", { class: "meta", text: `Room: ${room}` }));
+  facts.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
   const zone = ZONES[app.state.zones[cell.y * COLS + cell.x] - 1];
-  if (zone) box.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));
+  if (zone) facts.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));
   const hits = itemsAt(app.state, cell.x, cell.y);
-  if (hits.length) box.append(pieceStack(hits));
-  else box.append(el("p", { class: "none", text: "No pieces here." }));
+  if (hits.length) here.append(pieceStack(hits));
+  else here.append(el("p", { class: "none", text: "No pieces here." }));
   const tileHits = tilesAt(app.state, cell.x, cell.y);
   if (tileHits.length) {
-    box.append(el("h3", { class: "subhead", text: "Room tiles (under the pieces)" }), tileStack(tileHits));
+    here.append(el("h3", { class: "subhead", text: "Room tiles (under the pieces)" }), tileStack(tileHits));
   }
 }
 

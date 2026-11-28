@@ -220,6 +220,8 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
 - "What's here" panel: hover shows, click/tap pins. Lists everything in the square top to bottom
   (the room letter, the highlight and zone, pieces with footprint, anchor, rotation) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
+  On wide screens the card has one fixed size: the facts block keeps its height and the pieces list scrolls
+  (two pieces fit, a third peeks), so the cards below never jump as the mouse moves over the map.
   **The panel follows the selected piece**: moving it (panel buttons, arrow keys, drag) or rotating it re-pins
   the panel to the piece's new square, so it never loses the piece. Placing a piece selects it and leaves the Place
   tool active (bulk placing needs no trips to the palette). The hover preview and square highlight only show for
