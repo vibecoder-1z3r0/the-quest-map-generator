@@ -190,8 +190,17 @@ body.hero #app { grid-template-columns: minmax(0, 1fr) 380px; }
 #confirm-dialog p { margin: 0; }
 #confirm-dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
-#hero-card summary { cursor: pointer; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
-#hero-card details[open] summary { margin-bottom: 8px; }
+/* The right-hand cards fold: a details with a heading-like summary and its own chevron. */
+.fold > summary {
+  display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; user-select: none;
+  font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted);
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before { content: "\25B8"; flex: none; width: 10px; font-size: 11px; }
+.fold[open] > summary::before { content: "\25BE"; }
+.fold > summary .pcheck { float: none; margin-left: auto; font-weight: 400; }
+.fold > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+#side .fold[open] > summary { margin-bottom: 8px; }
 #hero-fields textarea { width: 100%; }
 .hero-count { float: right; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
