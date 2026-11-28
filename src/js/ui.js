@@ -1286,7 +1286,7 @@ function syncZones() {
     for (const zone of ZONES.slice(0, count)) {
       grid.append(toolButton(zone.name, "zone", zone.n, el("span", { class: "swatch", style: `background:${zone.color}` })));
     }
-    grid.append(toolButton("Clear", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
+    grid.append(toolButton("Clear zone", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
     const legend = $("#legend-edit");
     for (const row of legend.querySelectorAll(".lg.zone")) row.remove();
     for (const zone of ZONES.slice(0, count)) legend.append(legendRow(zone.legendKey, zone.name, zone.name, zone.color, true));

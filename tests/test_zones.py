@@ -44,11 +44,12 @@ def test_the_palette_has_a_hero_view_zones_section_with_ten_zones_and_a_clear(pa
         "xpath=following-sibling::div[1]"
     )
     buttons = grid.locator("button")
-    assert buttons.count() == 11  # zones 1-10 and Clear
+    assert buttons.count() == 11  # zones 1-10 and Clear zone
     kinds = buttons.evaluate_all("els => els.map(e => e.dataset.kind)")
     values = [int(v) for v in buttons.evaluate_all("els => els.map(e => e.dataset.value)")]
     assert kinds == ["zone"] * 11 and values == ZONES + [0]
-    assert "Zone 1" in buttons.nth(0).inner_text() and "Clear" in buttons.nth(10).inner_text()
+    assert "Zone 1" in buttons.nth(0).inner_text()
+    assert buttons.nth(10).inner_text().strip() == "Clear zone"
 
 
 def test_zones_are_not_listed_among_the_ordinary_highlight_colors(page):
@@ -323,3 +324,11 @@ def test_removing_the_zone_that_is_the_current_tool_returns_to_select(page):
     page.click('#tools button[data-kind="zone"][data-value="11"]')
     page.click("#remove-zone")
     assert page.evaluate("QMG.app.tool.kind") == "select"
+
+
+def test_the_zone_eraser_is_called_clear_zone_so_it_is_not_mistaken_for_the_highlight_clears(page):
+    page.click("#add-zone")  # the label survives the zone buttons being rebuilt
+    zone_clear = page.locator('#tools button[data-kind="zone"][data-value="0"]')
+    assert zone_clear.inner_text().strip() == "Clear zone"
+    highlight_clears = page.locator('#tools button[data-kind="highlight"][data-value="0"]')
+    assert [t.strip() for t in highlight_clears.all_inner_texts()] == ["Clear", "Clear"]

@@ -262,17 +262,19 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 251 | Yes, build the simulator | 14:19:12 | 5m 23s | 5m 30s | 82 | 62,708 | 75,120 | 19,182,268 |
 | 252 | Do we need to keep the simulator and main map stuff in sync now? | 14:30:05 | 12s | 1m 12s | 8 | 2,624 | 48 | 1,013,790 |
 | 253 | Yes, write that test | 14:31:29 | 1m 48s | 31m 18s ⏳ | 18 | 6,495 | 6,339 | 3,563,291 |
-| 254 | On PC - when I move around in the map, the right panel dances a bunch … | 15:04:35 | 3m 20s | — | 42 | 20,875 | 51,902 | 9,508,249 |
+| 254 | On PC - when I move around in the map, the right panel dances a bunch … | 15:04:35 | 3m 28s | 1m 23s | 44 | 21,304 | 52,999 | 10,044,981 |
+| 255 | I think everything in the right panel should be collapsable | 15:09:26 | 4m 40s | 1m 17s | 68 | 28,011 | 42,182 | 16,443,952 |
+| 256 | I still only meant on the right panel, but was clarifying what I was s… | 15:15:23 | 4m 29s | — | 62 | 21,542 | 28,256 | 14,697,490 |
 
-**Total turns:** 254  
-**Total agent time spent (excl. flagged):** 4h 53m  
-**Total human think time (excl. outliers):** 5h 13m  
+**Total turns:** 256  
+**Total agent time spent (excl. flagged):** 5h 2m  
+**Total human think time (excl. outliers):** 5h 16m  
 **Average human think time (excl. outliers):** 1m 30s  
 **Think-time outliers (> 15 min):** 43  
-**Total input tokens:** 5,959  
-**Total output tokens:** 2,846,771  
-**Total cache-write tokens:** 26,713,215  
-**Total cache-read tokens:** 1,049,986,824  
+**Total input tokens:** 6,091  
+**Total output tokens:** 2,896,753  
+**Total cache-write tokens:** 26,784,750  
+**Total cache-read tokens:** 1,081,664,998  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
