@@ -124,8 +124,11 @@ input[type="text"] { width: 100%; }
 .sheet section > h3 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
 .sheet section > h3 span { text-transform: none; letter-spacing: 0; }
 .sheet .preview { font-size: 15px; }
-.sheet section.secret > h3 { color: var(--danger); }
-.sheet section.secret .preview { border-left-color: var(--danger); }
+.sheet > .fold > summary { font-size: 12px; letter-spacing: 1px; }
+.sheet > .fold[open] > summary { margin-bottom: 6px; }
+.sheet > .fold > summary span { text-transform: none; letter-spacing: 0; }
+.sheet.secret > .fold > summary { color: var(--danger); }
+.sheet.secret .preview { border-left-color: var(--danger); }
 .sheet .muted { margin: 0; }
 .piece-key { column-width: 210px; column-gap: 24px; font-size: 14px; }
 .piece-key .keygroup { break-inside: avoid; margin-bottom: 12px; padding: 8px 10px 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel2); }
@@ -199,6 +202,8 @@ body.hero #app { grid-template-columns: minmax(0, 1fr) 380px; }
 .fold > summary::before { content: "\25B8"; flex: none; width: 10px; font-size: 11px; }
 .fold[open] > summary::before { content: "\25BE"; }
 .fold > summary .pcheck { float: none; margin-left: auto; font-weight: 400; }
+.psec > summary { font-size: 11px; letter-spacing: 1px; margin: 14px 0 6px; }
+.psec:not([open]) > summary { margin-bottom: 0; }
 .fold > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 #side .fold[open] > summary { margin-bottom: 8px; }
 #hero-fields textarea { width: 100%; }

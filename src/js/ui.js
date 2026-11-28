@@ -638,7 +638,10 @@ function renderPreviews() {
   $("#sheet-wm").hidden = !wm;
   $("#sheet-intro-section").hidden = !app.state.intro.trim();
   $("#sheet-notes-section").hidden = !app.state.notes.trim();
-  $("#sheet-empty").hidden = Boolean(app.state.series || title || wm || app.state.intro.trim() || app.state.notes.trim());
+  const hasInfo = Boolean(app.state.series || title || wm || app.state.intro.trim());
+  const hasNotes = Boolean(app.state.notes.trim());
+  $("#sheet-empty").hidden = hasInfo || hasNotes;
+  $("#quest-sheet").hidden = !hasInfo && hasNotes; // only notes typed: no empty quest info card
   document.title = `${app.state.series ? `${app.state.series}: ` : ""}${title || "Quest"} – Quest Map Generator`;
 }
 
@@ -1324,10 +1327,17 @@ async function removeLastZone() {
   commit();
 }
 
+// A palette group that folds away: a heading you click, then its buttons.
+function foldSection(title, ...children) {
+  const details = el("details", { class: "fold psec", open: "" }, el("summary", { text: title }));
+  details.append(...children);
+  return details;
+}
+
 function buildPalette() {
   const root = $("#tools");
   root.replaceChildren();
-  root.append(el("h2", { text: "Tools" }));
+  root.append(el("h2", { text: "Tools" })); // the one heading that does not fold
   const basics = el("div", { class: "tgrid" });
   const deselect = el("button", {
     id: "deselect",
@@ -1338,7 +1348,6 @@ function buildPalette() {
   deselect.addEventListener("click", deselectAll);
   basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0), deselect);
   root.append(basics);
-  root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
   const solid = el("div", { class: "tgrid" });
   const zones = el("div", { class: "tgrid" });
@@ -1349,11 +1358,10 @@ function buildPalette() {
     if (h.value === 1) button.title = "Paint solid stone like a highlight; Clear erases it";
     (h.value === 1 ? solid : hls).append(button);
   }
-  root.append(hls);
+  root.append(foldSection("Highlight", hls));
   solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
-  root.append(el("h2", { text: "Solid stone areas" }), solid);
+  root.append(foldSection("Solid stone areas", solid));
   zones.id = "zone-grid";
-  root.append(el("h2", { text: "Hero view zones" }), zones);
   const zoneActions = el("div", { class: "zone-actions" });
   const addZone = el("button", { id: "add-zone", type: "button", text: "Add zone", title: "Add the next zone (up to 30)" });
   addZone.addEventListener("click", () => {
@@ -1363,20 +1371,23 @@ function buildPalette() {
   const removeZone = el("button", { id: "remove-zone", type: "button", text: "Remove zone", title: "Remove the last zone (never fewer than 10)" });
   removeZone.addEventListener("click", removeLastZone);
   zoneActions.append(addZone, removeZone);
-  root.append(zoneActions);
   app.zonesBuilt = 0;
   root.append(
-    el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
+    foldSection(
+      "Hero view zones",
+      zones,
+      zoneActions,
+      el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
+    ),
   );
   for (const group of GROUPS) {
-    root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
     for (const piece of CATALOG.filter((p) => p.group === group)) {
       const button = toolButton(piece.name, piece.tile ? "tile" : "piece", piece.id, iconThumb(piece));
       button.title = `${piece.name} (${piece.w}×${piece.h})`;
       grid.append(button);
     }
-    root.append(grid);
+    root.append(foldSection(group, grid));
   }
 }
 

@@ -70,15 +70,21 @@
         <h3>Introduction <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-intro" checked> Print</label></h3>
         <div id="sheet-intro" class="preview"></div>
       </section>
-      <section id="sheet-notes-section" class="secret">
-        <h3>Zargon's notes <span>(secret)</span> <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-notes" checked> Print</label></h3>
-        <div id="sheet-notes" class="preview"></div>
-      </section>
-      <section id="sheet-key-section">
-        <h3>Pieces on this map <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-key" checked> Print</label> <label class="pcheck"><input type="checkbox" id="po-monsters"> Monsters only</label></h3>
-        <div id="sheet-key" class="piece-key"></div>
-      </section>
       <p id="sheet-empty" class="muted">The quest title, introduction and notes you type on the right appear here.</p>
+    </article>
+
+    <article id="sheet-notes-section" class="sheet secret" aria-label="Zargon's secret notes, updated as you type">
+      <details class="fold" open>
+        <summary>Zargon's notes <span>(secret)</span> <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-notes" checked> Print</label></summary>
+        <div id="sheet-notes" class="preview"></div>
+      </details>
+    </article>
+
+    <article id="sheet-key-section" class="sheet" aria-label="Pieces on this map">
+      <details class="fold" open>
+        <summary>Pieces on this map <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-key" checked> Print</label> <label class="pcheck"><input type="checkbox" id="po-monsters"> Monsters only</label></summary>
+        <div id="sheet-key" class="piece-key"></div>
+      </details>
     </article>
   </section>
 

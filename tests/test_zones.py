@@ -33,14 +33,14 @@ def square(page, x, y):
 
 
 def headings(page):
-    return [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
+    return [h.lower() for h in page.locator("#tools h2, #tools summary").all_inner_texts()]
 
 
 def test_the_palette_has_a_hero_view_zones_section_with_ten_zones_and_a_clear(page):
     names = headings(page)
     assert names.index("hero view zones") == names.index("solid stone areas") + 1
     assert names.index("doors & walls") == names.index("hero view zones") + 1
-    grid = page.locator("#tools h2", has_text="Hero view zones").locator(
+    grid = page.locator("#tools h2, #tools summary", has_text="Hero view zones").locator(
         "xpath=following-sibling::div[1]"
     )
     buttons = grid.locator("button")
@@ -53,7 +53,7 @@ def test_the_palette_has_a_hero_view_zones_section_with_ten_zones_and_a_clear(pa
 
 
 def test_zones_are_not_listed_among_the_ordinary_highlight_colors(page):
-    grid = page.locator("#tools h2", has_text="Highlight").first.locator(
+    grid = page.locator("#tools h2, #tools summary", has_text="Highlight").first.locator(
         "xpath=following-sibling::div[1]"
     )
     values = grid.locator("button").evaluate_all("els => els.map(e => Number(e.dataset.value))")

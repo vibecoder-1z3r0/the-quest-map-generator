@@ -264,19 +264,20 @@ Source: `/root/.claude/projects/-home-user-the-quest-map-generator/2be6d510-95bb
 | 253 | Yes, write that test | 14:31:29 | 1m 48s | 31m 18s ⏳ | 18 | 6,495 | 6,339 | 3,563,291 |
 | 254 | On PC - when I move around in the map, the right panel dances a bunch … | 15:04:35 | 3m 28s | 1m 23s | 44 | 21,304 | 52,999 | 10,044,981 |
 | 255 | I think everything in the right panel should be collapsable | 15:09:26 | 4m 40s | 1m 17s | 68 | 28,011 | 42,182 | 16,443,952 |
-| 256 | I still only meant on the right panel, but was clarifying what I was s… | 15:15:23 | 4m 29s | — | 62 | 21,542 | 28,256 | 14,697,490 |
+| 256 | I still only meant on the right panel, but was clarifying what I was s… | 15:15:23 | 4m 38s | 51m 46s ⏳ | 64 | 22,142 | 29,831 | 15,269,222 |
+| 257 | I think we should make those logical sections like we did on the right… | 16:11:47 | 5m 41s | — | 62 | 32,973 | 78,382 | 16,594,958 |
 
-**Total turns:** 256  
-**Total agent time spent (excl. flagged):** 5h 2m  
+**Total turns:** 257  
+**Total agent time spent (excl. flagged):** 5h 8m  
 **Total human think time (excl. outliers):** 5h 16m  
 **Average human think time (excl. outliers):** 1m 30s  
-**Think-time outliers (> 15 min):** 43  
-**Total input tokens:** 6,091  
-**Total output tokens:** 2,896,753  
-**Total cache-write tokens:** 26,784,750  
-**Total cache-read tokens:** 1,081,664,998  
+**Think-time outliers (> 15 min):** 44  
+**Total input tokens:** 6,155  
+**Total output tokens:** 2,930,326  
+**Total cache-write tokens:** 26,864,707  
+**Total cache-read tokens:** 1,098,831,688  
 **Cache hit ratio (cache-read ÷ all prompt-side tokens):** 98%
 
 ⚠ Turn(s) 179, 183, 193 had an 'agent time spent' over 30 min (total 1h 59m), which is implausible as real agent work — likely a transcript entry logged near session-resume time rather than when it actually ran. Excluded from the agent-time total above.
 
-⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225, 229, 233, 237, 238, 239, 243, 248, 253 had a 'human think time' over 15 min (total 218h 0m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).
+⏳ Turn(s) 8, 13, 53, 54, 62, 76, 85, 105, 124, 129, 137, 145, 147, 148, 149, 150, 158, 159, 162, 164, 177, 181, 182, 193, 199, 200, 202, 205, 209, 212, 214, 218, 221, 222, 225, 229, 233, 237, 238, 239, 243, 248, 253, 256 had a 'human think time' over 15 min (total 218h 52m) — likely a break, a resumed session, or time reading a long response rather than active back-and-forth. Excluded from BOTH the total and the average above (still shown per-row).

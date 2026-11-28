@@ -230,10 +230,13 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
   keys, `R` rotate, `Del` remove, Highlight tool, Eraser. **`Esc` cancels any tool in progress (even a
   tile being dragged out) and returns to the Select tool with nothing selected or pinned.** A **Deselect** button next to Select and Eraser does the same for screens without a keyboard. Clicking a stacked square selects the top
   piece, clicking again cycles down.
-- **The right-hand cards fold** (What's here, Hero view data, Quest, Quest stats, Highlight legend: each a
-  `<details class="fold">` with a chevron heading). All start open except Hero view data. Folding is only a view
-  setting: it is not stored in the link, typed text is kept, the Print checkboxes in a heading still work, and the
-  printed page is built separately so it never changes. The left palette and the quest sheet do not fold (yet).
+- **Folding** (a `<details class="fold">` with a chevron heading; a view setting only: not stored in the link, typed
+  text is kept, Print checkboxes in a heading still work, and the printed page is built separately so it never
+  changes): the **right-hand cards** (What's here, Hero view data, Quest, Quest stats, Highlight legend), every
+  **left palette group** (Highlight, Solid stone areas, Hero view zones, Doors & walls, Room tiles, Furniture, the
+  piece groups...; the Tools heading is plain and never folds), and, under the map, **Zargon's notes** and **Pieces
+  on this map**. The quest info card (series, title, wandering monster, introduction) is its own card and does not
+  fold. All start open except Hero view data. The notes and pieces cards show only when they have content.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
 - Touch: pinch-zoom and pan.

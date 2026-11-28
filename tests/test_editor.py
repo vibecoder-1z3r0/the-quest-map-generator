@@ -507,7 +507,7 @@ def test_the_quest_sheet_renders_notes_and_the_wandering_monster(page):
     assert page.locator("#sheet-notes h3").inner_text() == "Secrets"
     assert page.locator("#sheet-notes li").count() == 2
     assert page.locator("#sheet-notes td").count() == 2
-    assert "secret" in page.locator("#sheet-notes-section > h3").inner_text().lower()
+    assert "secret" in page.locator("#sheet-notes-section summary").inner_text().lower()
     page.select_option("#wm-select", label="Orc")
     assert page.locator("#sheet-wm").inner_text() == "Wandering monster: Orc"
     page.fill("#wm-text", "and a rat")
@@ -689,16 +689,16 @@ def test_the_piece_key_follows_edits_and_undo(page):
 
 
 def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
-    headings = [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
+    headings = [h.lower() for h in page.locator("#tools h2, #tools summary").all_inner_texts()]
     assert headings[:2] == ["tools", "highlight"]
     assert headings[2].startswith("solid stone areas")
     assert headings[3] == "hero view zones"
     assert headings[4] == "doors & walls"
-    highlight_grid = page.locator("#tools h2", has_text="Highlight").locator(
+    highlight_grid = page.locator("#tools h2, #tools summary", has_text="Highlight").locator(
         "xpath=following-sibling::div[1]"
     )
     assert "Grey" not in highlight_grid.inner_text()
-    solid_grid = page.locator("#tools h2", has_text="Solid stone areas").locator(
+    solid_grid = page.locator("#tools h2, #tools summary", has_text="Solid stone areas").locator(
         "xpath=following-sibling::div[1]"
     )
     assert solid_grid.inner_text().split() == ["Grey", "Clear"]
