@@ -507,7 +507,7 @@ def test_the_quest_sheet_renders_notes_and_the_wandering_monster(page):
     assert page.locator("#sheet-notes h3").inner_text() == "Secrets"
     assert page.locator("#sheet-notes li").count() == 2
     assert page.locator("#sheet-notes td").count() == 2
-    assert "secret" in page.locator("#sheet-notes-section > h3").inner_text().lower()
+    assert "secret" in page.locator("#sheet-notes-section summary").inner_text().lower()
     page.select_option("#wm-select", label="Orc")
     assert page.locator("#sheet-wm").inner_text() == "Wandering monster: Orc"
     page.fill("#wm-text", "and a rat")
@@ -689,16 +689,16 @@ def test_the_piece_key_follows_edits_and_undo(page):
 
 
 def test_grey_has_its_own_solid_stone_areas_section_above_doors_and_walls(page):
-    headings = [h.lower() for h in page.locator("#tools h2").all_inner_texts()]
+    headings = [h.lower() for h in page.locator("#tools h2, #tools summary").all_inner_texts()]
     assert headings[:2] == ["tools", "highlight"]
     assert headings[2].startswith("solid stone areas")
     assert headings[3] == "hero view zones"
     assert headings[4] == "doors & walls"
-    highlight_grid = page.locator("#tools h2", has_text="Highlight").locator(
+    highlight_grid = page.locator("#tools h2, #tools summary", has_text="Highlight").locator(
         "xpath=following-sibling::div[1]"
     )
     assert "Grey" not in highlight_grid.inner_text()
-    solid_grid = page.locator("#tools h2", has_text="Solid stone areas").locator(
+    solid_grid = page.locator("#tools h2, #tools summary", has_text="Solid stone areas").locator(
         "xpath=following-sibling::div[1]"
     )
     assert solid_grid.inner_text().split() == ["Grey", "Clear"]
@@ -882,3 +882,67 @@ def test_legend_swatches_keep_their_colors_when_printed(page, site):
     assert swatches.count() >= 2
     kept = swatches.evaluate_all("els => els.map((e) => getComputedStyle(e).printColorAdjust)")
     assert set(kept) == {"exact"}
+
+
+# ---------------------------------------------------------------- the What's here panel keeps its size
+def crowded_map(page, site, pieces=("goblin", "orc", "skeleton", "zombie")):
+    st = ref.blank()
+    for slug in pieces:
+        st["items"].append((piece_id(page, slug), 5, 5, 0))
+    st["hl"][9 * 26 + 8] = 3  # a highlight on an empty square at I10
+    st["tiles"].append((piece_id(page, "room-tile"), 12, 15, 2, 2))
+    open_link(page, site, ref.encode(st))
+
+
+def hover(page, x, y):
+    page.evaluate("window.scrollTo(0, 0)")
+    page.mouse.move(*cell_center(page, x, y))
+    page.wait_for_timeout(60)
+
+
+def card_box(page):
+    return page.locator("#inspector-card").bounding_box()
+
+
+def test_the_whats_here_card_keeps_its_size_whatever_is_under_the_mouse(page, site):
+    page.set_viewport_size({"width": 1400, "height": 1000})
+    crowded_map(page, site)
+    hover(page, 0, 0)  # a bare corridor square
+    first = card_box(page)
+    for x, y in [(5, 5), (8, 9), (12, 15), (2, 2), (0, 0)]:  # a stack, a highlight, a tile, a room
+        hover(page, x, y)
+        box = card_box(page)
+        assert (box["height"], box["y"]) == (first["height"], first["y"]), (x, y)
+
+
+def test_pinning_a_square_does_not_resize_the_whats_here_card(page, site):
+    page.set_viewport_size({"width": 1400, "height": 1000})
+    crowded_map(page, site)
+    hover(page, 0, 0)
+    first = card_box(page)
+    click_cell(page, 5, 5)  # pins the stack
+    assert card_box(page)["height"] == first["height"]
+    page.keyboard.press("Escape")
+    assert card_box(page)["height"] == first["height"]
+
+
+def test_the_cards_below_do_not_move_while_the_mouse_moves_over_the_map(page, site):
+    page.set_viewport_size({"width": 1400, "height": 1000})
+    crowded_map(page, site)
+    below = page.locator("#side > .card").nth(1)
+    hover(page, 0, 0)
+    y = below.bounding_box()["y"]
+    for x, yy in [(5, 5), (12, 15), (8, 9)]:
+        hover(page, x, yy)
+        assert below.bounding_box()["y"] == y
+
+
+def test_the_pieces_list_scrolls_inside_the_card_and_fits_two_pieces_without_scrolling(page, site):
+    page.set_viewport_size({"width": 1400, "height": 1000})
+    crowded_map(page, site)
+    hover(page, 5, 5)  # four pieces
+    here = page.locator("#inspector .here")
+    assert here.evaluate("e => e.scrollHeight > e.clientHeight")  # four do not fit: it scrolls
+    crowded_map(page, site, pieces=("goblin", "orc"))
+    hover(page, 5, 5)  # two pieces
+    assert here.evaluate("e => e.scrollHeight <= e.clientHeight + 1")

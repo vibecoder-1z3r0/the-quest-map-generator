@@ -49,6 +49,11 @@ map. It can be hosted anywhere static.
   enabled by `make setup` via `core.hooksPath`) runs `make session-log` and stages the result, so every commit
   carries a fresh log. If the hook is not active in a checkout, run `make session-log` before committing. The
   header note lives in `scripts/session_log_header.md`.
+- **Quest simulator**: `scripts/simulate.py` is a developer tool (Python only, reads links with
+  `tests/reference.py`, tested in `tests/test_simulate.py`). A fights-only Monte Carlo of a quest link for 2-4
+  heroes: win rate, BP left, BP lost per room. It is never part of the page or the link format. Monster and
+  hero stats are the base-game chart; stat blocks in Zargon's notes override them. Its assumptions are printed
+  with every report and must stay honest: do not present its numbers as predictions.
 - **Golden links**: committed known URLs per format version that must keep decoding to the expected
   map.
 - CI (GitHub Actions) runs `make build`, `make lint` and `make test` as separate steps, in that
@@ -215,6 +220,8 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
 - "What's here" panel: hover shows, click/tap pins. Lists everything in the square top to bottom
   (the room letter, the highlight and zone, pieces with footprint, anchor, rotation) with Bring forward, Send back, Rotate,
   Move and Remove. Board-style coordinates (column letter + row number), e.g. `E8`.
+  On wide screens the card has one fixed size: the facts block keeps its height and the pieces list scrolls
+  (two pieces fit, a third peeks), so the cards below never jump as the mouse moves over the map.
   **The panel follows the selected piece**: moving it (panel buttons, arrow keys, drag) or rotating it re-pins
   the panel to the piece's new square, so it never loses the piece. Placing a piece selects it and leaves the Place
   tool active (bulk placing needs no trips to the palette). The hover preview and square highlight only show for
@@ -223,6 +230,13 @@ decisions behind them; `docs/FORMAT.md` 4.7 and 4.8 the bytes). The view flag is
   keys, `R` rotate, `Del` remove, Highlight tool, Eraser. **`Esc` cancels any tool in progress (even a
   tile being dragged out) and returns to the Select tool with nothing selected or pinned.** A **Deselect** button next to Select and Eraser does the same for screens without a keyboard. Clicking a stacked square selects the top
   piece, clicking again cycles down.
+- **Folding** (a `<details class="fold">` with a chevron heading; a view setting only: not stored in the link, typed
+  text is kept, Print checkboxes in a heading still work, and the printed page is built separately so it never
+  changes): the **right-hand cards** (What's here, Hero view data, Quest, Quest stats, Highlight legend), every
+  **left palette group** (Highlight, Solid stone areas, Hero view zones, Doors & walls, Room tiles, Furniture, the
+  piece groups...; the Tools heading is plain and never folds), and, under the map, **Zargon's notes** and **Pieces
+  on this map**. The quest info card (series, title, wandering monster, introduction) is its own card and does not
+  fold. All start open except Hero view data. The notes and pieces cards show only when they have content.
 - In-page **Undo/Redo** with its own history stack (Ctrl+Z / Ctrl+Y); typing is one step per pause.
   Browser back/forward also work. Opening a link starts a fresh stack.
 - Touch: pinch-zoom and pan.

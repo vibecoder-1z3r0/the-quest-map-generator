@@ -450,24 +450,31 @@ function renderInspector() {
   box.replaceChildren();
   const cell = app.pinned || app.hover;
   $("#inspector-hint").textContent = app.pinned ? "(pinned, Esc to unpin)" : "";
+  // Three parts: the square, a few facts about it, then the pieces and tiles in a list of its own. On a
+  // wide screen the list has a fixed height and scrolls, so the card never changes size as the mouse
+  // moves and nothing below it jumps around.
+  const label = el("div", { class: "square" });
+  const facts = el("div", { class: "facts" });
+  const here = el("div", { class: "here" });
+  box.append(label, facts, here);
   if (!cell) {
-    box.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
+    here.append(el("p", { class: "none", text: "Hover over the map, or click a square with the Select tool to pin it." }));
     return;
   }
   const hl = highlightAt(app.state, cell.x, cell.y);
   const hlName = HIGHLIGHTS.find((h) => h.value === hl)?.name ?? `Highlight ${hl}`;
-  box.append(el("div", { class: "square", text: `Square ${squareLabel(cell.x, cell.y)}` }));
+  label.textContent = `Square ${squareLabel(cell.x, cell.y)}`;
   const room = roomAt(cell.x, cell.y);
-  if (isRoom(room)) box.append(el("div", { class: "meta", text: `Room: ${room}` }));
-  box.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
+  if (isRoom(room)) facts.append(el("div", { class: "meta", text: `Room: ${room}` }));
+  facts.append(el("div", { class: "meta", text: hl ? `Highlight: ${hlName}` : "No highlight" }));
   const zone = ZONES[app.state.zones[cell.y * COLS + cell.x] - 1];
-  if (zone) box.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));
+  if (zone) facts.append(el("div", { class: "meta", text: `Zone: ${app.state.legend[zone.legendKey] || zone.name}` }));
   const hits = itemsAt(app.state, cell.x, cell.y);
-  if (hits.length) box.append(pieceStack(hits));
-  else box.append(el("p", { class: "none", text: "No pieces here." }));
+  if (hits.length) here.append(pieceStack(hits));
+  else here.append(el("p", { class: "none", text: "No pieces here." }));
   const tileHits = tilesAt(app.state, cell.x, cell.y);
   if (tileHits.length) {
-    box.append(el("h3", { class: "subhead", text: "Room tiles (under the pieces)" }), tileStack(tileHits));
+    here.append(el("h3", { class: "subhead", text: "Room tiles (under the pieces)" }), tileStack(tileHits));
   }
 }
 
@@ -631,7 +638,10 @@ function renderPreviews() {
   $("#sheet-wm").hidden = !wm;
   $("#sheet-intro-section").hidden = !app.state.intro.trim();
   $("#sheet-notes-section").hidden = !app.state.notes.trim();
-  $("#sheet-empty").hidden = Boolean(app.state.series || title || wm || app.state.intro.trim() || app.state.notes.trim());
+  const hasInfo = Boolean(app.state.series || title || wm || app.state.intro.trim());
+  const hasNotes = Boolean(app.state.notes.trim());
+  $("#sheet-empty").hidden = hasInfo || hasNotes;
+  $("#quest-sheet").hidden = !hasInfo && hasNotes; // only notes typed: no empty quest info card
   document.title = `${app.state.series ? `${app.state.series}: ` : ""}${title || "Quest"} – Quest Map Generator`;
 }
 
@@ -1279,7 +1289,7 @@ function syncZones() {
     for (const zone of ZONES.slice(0, count)) {
       grid.append(toolButton(zone.name, "zone", zone.n, el("span", { class: "swatch", style: `background:${zone.color}` })));
     }
-    grid.append(toolButton("Clear", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
+    grid.append(toolButton("Clear zone", "zone", 0, el("span", { class: "swatch", style: "background:transparent" })));
     const legend = $("#legend-edit");
     for (const row of legend.querySelectorAll(".lg.zone")) row.remove();
     for (const zone of ZONES.slice(0, count)) legend.append(legendRow(zone.legendKey, zone.name, zone.name, zone.color, true));
@@ -1317,10 +1327,17 @@ async function removeLastZone() {
   commit();
 }
 
+// A palette group that folds away: a heading you click, then its buttons.
+function foldSection(title, ...children) {
+  const details = el("details", { class: "fold psec", open: "" }, el("summary", { text: title }));
+  details.append(...children);
+  return details;
+}
+
 function buildPalette() {
   const root = $("#tools");
   root.replaceChildren();
-  root.append(el("h2", { text: "Tools" }));
+  root.append(el("h2", { text: "Tools" })); // the one heading that does not fold
   const basics = el("div", { class: "tgrid" });
   const deselect = el("button", {
     id: "deselect",
@@ -1331,7 +1348,6 @@ function buildPalette() {
   deselect.addEventListener("click", deselectAll);
   basics.append(toolButton("Select", "select", 0), toolButton("Eraser", "erase", 0), deselect);
   root.append(basics);
-  root.append(el("h2", { text: "Highlight" }));
   const hls = el("div", { class: "tgrid" });
   const solid = el("div", { class: "tgrid" });
   const zones = el("div", { class: "tgrid" });
@@ -1342,11 +1358,10 @@ function buildPalette() {
     if (h.value === 1) button.title = "Paint solid stone like a highlight; Clear erases it";
     (h.value === 1 ? solid : hls).append(button);
   }
-  root.append(hls);
+  root.append(foldSection("Highlight", hls));
   solid.append(toolButton("Clear", "highlight", 0, el("span", { class: "swatch", style: "background:transparent" })));
-  root.append(el("h2", { text: "Solid stone areas" }), solid);
+  root.append(foldSection("Solid stone areas", solid));
   zones.id = "zone-grid";
-  root.append(el("h2", { text: "Hero view zones" }), zones);
   const zoneActions = el("div", { class: "zone-actions" });
   const addZone = el("button", { id: "add-zone", type: "button", text: "Add zone", title: "Add the next zone (up to 30)" });
   addZone.addEventListener("click", () => {
@@ -1356,20 +1371,23 @@ function buildPalette() {
   const removeZone = el("button", { id: "remove-zone", type: "button", text: "Remove zone", title: "Remove the last zone (never fewer than 10)" });
   removeZone.addEventListener("click", removeLastZone);
   zoneActions.append(addZone, removeZone);
-  root.append(zoneActions);
   app.zonesBuilt = 0;
   root.append(
-    el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
+    foldSection(
+      "Hero view zones",
+      zones,
+      zoneActions,
+      el("p", { class: "muted", text: "Paint corridor squares to make hallways that heroes reveal like a room." }),
+    ),
   );
   for (const group of GROUPS) {
-    root.append(el("h2", { text: group }));
     const grid = el("div", { class: "tgrid" });
     for (const piece of CATALOG.filter((p) => p.group === group)) {
       const button = toolButton(piece.name, piece.tile ? "tile" : "piece", piece.id, iconThumb(piece));
       button.title = `${piece.name} (${piece.w}×${piece.h})`;
       grid.append(button);
     }
-    root.append(grid);
+    root.append(foldSection(group, grid));
   }
 }
 

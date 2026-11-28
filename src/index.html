@@ -70,27 +70,35 @@
         <h3>Introduction <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-intro" checked> Print</label></h3>
         <div id="sheet-intro" class="preview"></div>
       </section>
-      <section id="sheet-notes-section" class="secret">
-        <h3>Zargon's notes <span>(secret)</span> <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-notes" checked> Print</label></h3>
-        <div id="sheet-notes" class="preview"></div>
-      </section>
-      <section id="sheet-key-section">
-        <h3>Pieces on this map <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-key" checked> Print</label> <label class="pcheck"><input type="checkbox" id="po-monsters"> Monsters only</label></h3>
-        <div id="sheet-key" class="piece-key"></div>
-      </section>
       <p id="sheet-empty" class="muted">The quest title, introduction and notes you type on the right appear here.</p>
+    </article>
+
+    <article id="sheet-notes-section" class="sheet secret" aria-label="Zargon's secret notes, updated as you type">
+      <details class="fold" open>
+        <summary>Zargon's notes <span>(secret)</span> <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-notes" checked> Print</label></summary>
+        <div id="sheet-notes" class="preview"></div>
+      </details>
+    </article>
+
+    <article id="sheet-key-section" class="sheet" aria-label="Pieces on this map">
+      <details class="fold" open>
+        <summary>Pieces on this map <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-key" checked> Print</label> <label class="pcheck"><input type="checkbox" id="po-monsters"> Monsters only</label></summary>
+        <div id="sheet-key" class="piece-key"></div>
+      </details>
     </article>
   </section>
 
   <aside id="side" aria-label="Details and quest text">
     <div id="hero-panel" hidden></div>
     <section class="card" id="inspector-card">
-      <h2>What's here <span id="inspector-hint" class="muted"></span></h2>
-      <div id="inspector"></div>
+      <details class="fold" open>
+        <summary>What's here <span id="inspector-hint" class="muted"></span></summary>
+        <div id="inspector"></div>
+      </details>
     </section>
 
     <section class="card" id="hero-card">
-      <details>
+      <details class="fold">
         <summary id="hero-card-title">Hero view data</summary>
         <div id="hero-chooser" class="chips" aria-label="Choose a room or zone"></div>
         <p id="hero-none" class="muted">Pin a square in a room or zone, or choose one above.</p>
@@ -110,8 +118,9 @@
       </details>
     </section>
 
-    <section class="card">
-      <h2>Quest</h2>
+    <section class="card" id="quest-card">
+      <details class="fold" open>
+      <summary>Quest</summary>
       <div class="field"><label for="series">Series (optional)</label>
         <input type="text" id="series" autocomplete="off" maxlength="160" placeholder="e.g. The Order of the Oth"></div>
       <div class="row2">
@@ -132,17 +141,21 @@
       <div class="field secret"><label for="notes">Zargon's notes &mdash; secret</label>
         <textarea id="notes" rows="9" maxlength="10000"></textarea>
       </div>
+      </details>
     </section>
 
-    <section class="card">
-      <h2>Quest stats <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-stats" checked> Print</label></h2>
-      <dl id="stats" class="stats"></dl>
+    <section class="card" id="stats-card">
+      <details class="fold" open>
+        <summary>Quest stats <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-stats" checked> Print</label></summary>
+        <dl id="stats" class="stats"></dl>
+      </details>
     </section>
 
-    <section class="card">
-      <h2>Highlight legend <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-legend" checked> Print</label></h2>
-  
-      <div id="legend-edit"></div>
+    <section class="card" id="legend-card">
+      <details class="fold" open>
+        <summary>Highlight legend <label class="pcheck" title="Include when printing"><input type="checkbox" id="po-legend" checked> Print</label></summary>
+        <div id="legend-edit"></div>
+      </details>
     </section>
   </aside>
 </main>

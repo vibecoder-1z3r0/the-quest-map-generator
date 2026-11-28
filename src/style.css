@@ -124,8 +124,11 @@ input[type="text"] { width: 100%; }
 .sheet section > h3 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
 .sheet section > h3 span { text-transform: none; letter-spacing: 0; }
 .sheet .preview { font-size: 15px; }
-.sheet section.secret > h3 { color: var(--danger); }
-.sheet section.secret .preview { border-left-color: var(--danger); }
+.sheet > .fold > summary { font-size: 12px; letter-spacing: 1px; }
+.sheet > .fold[open] > summary { margin-bottom: 6px; }
+.sheet > .fold > summary span { text-transform: none; letter-spacing: 0; }
+.sheet.secret > .fold > summary { color: var(--danger); }
+.sheet.secret .preview { border-left-color: var(--danger); }
 .sheet .muted { margin: 0; }
 .piece-key { column-width: 210px; column-gap: 24px; font-size: 14px; }
 .piece-key .keygroup { break-inside: avoid; margin-bottom: 12px; padding: 8px 10px 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel2); }
@@ -147,6 +150,8 @@ kbd { background: var(--panel2); border: 1px solid var(--border); border-radius:
 
 #inspector .square { font-weight: 600; margin-bottom: 4px; }
 #inspector .none { color: var(--muted); }
+#inspector .square { min-height: 1.4em; }
+#inspector .facts { color: var(--muted); }
 .stack { list-style: none; margin: 6px 0 0; padding: 0; }
 .stack li {
   border: 1px solid var(--border); border-radius: 6px; padding: 5px 6px; margin-bottom: 5px; background: var(--panel2);
@@ -188,8 +193,19 @@ body.hero #app { grid-template-columns: minmax(0, 1fr) 380px; }
 #confirm-dialog p { margin: 0; }
 #confirm-dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
-#hero-card summary { cursor: pointer; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
-#hero-card details[open] summary { margin-bottom: 8px; }
+/* The right-hand cards fold: a details with a heading-like summary and its own chevron. */
+.fold > summary {
+  display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; user-select: none;
+  font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted);
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before { content: "\25B8"; flex: none; width: 10px; font-size: 11px; }
+.fold[open] > summary::before { content: "\25BE"; }
+.fold > summary .pcheck { float: none; margin-left: auto; font-weight: 400; }
+.psec > summary { font-size: 11px; letter-spacing: 1px; margin: 14px 0 6px; }
+.psec:not([open]) > summary { margin-bottom: 0; }
+.fold > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+#side .fold[open] > summary { margin-bottom: 8px; }
 #hero-fields textarea { width: 100%; }
 .hero-count { float: right; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
@@ -204,6 +220,13 @@ body.hero #copy-hero { display: none; }
   #tools { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); }
   #side { border-left: 0; border-top: 1px solid var(--border); }
   .tgrid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* Wide screens: the What's here card keeps one size (room for the facts, and a pieces list that shows two
+   pieces and a peek of a third, then scrolls), so it does not dance as the mouse moves over the map. */
+@media (min-width: 1001px) {
+  #inspector .facts { min-height: calc(3 * 1.45em); }
+  #inspector .here { height: 17.5rem; overflow-y: auto; padding-right: 2px; }
 }
 
 /* Single column: the map, its legend and the What's here panel first, then the palette, then the
