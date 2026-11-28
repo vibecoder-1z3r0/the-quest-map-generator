@@ -85,7 +85,7 @@ input[type="text"] { width: 100%; }
 .printopts { margin: 4px 6px 0; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
 .zone-actions { display: flex; gap: 6px; margin: 6px 0 4px; }
 .zone-actions button { flex: 1; }
-.swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.45); flex: none; }
+.swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.45); flex: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 #stage { padding: 10px; background: var(--stage); min-height: 70vh; }
 .zoombar { display: flex; gap: 4px; margin-bottom: 8px; }

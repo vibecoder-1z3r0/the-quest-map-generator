@@ -872,3 +872,13 @@ def test_highlights_print_whatever_the_other_options_say(page, site):
     page.emulate_media(media="print")
     assert page.evaluate("getComputedStyle(document.querySelector('#layer-hl')).display") != "none"
     assert page.evaluate("document.querySelectorAll('#layer-hl *').length") > 0
+
+
+def test_legend_swatches_keep_their_colors_when_printed(page, site):
+    """Browsers drop background colors on paper unless the element asks for them to be kept."""
+    zoned_map(page, site)  # solid stone is in the legend, and so is a zone
+    page.emulate_media(media="print")
+    swatches = page.locator("#legend .swatch")
+    assert swatches.count() >= 2
+    kept = swatches.evaluate_all("els => els.map((e) => getComputedStyle(e).printColorAdjust)")
+    assert set(kept) == {"exact"}
